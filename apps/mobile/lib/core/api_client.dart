@@ -19,6 +19,10 @@ class ApiClient {
 
   static String? token;
 
+  static Future<void> Function()? onUnauthorized;
+
+  static bool _handlingUnauthorized = false;
+
   static Map<String, String> get _headers => {
     'Content-Type': 'application/json',
     if (token != null && token!.isNotEmpty) 'Authorization': 'Bearer $token',
@@ -39,6 +43,7 @@ class ApiClient {
   }) async {
     final uri = Uri.parse('${AppConfig.apiBaseUrl}$path');
     final headers = _headers;
+    final hadAuth = token != null && token!.isNotEmpty;
 
     http.Response response;
     if (method == 'GET') {
@@ -54,8 +59,21 @@ class ApiClient {
     }
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
+      _handlingUnauthorized = false;
       if (response.body.isEmpty) return null;
       return jsonDecode(utf8.decode(response.bodyBytes));
+    }
+
+    if (response.statusCode == 401 &&
+        hadAuth &&
+        onUnauthorized != null &&
+        !_handlingUnauthorized) {
+      _handlingUnauthorized = true;
+      try {
+        await onUnauthorized!();
+      } catch (_) {
+        // Ignore navigation errors while surfacing the original failure.
+      }
     }
 
     String message = 'Request failed';

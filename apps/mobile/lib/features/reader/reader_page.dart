@@ -82,7 +82,17 @@ class _ReaderPageState extends State<ReaderPage> {
       );
       final detail = await _apiService.getWord(word);
       if (!mounted) return;
-      await showWordPopup(context, detail, lookup: _apiService.getWord);
+      await showWordPopup(
+        context,
+        detail,
+        lookup: _apiService.getWord,
+        onSpeak: () => _apiService.recordEvent(
+          sessionId: _session!.id,
+          eventType: 'WORD_AUDIO',
+          pageNo: _pageIndex + 1,
+          word: detail.word,
+        ),
+      );
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

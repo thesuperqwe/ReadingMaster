@@ -7,6 +7,7 @@ Future<void> showWordPopup(
   BuildContext context,
   Word word, {
   required Future<Word> Function(String word) lookup,
+  Future<void> Function()? onSpeak,
 }) async {
   final tts = FlutterTts();
   await tts.setLanguage('en-US');
@@ -25,7 +26,7 @@ Future<void> showWordPopup(
         Navigator.of(sheetContext).pop();
         final detail = await lookup(normalized);
         if (context.mounted) {
-          await showWordPopup(context, detail, lookup: lookup);
+          await showWordPopup(context, detail, lookup: lookup, onSpeak: onSpeak);
         }
       }
 
@@ -62,7 +63,10 @@ Future<void> showWordPopup(
                       ),
                     ),
                     IconButton.filled(
-                      onPressed: () => tts.speak(word.word),
+                      onPressed: () async {
+                        await onSpeak?.call();
+                        await tts.speak(word.word);
+                      },
                       icon: const Icon(Icons.volume_up),
                     ),
                   ],

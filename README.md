@@ -4,7 +4,7 @@ AI 英语分级阅读产品。MVP 采用 **Flutter Web-first + FastAPI**：先�
 
 ## 当前阶段
 
-Phase 3：Flutter Web 基础页面已完成，并与后端 API 联调。
+Phase 4：阅读核心闭环已打通，包含事件记录、quiz 更新和端到端集成测试。
 
 ## 目录
 

@@ -50,9 +50,12 @@ async def record_event(
 
     word = None
     if data.word:
-        word = await session.scalar(select(Word).where(Word.word == data.word.lower()))
+        normalized = data.word.lower()
+        word = await session.scalar(select(Word).where(Word.word == normalized))
         if word is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Word not found")
+            word = Word(word=normalized)
+            session.add(word)
+            await session.flush()
 
     event_type = data.event_type.upper()
     event = ReadingEvent(
@@ -99,6 +102,17 @@ async def finish_session(
     reading_session.progress = data.progress
     reading_session.completed = data.completed
     reading_session.finished_at = datetime.now(timezone.utc)
+
+    if data.completed:
+        session.add(
+            ReadingEvent(
+                session_id=reading_session.id,
+                child_id=reading_session.child_id,
+                book_id=reading_session.book_id,
+                event_type="BOOK_FINISH",
+            )
+        )
+
     await session.commit()
     await session.refresh(reading_session)
     return reading_session

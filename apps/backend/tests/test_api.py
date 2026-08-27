@@ -190,3 +190,72 @@ def test_create_book_with_quiz(client):
     )
     assert quiz_response.status_code == 200
     assert quiz_response.json()[0]["question"] == "What is the title?"
+
+
+def test_full_reading_loop_updates_learning_data(client, seed_content):
+    registered = _register(client)
+    token = registered["access_token"]
+    child = _create_child(client, token)
+    content = asyncio.run(seed_content())
+
+    session_response = client.post(
+        "/api/v1/reading/sessions",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"child_id": child["id"], "book_id": content["book_id"]},
+    )
+    assert session_response.status_code == 201
+    session_id = session_response.json()["id"]
+
+    for event in (
+        {"page_no": 1, "event_type": "PAGE_VIEW", "word": None},
+        {"page_no": 2, "event_type": "WORD_CLICK", "word": "cute"},
+        {"page_no": 2, "event_type": "WORD_AUDIO", "word": "cute"},
+        {"page_no": 2, "event_type": "WORD_MEANING", "word": "cute"},
+    ):
+        response = client.post(
+            "/api/v1/reading/events",
+            headers={"Authorization": f"Bearer {token}"},
+            json={
+                "session_id": session_id,
+                "event_type": event["event_type"],
+                "page_no": event["page_no"],
+                **({"word": event["word"]} if event["word"] else {}),
+            },
+        )
+        assert response.status_code == 201, response.text
+
+    finish_response = client.post(
+        f"/api/v1/reading/sessions/{session_id}/finish",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"duration_seconds": 120, "progress": 1.0, "completed": True},
+    )
+    assert finish_response.status_code == 200
+    assert finish_response.json()["completed"] is True
+
+    quiz_response = client.get(
+        f"/api/v1/books/{content['book_id']}/quiz",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    question_id = quiz_response.json()[0]["id"]
+
+    attempt_response = client.post(
+        "/api/v1/quiz/attempt",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"child_id": child["id"], "question_id": question_id, "selected_option": "A"},
+    )
+    assert attempt_response.status_code == 201
+    assert attempt_response.json()["is_correct"] is True
+
+    vocabulary_response = client.get(
+        f"/api/v1/children/{child['id']}/words",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    cute = next(
+        item for item in vocabulary_response.json() if item["word"]["word"] == "cute"
+    )
+    assert cute["click_count"] == 1
+    assert cute["audio_count"] == 1
+    assert cute["encounter_count"] == 3
+    assert cute["correct_count"] == 1
+    assert cute["wrong_count"] == 0
+    assert cute["mastery_score"] == 1.0

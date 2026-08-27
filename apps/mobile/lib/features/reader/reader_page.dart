@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/models.dart';
 import '../../services/api_service.dart';
+import '../../services/offline_dictionary.dart';
 import '../quiz/quiz_page.dart';
 import 'word_popup.dart';
 
@@ -58,6 +59,12 @@ class _ReaderPageState extends State<ReaderPage> {
     }
   }
 
+  Future<Word> _lookupWord(String text) async {
+    final offline = OfflineDictionary.lookup(text);
+    if (offline != null) return offline;
+    return _apiService.getWord(text);
+  }
+
   Future<void> _changePage(int index) async {
     if (_book == null || _session == null) return;
     setState(() => _pageIndex = index);
@@ -80,12 +87,12 @@ class _ReaderPageState extends State<ReaderPage> {
         pageNo: _pageIndex + 1,
         word: word,
       );
-      final detail = await _apiService.getWord(word);
+      final detail = await _lookupWord(word);
       if (!mounted) return;
       await showWordPopup(
         context,
         detail,
-        lookup: _apiService.getWord,
+        lookup: _lookupWord,
         aiLookup: (word, {context}) =>
             _apiService.explainWordAI(word, context: context),
         contextText: _book!.pages[_pageIndex].content,

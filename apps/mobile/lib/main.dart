@@ -4,11 +4,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'core/api_client.dart';
 import 'features/auth/login_page.dart';
 import 'features/home/home_page.dart';
+import 'services/offline_dictionary.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
   ApiClient.token = prefs.getString('access_token');
+  await OfflineDictionary.load();
   runApp(const ReadingMasterApp());
 }
 

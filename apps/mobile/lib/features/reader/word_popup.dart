@@ -82,7 +82,12 @@ class _WordDetailSheetState extends State<WordDetailSheet> {
       );
       if (mounted) setState(() => _aiResult = result);
     } catch (error) {
-      if (mounted) setState(() => _aiError = error.toString());
+      if (mounted) {
+        setState(() => _aiError = error.toString());
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('AI 解释失败：$error')),
+        );
+      }
     } finally {
       if (mounted) setState(() => _loadingAI = false);
     }
@@ -144,7 +149,11 @@ class _WordDetailSheetState extends State<WordDetailSheet> {
                   ),
                   IconButton.filled(
                     onPressed: () async {
-                      await widget.onSpeak?.call();
+                      try {
+                        await widget.onSpeak?.call();
+                      } catch (_) {
+                        // Event recording should not block speech playback.
+                      }
                       await _tts.speak(displayWord.word);
                     },
                     icon: const Icon(Icons.volume_up),

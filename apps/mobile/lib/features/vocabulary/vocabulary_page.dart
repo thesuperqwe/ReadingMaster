@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/models.dart';
 import '../../services/api_service.dart';
+import '../../services/offline_dictionary.dart';
 import '../reader/word_popup.dart';
 
 class VocabularyPage extends StatefulWidget {
@@ -40,6 +41,12 @@ class _VocabularyPageState extends State<VocabularyPage> {
     }
   }
 
+  Future<Word> _lookupWord(String text) async {
+    final offline = OfflineDictionary.lookup(text);
+    if (offline != null) return offline;
+    return _apiService.getWord(text);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) return const Center(child: CircularProgressIndicator());
@@ -60,7 +67,7 @@ class _VocabularyPageState extends State<VocabularyPage> {
               onTap: () => showWordPopup(
                 context,
                 item.word,
-                lookup: _apiService.getWord,
+                lookup: _lookupWord,
                 aiLookup: (word, {context}) =>
                     _apiService.explainWordAI(word, context: context),
               ),

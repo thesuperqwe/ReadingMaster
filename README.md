@@ -4,7 +4,7 @@ AI 英语分级阅读产品。MVP 采用 **Flutter Web-first + FastAPI**：先�
 
 ## 当前阶段
 
-Phase 1：数据库模型、Alembic 迁移和 seed 数据已完成。
+Phase 2：后端基础 API 已完成。
 
 ## 目录
 
@@ -39,10 +39,11 @@ localhost:5432
 uvicorn app.main:app --reload
 ```
 
-访问 `http://localhost:8000/health`，应返回：
+访问：
 
-```json
-{"status":"ok"}
+```text
+Swagger: http://localhost:8000/docs
+Health:  http://localhost:8000/health
 ```
 
 ### 数据库迁移
@@ -89,7 +90,26 @@ docker compose up --build
 
 后端容器启动时会自动执行 `alembic upgrade head`。容器内后端使用服务名 `postgres` 访问数据库，而不是 `localhost`。
 
-后端仍通过 `http://localhost:8000/health` 验证。
+## 已实现 API
+
+所有业务接口统一使用 `/api/v1` 前缀：
+
+```text
+POST /auth/register
+POST /auth/login
+GET  /children
+POST /children
+GET  /home
+GET  /books
+GET  /books/{book_id}
+GET  /books/{book_id}/quiz
+GET  /words/{word}
+POST /reading/sessions
+POST /reading/events
+POST /reading/sessions/{session_id}/finish
+POST /quiz/attempt
+GET  /children/{child_id}/words
+```
 
 ## 测试
 

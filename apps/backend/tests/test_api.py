@@ -1,0 +1,140 @@
+import asyncio
+
+
+def _register(client, email="parent@example.com"):
+    response = client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "password": "secret123"},
+    )
+    assert response.status_code == 201, response.text
+    return response.json()
+
+
+def _create_child(client, token, name="小明", level="LEVEL_2"):
+    response = client.post(
+        "/api/v1/children",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"name": name, "grade": 3, "reading_level": level},
+    )
+    assert response.status_code == 201, response.text
+    return response.json()
+
+
+def test_auth_and_children_flow(client):
+    registered = _register(client)
+    token = registered["access_token"]
+    child = _create_child(client, token)
+
+    children_response = client.get(
+        "/api/v1/children", headers={"Authorization": f"Bearer {token}"}
+    )
+    assert children_response.status_code == 200
+    assert [item["id"] for item in children_response.json()] == [child["id"]]
+
+
+def test_books_words_and_home(client, seed_content):
+    registered = _register(client)
+    token = registered["access_token"]
+    child = _create_child(client, token)
+    content = asyncio.run(seed_content())
+
+    books_response = client.get(
+        "/api/v1/books", headers={"Authorization": f"Bearer {token}"}
+    )
+    assert books_response.status_code == 200
+    assert books_response.json()[0]["title"] == "The Little Dog"
+
+    detail_response = client.get(
+        f"/api/v1/books/{content['book_id']}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert detail_response.status_code == 200
+    assert len(detail_response.json()["pages"]) == 3
+
+    word_response = client.get(
+        "/api/v1/words/cute", headers={"Authorization": f"Bearer {token}"}
+    )
+    assert word_response.status_code == 200
+    assert word_response.json()["word"] == "cute"
+
+    home_response = client.get(
+        f"/api/v1/home?child_id={child['id']}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert home_response.status_code == 200
+    assert home_response.json()["child"]["name"] == "小明"
+    assert home_response.json()["recommended_book"]["id"] == content["book_id"]
+
+
+def test_reading_flow_updates_vocabulary(client, seed_content):
+    registered = _register(client)
+    token = registered["access_token"]
+    child = _create_child(client, token)
+    content = asyncio.run(seed_content())
+
+    session_response = client.post(
+        "/api/v1/reading/sessions",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"child_id": child["id"], "book_id": content["book_id"]},
+    )
+    assert session_response.status_code == 201, session_response.text
+    session_id = session_response.json()["id"]
+
+    event_response = client.post(
+        "/api/v1/reading/events",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"session_id": session_id, "page_no": 2, "event_type": "WORD_CLICK", "word": "cute"},
+    )
+    assert event_response.status_code == 201, event_response.text
+    assert event_response.json()["word"] == "cute"
+
+    finish_response = client.post(
+        f"/api/v1/reading/sessions/{session_id}/finish",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"duration_seconds": 120, "progress": 1.0, "completed": True},
+    )
+    assert finish_response.status_code == 200, finish_response.text
+    assert finish_response.json()["completed"] is True
+
+    vocabulary_response = client.get(
+        f"/api/v1/children/{child['id']}/words",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert vocabulary_response.status_code == 200
+    words = vocabulary_response.json()
+    assert len(words) == 1
+    assert words[0]["word"]["word"] == "cute"
+    assert words[0]["click_count"] == 1
+
+
+def test_quiz_attempt_marks_correct_answer(client, seed_content):
+    registered = _register(client)
+    token = registered["access_token"]
+    child = _create_child(client, token)
+    content = asyncio.run(seed_content())
+
+    quiz_response = client.get(
+        f"/api/v1/books/{content['book_id']}/quiz",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert quiz_response.status_code == 200
+    question = quiz_response.json()[0]
+    assert question["question"] == "What does Tom have?"
+
+    attempt_response = client.post(
+        "/api/v1/quiz/attempt",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "child_id": child["id"],
+            "question_id": question["id"],
+            "selected_option": "A",
+        },
+    )
+    assert attempt_response.status_code == 201, attempt_response.text
+    assert attempt_response.json()["is_correct"] is True
+    assert attempt_response.json()["correct_option"] == "A"
+
+
+def test_books_require_authentication(client):
+    response = client.get("/api/v1/books")
+    assert response.status_code == 401

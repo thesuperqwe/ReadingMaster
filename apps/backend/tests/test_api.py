@@ -307,3 +307,50 @@ def test_home_recommendation_prefers_reading_level(client, seed_content):
     )
     assert home_response.status_code == 200
     assert home_response.json()["recommended_book"]["id"] == content["book_id"]
+
+
+def test_review_schedules_srs(client, seed_content):
+    registered = _register(client)
+    token = registered["access_token"]
+    child = _create_child(client, token)
+    content = asyncio.run(seed_content())
+
+    session_response = client.post(
+        "/api/v1/reading/sessions",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"child_id": child["id"], "book_id": content["book_id"]},
+    )
+    assert session_response.status_code == 201
+    session_id = session_response.json()["id"]
+
+    event_response = client.post(
+        "/api/v1/reading/events",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"session_id": session_id, "event_type": "WORD_CLICK", "word": "cute"},
+    )
+    assert event_response.status_code == 201
+
+    review_response = client.get(
+        f"/api/v1/children/{child['id']}/review",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert review_response.status_code == 200
+    words = review_response.json()
+    assert len(words) == 1
+    assert words[0]["word"] == "cute"
+
+    submit_response = client.post(
+        f"/api/v1/children/{child['id']}/review",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"word_id": words[0]["word_id"], "correct": True},
+    )
+    assert submit_response.status_code == 200
+    assert submit_response.json()["review_stage"] == 1
+    assert submit_response.json()["mastered"] is False
+
+    due_after = client.get(
+        f"/api/v1/children/{child['id']}/review",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert due_after.status_code == 200
+    assert due_after.json() == []

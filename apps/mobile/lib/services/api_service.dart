@@ -188,4 +188,23 @@ class ApiService {
         .map((item) => UserWord.fromJson(item as Map<String, dynamic>))
         .toList();
   }
+
+  Future<List<ReviewWord>> getReviewWords(String childId) async {
+    final data = await ApiClient.get('/api/v1/children/$childId/review');
+    return (data as List<dynamic>)
+        .map((item) => ReviewWord.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<ReviewResult> submitReview({
+    required String childId,
+    required String wordId,
+    required bool correct,
+  }) async {
+    final data = await ApiClient.post(
+      '/api/v1/children/$childId/review',
+      body: {'word_id': wordId, 'correct': correct},
+    );
+    return ReviewResult.fromJson(data as Map<String, dynamic>);
+  }
 }

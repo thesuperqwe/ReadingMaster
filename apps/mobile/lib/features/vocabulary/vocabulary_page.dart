@@ -7,6 +7,7 @@ import '../../services/offline_dictionary.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/common.dart';
 import '../reader/word_popup.dart';
+import 'review_page.dart';
 
 class VocabularyPage extends StatefulWidget {
   const VocabularyPage({super.key, required this.childId});
@@ -58,6 +59,12 @@ class _VocabularyPageState extends State<VocabularyPage> {
     return _apiService.getWord(text);
   }
 
+  void _openReview() {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => ReviewPage(childId: widget.childId)),
+    );
+  }
+
   List<UserWord> get _filtered {
     final query = _query.trim().toLowerCase();
     if (query.isEmpty) return _words;
@@ -80,9 +87,21 @@ class _VocabularyPageState extends State<VocabularyPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
-                '生词本',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: AppColors.ink),
+              Row(
+                children: [
+                  const Expanded(
+                    child: Text(
+                      '生词本',
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: AppColors.ink),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  FilledButton.icon(
+                    onPressed: _openReview,
+                    icon: const Icon(Icons.quiz_rounded),
+                    label: const Text('开始复习'),
+                  ),
+                ],
               ),
               const SizedBox(height: 6),
               const Text(

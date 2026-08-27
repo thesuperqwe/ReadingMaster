@@ -200,6 +200,67 @@ class UserWord {
   }
 }
 
+class ReviewWord {
+  const ReviewWord({
+    required this.wordId,
+    required this.word,
+    this.phonetic,
+    this.meaningZh,
+    this.simpleDefinition,
+    this.exampleSentence,
+    this.exampleTranslation,
+    this.partOfSpeech,
+    this.cloze,
+  });
+
+  final String wordId;
+  final String word;
+  final String? phonetic;
+  final String? meaningZh;
+  final String? simpleDefinition;
+  final String? exampleSentence;
+  final String? exampleTranslation;
+  final String? partOfSpeech;
+  final String? cloze;
+
+  factory ReviewWord.fromJson(Map<String, dynamic> json) {
+    return ReviewWord(
+      wordId: json['word_id'].toString(),
+      word: json['word'].toString(),
+      phonetic: json['phonetic'] as String?,
+      meaningZh: json['meaning_zh'] as String?,
+      simpleDefinition: json['simple_definition'] as String?,
+      exampleSentence: json['example_sentence'] as String?,
+      exampleTranslation: json['example_translation'] as String?,
+      partOfSpeech: json['part_of_speech'] as String?,
+      cloze: json['cloze'] as String?,
+    );
+  }
+}
+
+class ReviewResult {
+  const ReviewResult({
+    required this.wordId,
+    required this.reviewStage,
+    required this.mastered,
+    this.nextReviewAt,
+  });
+
+  final String wordId;
+  final int reviewStage;
+  final bool mastered;
+  final String? nextReviewAt;
+
+  factory ReviewResult.fromJson(Map<String, dynamic> json) {
+    return ReviewResult(
+      wordId: json['word_id'].toString(),
+      reviewStage: (json['review_stage'] as num?)?.toInt() ?? 0,
+      mastered: json['mastered'] as bool? ?? false,
+      nextReviewAt: json['next_review_at'] as String?,
+    );
+  }
+}
+
 class ReadingSession {
   const ReadingSession({
     required this.id,

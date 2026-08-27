@@ -10,6 +10,7 @@ from app.schemas.reading import (
     ReadingSessionCreate,
     ReadingSessionOut,
 )
+from app.schemas.review import ReviewResultOut, ReviewSubmitRequest, ReviewWordOut
 from app.schemas.word import UserWordOut, WordOut
 
 __all__ = [
@@ -33,6 +34,9 @@ __all__ = [
     "ReadingSessionOut",
     "RecommendedBookOut",
     "RegisterRequest",
+    "ReviewResultOut",
+    "ReviewSubmitRequest",
+    "ReviewWordOut",
     "TodayStats",
     "TokenResponse",
     "UserOut",

@@ -93,6 +93,13 @@ class UserWord(Base):
     mastery_score: Mapped[float] = mapped_column(
         Float, nullable=False, default=0, server_default="0"
     )
+    review_stage: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0, server_default="0"
+    )
+    next_review_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    mastered: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default="false"
+    )
     last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False

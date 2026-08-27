@@ -5,6 +5,7 @@ import 'core/api_client.dart';
 import 'features/auth/login_page.dart';
 import 'features/home/home_page.dart';
 import 'services/offline_dictionary.dart';
+import 'theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,10 +23,7 @@ class ReadingMasterApp extends StatelessWidget {
     return MaterialApp(
       title: 'ReadingMaster（阅读王）',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
-        useMaterial3: true,
-      ),
+      theme: buildAppTheme(),
       home: ApiClient.token == null || ApiClient.token!.isEmpty
           ? const LoginPage()
           : const HomePage(),

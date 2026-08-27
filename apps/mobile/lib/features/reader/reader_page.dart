@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 import '../../models/models.dart';
 import '../../services/api_service.dart';
 import '../../services/offline_dictionary.dart';
+import '../../theme/app_theme.dart';
 import '../quiz/quiz_page.dart';
 import 'word_popup.dart';
 
@@ -18,9 +20,11 @@ class ReaderPage extends StatefulWidget {
 
 class _ReaderPageState extends State<ReaderPage> {
   final _apiService = ApiService();
+  final _tts = FlutterTts();
   BookDetail? _book;
   ReadingSession? _session;
   int _pageIndex = 0;
+  double _fontScale = 1.0;
   bool _loading = true;
   bool _finishing = false;
   String? _error;
@@ -28,7 +32,13 @@ class _ReaderPageState extends State<ReaderPage> {
   @override
   void initState() {
     super.initState();
+    _initTts();
     _load();
+  }
+
+  Future<void> _initTts() async {
+    await _tts.setLanguage('en-US');
+    await _tts.setSpeechRate(0.45);
   }
 
   Future<void> _load() async {
@@ -36,7 +46,6 @@ class _ReaderPageState extends State<ReaderPage> {
       _loading = true;
       _error = null;
     });
-
     try {
       final book = await _apiService.getBook(widget.bookId);
       final session = await _apiService.startSession(
@@ -67,6 +76,7 @@ class _ReaderPageState extends State<ReaderPage> {
 
   Future<void> _changePage(int index) async {
     if (_book == null || _session == null) return;
+    if (index < 0 || index >= _book!.pages.length) return;
     setState(() => _pageIndex = index);
     await _apiService.recordEvent(
       sessionId: _session!.id,
@@ -111,10 +121,22 @@ class _ReaderPageState extends State<ReaderPage> {
     }
   }
 
+  Future<void> _speakPage() async {
+    if (_book == null) return;
+    try {
+      await _tts.stop();
+      await _tts.speak(_book!.pages[_pageIndex].content);
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('暂时无法播放语音')),
+      );
+    }
+  }
+
   Future<void> _finishAndQuiz() async {
     if (_session == null || _book == null) return;
     setState(() => _finishing = true);
-
     try {
       await _apiService.finishSession(
         sessionId: _session!.id,
@@ -153,61 +175,118 @@ class _ReaderPageState extends State<ReaderPage> {
     final isLast = _pageIndex == book.pages.length - 1;
 
     return Scaffold(
-      appBar: AppBar(title: Text(book.title)),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(book.title),
+        actions: [
+          IconButton(
+            tooltip: '缩小字体',
+            onPressed: () => setState(
+              () => _fontScale = (_fontScale - 0.1).clamp(0.85, 1.5),
+            ),
+            icon: const Icon(Icons.text_decrease_rounded),
+          ),
+          IconButton(
+            tooltip: '放大字体',
+            onPressed: () => setState(
+              () => _fontScale = (_fontScale + 0.1).clamp(0.85, 1.5),
+            ),
+            icon: const Icon(Icons.text_increase_rounded),
+          ),
+          IconButton(
+            tooltip: '朗读本页',
+            onPressed: _speakPage,
+            icon: const Icon(Icons.volume_up_rounded),
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(24, 12, 24, 8),
+              padding: const EdgeInsets.all(28),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: AppColors.line),
+              ),
               child: SingleChildScrollView(
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 12,
-                  children: page.content
-                      .split(RegExp(r'\s+'))
-                      .where((word) => word.isNotEmpty)
-                      .map(
-                        (word) => GestureDetector(
-                          onTap: () => _openWord(word),
-                          child: Text(
-                            word,
-                            style: const TextStyle(fontSize: 28, height: 1.35),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 14,
+                    children: page.content
+                        .split(RegExp(r'\s+'))
+                        .where((word) => word.isNotEmpty)
+                        .map(
+                          (word) => GestureDetector(
+                            onTap: () => _openWord(word),
+                            child: Text(
+                              word,
+                              style: TextStyle(
+                                fontSize: 28 * _fontScale,
+                                height: 1.4,
+                                color: AppColors.ink,
+                              ),
+                            ),
                           ),
-                        ),
-                      )
-                      .toList(),
+                        )
+                        .toList(),
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            Text(
-              '${_pageIndex + 1} / ${book.pages.length}',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 4, 24, 20),
+            child: Column(
               children: [
-                OutlinedButton(
-                  onPressed: _pageIndex == 0 ? null : () => _changePage(_pageIndex - 1),
-                  child: const Text('上一页'),
-                ),
-                if (isLast)
-                  FilledButton(
-                    onPressed: _finishing ? null : _finishAndQuiz,
-                    child: const Text('完成并做题'),
-                  )
-                else
-                  FilledButton(
-                    onPressed: () => _changePage(_pageIndex + 1),
-                    child: const Text('下一页'),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    '${_pageIndex + 1} / ${book.pages.length}',
+                    style: const TextStyle(fontSize: 13, color: AppColors.inkSoft),
                   ),
+                ),
+                Row(
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed:
+                          _pageIndex == 0 ? null : () => _changePage(_pageIndex - 1),
+                      icon: const Icon(Icons.chevron_left_rounded),
+                      label: const Text('上一页'),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Slider(
+                        value: _pageIndex.toDouble(),
+                        min: 0,
+                        max: (book.pages.length - 1).toDouble(),
+                        divisions: book.pages.length > 1 ? book.pages.length - 1 : null,
+                        onChanged: (value) => _changePage(value.round()),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    if (isLast)
+                      FilledButton(
+                        onPressed: _finishing ? null : _finishAndQuiz,
+                        child: const Text('完成并做题'),
+                      )
+                    else
+                      FilledButton.icon(
+                        onPressed: () => _changePage(_pageIndex + 1),
+                        icon: const Icon(Icons.chevron_right_rounded),
+                        label: const Text('下一页'),
+                      ),
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 import '../../models/models.dart';
+import '../../theme/app_theme.dart';
 
 Future<void> showWordPopup(
   BuildContext context,
@@ -14,6 +15,10 @@ Future<void> showWordPopup(
   await showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
+    backgroundColor: Colors.white,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+    ),
     builder: (_) => WordDetailSheet(
       word: word,
       lookup: lookup,
@@ -74,7 +79,6 @@ class _WordDetailSheetState extends State<WordDetailSheet> {
       _loadingAI = true;
       _aiError = null;
     });
-
     try {
       final result = await widget.aiLookup!(
         widget.word.word,
@@ -133,87 +137,188 @@ class _WordDetailSheetState extends State<WordDetailSheet> {
 
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
+        padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Center(
+                child: Container(
+                  width: 42,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: AppColors.line,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: Text(
-                      displayWord.word,
-                      style: Theme.of(context).textTheme.headlineMedium,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          displayWord.word,
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.ink,
+                            height: 1.1,
+                          ),
+                        ),
+                        if (displayWord.phonetic?.isNotEmpty ?? false) ...[
+                          const SizedBox(height: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: AppColors.primarySoft,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              displayWord.phonetic!,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: AppColors.primaryDark,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
-                  IconButton.filled(
-                    onPressed: () async {
-                      try {
-                        await widget.onSpeak?.call();
-                      } catch (_) {
-                        // Event recording should not block speech playback.
-                      }
-                      await _tts.speak(displayWord.word);
-                    },
-                    icon: const Icon(Icons.volume_up),
+                  const SizedBox(width: 12),
+                  Material(
+                    color: AppColors.primary,
+                    shape: const CircleBorder(),
+                    child: InkWell(
+                      customBorder: const CircleBorder(),
+                      onTap: () async {
+                        try {
+                          await widget.onSpeak?.call();
+                        } catch (_) {
+                          // Event recording should not block speech playback.
+                        }
+                        await _tts.speak(displayWord.word);
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Icon(Icons.volume_up_rounded, color: Colors.white, size: 24),
+                      ),
+                    ),
                   ),
                 ],
               ),
-              if (displayWord.phonetic?.isNotEmpty ?? false) ...[
-                const SizedBox(height: 8),
-                Text(displayWord.phonetic!),
-              ],
               if (displayWord.meaningZh?.isNotEmpty ?? false) ...[
-                const SizedBox(height: 12),
-                Text(displayWord.meaningZh!, style: const TextStyle(fontSize: 22)),
+                const SizedBox(height: 18),
+                Text(
+                  displayWord.meaningZh!,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.primaryDark,
+                    height: 1.3,
+                  ),
+                ),
               ],
               if (displayWord.simpleDefinition?.isNotEmpty ?? false) ...[
                 const SizedBox(height: 12),
                 _tappableText(
                   displayWord.simpleDefinition!,
-                  Theme.of(context).textTheme.bodyLarge!,
+                  const TextStyle(fontSize: 15, color: AppColors.inkSoft, height: 1.5),
                 ),
               ],
               if (displayWord.exampleSentence?.isNotEmpty ?? false) ...[
-                const SizedBox(height: 12),
-                _tappableText(
-                  displayWord.exampleSentence!,
-                  Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
+                const SizedBox(height: 18),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.panel,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _tappableText(
+                        displayWord.exampleSentence!,
+                        const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primaryDark,
+                          height: 1.5,
+                        ),
+                      ),
+                      if (displayWord.exampleTranslation?.isNotEmpty ?? false) ...[
+                        const SizedBox(height: 6),
+                        Text(
+                          displayWord.exampleTranslation!,
+                          style: const TextStyle(fontSize: 13, color: AppColors.inkSoft),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
-                if (displayWord.exampleTranslation?.isNotEmpty ?? false)
-                  Text(displayWord.exampleTranslation!),
               ],
               if (_aiResult != null)
                 Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Chip(label: const Text('AI 解释')),
+                  padding: const EdgeInsets.only(top: 14),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: AppColors.gold.withValues(alpha: 0.16),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.auto_awesome_rounded, size: 14, color: AppColors.gold),
+                            SizedBox(width: 5),
+                            Text(
+                              'AI 解释',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.gold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               if (showDictionary && widget.aiLookup != null) ...[
-                const SizedBox(height: 16),
+                const SizedBox(height: 18),
                 OutlinedButton.icon(
                   onPressed: _loadingAI ? null : _loadAI,
-                  icon: const Icon(Icons.auto_awesome),
+                  icon: const Icon(Icons.auto_awesome_rounded),
                   label: const Text('用 AI 解释'),
                 ),
               ],
               if (_loadingAI) ...[
-                const SizedBox(height: 12),
+                const SizedBox(height: 14),
                 const LinearProgressIndicator(),
               ],
               if (_aiError != null) ...[
-                const SizedBox(height: 12),
+                const SizedBox(height: 14),
                 Text(
                   _aiError!,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                  style: const TextStyle(color: AppColors.danger, fontSize: 13),
                 ),
               ],
               if (!showDictionary && _aiResult == null && !_loadingAI && _aiError == null)
                 const Padding(
-                  padding: EdgeInsets.only(top: 12),
-                  child: Text('这个词暂未收录，先标记为生词。'),
+                  padding: EdgeInsets.only(top: 14),
+                  child: Text(
+                    '这个词暂未收录，先标记为生词。',
+                    style: TextStyle(color: AppColors.inkSoft),
+                  ),
                 ),
             ],
           ),

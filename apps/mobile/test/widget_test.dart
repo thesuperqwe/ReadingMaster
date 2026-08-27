@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,7 +12,7 @@ void main() {
 
     await tester.pumpWidget(const ReadingMasterApp());
 
-    expect(find.text('登录'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
     expect(find.text('Email'), findsOneWidget);
   });
 }

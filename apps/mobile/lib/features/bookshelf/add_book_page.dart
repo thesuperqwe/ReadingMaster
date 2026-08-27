@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../services/api_service.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/common.dart';
 
 class AddBookPage extends StatefulWidget {
   const AddBookPage({super.key});
@@ -168,75 +170,79 @@ class _AddBookPageState extends State<AddBookPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: _titleController,
-                        decoration: const InputDecoration(labelText: '书名', border: OutlineInputBorder()),
-                      ),
-                      const SizedBox(height: 14),
-                      DropdownButtonFormField<String>(
-                        initialValue: _level,
-                        decoration: const InputDecoration(labelText: '等级', border: OutlineInputBorder()),
-                        items: _levels
-                            .map((option) => DropdownMenuItem(value: option.$1, child: Text(option.$2)))
-                            .toList(),
-                        onChanged: (value) => setState(() => _level = value ?? 'LEVEL_2'),
-                      ),
-                      const SizedBox(height: 14),
-                      TextField(
-                        controller: _categoryController,
-                        decoration: const InputDecoration(labelText: '分类，例如 animals', border: OutlineInputBorder()),
-                      ),
-                      const SizedBox(height: 14),
-                      TextField(
-                        controller: _descriptionController,
-                        decoration: const InputDecoration(labelText: '简介', border: OutlineInputBorder()),
-                      ),
-                    ],
-                  ),
+              SurfaceCard(
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: _titleController,
+                      decoration: const InputDecoration(labelText: '书名'),
+                    ),
+                    const SizedBox(height: 14),
+                    DropdownButtonFormField<String>(
+                      initialValue: _level,
+                      decoration: const InputDecoration(labelText: '等级'),
+                      items: _levels
+                          .map((option) => DropdownMenuItem(value: option.$1, child: Text(option.$2)))
+                          .toList(),
+                      onChanged: (value) => setState(() => _level = value ?? 'LEVEL_2'),
+                    ),
+                    const SizedBox(height: 14),
+                    TextField(
+                      controller: _categoryController,
+                      decoration: const InputDecoration(labelText: '分类，例如 animals'),
+                    ),
+                    const SizedBox(height: 14),
+                    TextField(
+                      controller: _descriptionController,
+                      decoration: const InputDecoration(labelText: '简介'),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 16),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('正文', style: TextStyle(fontSize: 18)),
-                      const SizedBox(height: 8),
-                      const Text('空行分隔不同的阅读页。'),
-                      const SizedBox(height: 12),
-                      TextField(
-                        controller: _contentController,
-                        minLines: 8,
-                        maxLines: 18,
-                        decoration: const InputDecoration(border: OutlineInputBorder()),
-                      ),
-                    ],
-                  ),
+              SurfaceCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '正文',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.ink),
+                    ),
+                    const SizedBox(height: 6),
+                    const Text(
+                      '空行分隔不同的阅读页。',
+                      style: TextStyle(fontSize: 13, color: AppColors.inkSoft),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: _contentController,
+                      minLines: 8,
+                      maxLines: 18,
+                      decoration: const InputDecoration(hintText: '在这里输入正文……'),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 22),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text('阅读理解题', style: TextStyle(fontSize: 18)),
+                  const Text(
+                    '阅读理解题',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.ink),
+                  ),
                   Wrap(
-                    spacing: 8,
+                    spacing: 10,
                     children: [
                       OutlinedButton.icon(
                         onPressed: _addQuestion,
-                        icon: const Icon(Icons.add),
+                        icon: const Icon(Icons.add_rounded),
                         label: const Text('手动添加'),
                       ),
-                      FilledButton.tonalIcon(
+                      FilledButton.icon(
                         onPressed: _generatingAI ? null : _generateQuestionsWithAI,
-                        icon: const Icon(Icons.auto_awesome),
+                        icon: const Icon(Icons.auto_awesome_rounded),
                         label: const Text('AI 生成'),
                       ),
                     ],
@@ -244,18 +250,27 @@ class _AddBookPageState extends State<AddBookPage> {
                 ],
               ),
               if (_generatingAI) ...[
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 const LinearProgressIndicator(),
               ],
               ..._questions.map(_buildQuestionCard),
               if (_error != null) ...[
                 const SizedBox(height: 16),
-                Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                Text(
+                  _error!,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ],
               const SizedBox(height: 20),
               FilledButton(
                 onPressed: _saving ? null : _save,
-                child: const Text('保存图书'),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Text(_saving ? '保存中…' : '保存图书'),
+                ),
               ),
             ],
           ),
@@ -265,44 +280,41 @@ class _AddBookPageState extends State<AddBookPage> {
   }
 
   Widget _buildQuestionCard(_QuestionDraft question) {
-    return Card(
-      margin: const EdgeInsets.only(top: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: question.questionController,
-              decoration: const InputDecoration(labelText: '题目', border: OutlineInputBorder()),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: question.optionAController,
-              decoration: const InputDecoration(labelText: '选项 A', border: OutlineInputBorder()),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: question.optionBController,
-              decoration: const InputDecoration(labelText: '选项 B', border: OutlineInputBorder()),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: question.optionCController,
-              decoration: const InputDecoration(labelText: '选项 C', border: OutlineInputBorder()),
-            ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              initialValue: question.correctOption,
-              decoration: const InputDecoration(labelText: '正确答案', border: OutlineInputBorder()),
-              items: const [
-                DropdownMenuItem(value: 'A', child: Text('A')),
-                DropdownMenuItem(value: 'B', child: Text('B')),
-                DropdownMenuItem(value: 'C', child: Text('C')),
-              ],
-              onChanged: (value) => setState(() => question.correctOption = value ?? 'A'),
-            ),
-          ],
-        ),
+    return SurfaceCard(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          TextField(
+            controller: question.questionController,
+            decoration: const InputDecoration(labelText: '题目'),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: question.optionAController,
+            decoration: const InputDecoration(labelText: '选项 A'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: question.optionBController,
+            decoration: const InputDecoration(labelText: '选项 B'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: question.optionCController,
+            decoration: const InputDecoration(labelText: '选项 C'),
+          ),
+          const SizedBox(height: 12),
+          DropdownButtonFormField<String>(
+            initialValue: question.correctOption,
+            decoration: const InputDecoration(labelText: '正确答案'),
+            items: const [
+              DropdownMenuItem(value: 'A', child: Text('A')),
+              DropdownMenuItem(value: 'B', child: Text('B')),
+              DropdownMenuItem(value: 'C', child: Text('C')),
+            ],
+            onChanged: (value) => setState(() => question.correctOption = value ?? 'A'),
+          ),
+        ],
       ),
     );
   }

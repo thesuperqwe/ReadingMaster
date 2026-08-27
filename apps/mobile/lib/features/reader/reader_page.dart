@@ -82,7 +82,7 @@ class _ReaderPageState extends State<ReaderPage> {
       );
       final detail = await _apiService.getWord(word);
       if (!mounted) return;
-      await showWordPopup(context, detail);
+      await showWordPopup(context, detail, lookup: _apiService.getWord);
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

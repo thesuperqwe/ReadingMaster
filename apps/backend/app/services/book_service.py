@@ -5,7 +5,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.models import Book, BookWord, UserWord, Word
+from app.models import Book, BookPage, BookWord, QuizOption, QuizQuestion, UserWord, Word
+from app.schemas.book import BookCreate
 from app.schemas.word import UserWordOut, WordOut
 
 
@@ -25,10 +26,61 @@ async def get_book_or_404(session: AsyncSession, book_id: uuid.UUID) -> Book:
     return book
 
 
+async def create_book(session: AsyncSession, data: BookCreate) -> Book:
+    raw_pages = [page.strip() for page in data.content.split("\n\n") if page.strip()]
+    if not raw_pages:
+        raw_pages = [data.content.strip()]
+
+    book = Book(
+        title=data.title.strip(),
+        description=data.description,
+        level=data.level,
+        category=data.category,
+        estimated_minutes=data.estimated_minutes,
+        word_count=sum(len(page.split()) for page in raw_pages),
+        status="PUBLISHED",
+    )
+    session.add(book)
+    await session.flush()
+
+    session.add_all(
+        [
+            BookPage(page_no=index + 1, content=page, book_id=book.id)
+            for index, page in enumerate(raw_pages)
+        ]
+    )
+    await session.flush()
+
+    for question_data in data.questions:
+        question = QuizQuestion(
+            book_id=book.id,
+            question=question_data.question.strip(),
+            question_type="single_choice",
+            correct_option=question_data.correct_option.strip(),
+        )
+        session.add(question)
+        await session.flush()
+        session.add_all(
+            [
+                QuizOption(
+                    question_id=question.id,
+                    option_key=option.option_key.strip(),
+                    content=option.content.strip(),
+                )
+                for option in question_data.options
+            ]
+        )
+
+    await session.commit()
+    await session.refresh(book)
+    return book
+
+
 async def get_word_by_text(session: AsyncSession, word: str) -> Word:
-    row = await session.scalar(select(Word).where(Word.word == word.lower()))
+    normalized = word.strip().lower()
+    row = await session.scalar(select(Word).where(Word.word == normalized))
     if row is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Word not found")
+        return Word(word=normalized)
     return row
 
 

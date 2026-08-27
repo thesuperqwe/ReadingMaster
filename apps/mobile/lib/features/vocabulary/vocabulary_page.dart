@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/models.dart';
 import '../../services/api_service.dart';
+import '../reader/word_popup.dart';
 
 class VocabularyPage extends StatefulWidget {
   const VocabularyPage({super.key, required this.childId});
@@ -56,6 +57,7 @@ class _VocabularyPageState extends State<VocabularyPage> {
               title: Text(item.word.word),
               subtitle: Text(item.word.meaningZh ?? ''),
               trailing: Text('点击 ${item.clickCount}'),
+              onTap: () => showWordPopup(context, item.word, lookup: _apiService.getWord),
             ),
           );
         },

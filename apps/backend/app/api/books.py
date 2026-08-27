@@ -1,11 +1,11 @@
 import uuid
 
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 
 from app.api.deps import CurrentUser, SessionDep
-from app.schemas.book import BookDetailOut, BookOut
+from app.schemas.book import BookCreate, BookDetailOut, BookOut
 from app.schemas.quiz import QuizQuestionOut
-from app.services.book_service import get_book_or_404, list_books
+from app.services.book_service import create_book, get_book_or_404, list_books
 from app.services.quiz_service import list_quiz
 
 router = APIRouter(prefix="/books", tags=["books"])
@@ -15,6 +15,12 @@ router = APIRouter(prefix="/books", tags=["books"])
 async def get_books(session: SessionDep, user: CurrentUser) -> list[BookOut]:
     books = await list_books(session)
     return [BookOut.model_validate(book) for book in books]
+
+
+@router.post("", response_model=BookOut, status_code=status.HTTP_201_CREATED)
+async def add_book(session: SessionDep, user: CurrentUser, data: BookCreate) -> BookOut:
+    book = await create_book(session, data)
+    return BookOut.model_validate(book)
 
 
 @router.get("/{book_id}", response_model=BookDetailOut)

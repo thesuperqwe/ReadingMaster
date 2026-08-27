@@ -46,6 +46,30 @@ class ApiService {
     return HomeData.fromJson(data as Map<String, dynamic>);
   }
 
+  Future<Book> createBook({
+    required String title,
+    required String level,
+    String? description,
+    String? category,
+    int? estimatedMinutes,
+    required String content,
+    List<Map<String, dynamic>> questions = const [],
+  }) async {
+    final data = await ApiClient.post(
+      '/api/v1/books',
+      body: {
+        'title': title,
+        'level': level,
+        'description': ?description,
+        'category': ?category,
+        'estimated_minutes': ?estimatedMinutes,
+        'content': content,
+        'questions': questions,
+      },
+    );
+    return Book.fromJson(data as Map<String, dynamic>);
+  }
+
   Future<List<Book>> getBooks() async {
     final data = await ApiClient.get('/api/v1/books');
     return (data as List<dynamic>)

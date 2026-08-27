@@ -138,3 +138,55 @@ def test_quiz_attempt_marks_correct_answer(client, seed_content):
 def test_books_require_authentication(client):
     response = client.get("/api/v1/books")
     assert response.status_code == 401
+
+
+def test_unknown_word_returns_placeholder(client):
+    registered = _register(client)
+    token = registered["access_token"]
+
+    response = client.get(
+        "/api/v1/words/banana",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 200
+    assert response.json()["word"] == "banana"
+    assert response.json()["meaning_zh"] is None
+
+
+def test_create_book_with_quiz(client):
+    registered = _register(client)
+    token = registered["access_token"]
+
+    create_response = client.post(
+        "/api/v1/books",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "title": "A New Story",
+            "level": "LEVEL_2",
+            "content": "This is page one.\n\nThis is page two.",
+            "questions": [
+                {
+                    "question": "What is the title?",
+                    "correct_option": "A",
+                    "options": [
+                        {"option_key": "A", "content": "A New Story"},
+                        {"option_key": "B", "content": "A Cat"},
+                    ],
+                }
+            ],
+        },
+    )
+    assert create_response.status_code == 201, create_response.text
+    book_id = create_response.json()["id"]
+
+    books_response = client.get(
+        "/api/v1/books", headers={"Authorization": f"Bearer {token}"}
+    )
+    assert any(book["title"] == "A New Story" for book in books_response.json())
+
+    quiz_response = client.get(
+        f"/api/v1/books/{book_id}/quiz",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert quiz_response.status_code == 200
+    assert quiz_response.json()[0]["question"] == "What is the title?"

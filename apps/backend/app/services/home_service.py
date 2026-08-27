@@ -13,6 +13,7 @@ from app.schemas.home import (
     TodayStats,
 )
 from app.services.child_service import get_child_for_parent
+from app.services.recommendation_service import recommend_book
 
 
 async def build_home(
@@ -20,16 +21,7 @@ async def build_home(
 ) -> HomeResponse:
     child = await get_child_for_parent(session, child_id, parent_id)
 
-    recommended_book = await session.scalar(
-        select(Book)
-        .where(Book.status == "PUBLISHED", Book.level == child.reading_level)
-        .order_by(Book.created_at)
-        .limit(1)
-    )
-    if recommended_book is None:
-        recommended_book = await session.scalar(
-            select(Book).where(Book.status == "PUBLISHED").order_by(Book.created_at).limit(1)
-        )
+    recommended_book = await recommend_book(session, child)
 
     continue_rows = await session.execute(
         select(ReadingSession, Book)

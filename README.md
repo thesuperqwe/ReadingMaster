@@ -4,7 +4,7 @@ AI 英语分级阅读产品。MVP 采用 **Flutter Web-first + FastAPI**：先�
 
 ## 当前阶段
 
-Phase 5：AI Gateway 已完成，支持 mock、OpenAI、DeepSeek Provider 与 explain-word / generate-quiz API。
+Phase 6：推荐服务已完成，首页会综合阅读等级、完成率、quiz 得分、词汇掌握度和分类偏好推荐下一本书。
 
 ## 目录
 

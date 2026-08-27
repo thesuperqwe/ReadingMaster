@@ -286,3 +286,24 @@ def test_ai_generate_quiz_uses_mock_provider(client, seed_content):
     )
     assert response.status_code == 200, response.text
     assert len(response.json()["questions"]) == 3
+
+
+def test_home_recommendation_prefers_reading_level(client, seed_content):
+    registered = _register(client)
+    token = registered["access_token"]
+    child = _create_child(client, token, level="LEVEL_2")
+    content = asyncio.run(seed_content())
+
+    create_response = client.post(
+        "/api/v1/books",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"title": "Harder Story", "level": "LEVEL_3", "content": "This is a harder page."},
+    )
+    assert create_response.status_code == 201
+
+    home_response = client.get(
+        f"/api/v1/home?child_id={child['id']}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert home_response.status_code == 200
+    assert home_response.json()["recommended_book"]["id"] == content["book_id"]

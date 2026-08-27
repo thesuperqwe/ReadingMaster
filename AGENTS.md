@@ -2,7 +2,7 @@
 
 ## Project Status
 
-ReadingMaster（阅读王）is an AI English graded-reading product for elementary school children. The MVP is Web-first, designed for iPad Safari / Chrome; the Android APK is a later validation target. The repository is currently in Phase 5; [docs/DESIGN.md](docs/DESIGN.md) is the source of truth for scope, architecture, APIs, and the Phase 0–7 roadmap.
+ReadingMaster（阅读王）is an AI English graded-reading product for elementary school children. The MVP is Web-first, designed for iPad Safari / Chrome; the Android APK is a later validation target. The repository is currently in Phase 6; [docs/DESIGN.md](docs/DESIGN.md) is the source of truth for scope, architecture, APIs, and the Phase 0–7 roadmap.
 
 ## Project Structure & Module Organization
 

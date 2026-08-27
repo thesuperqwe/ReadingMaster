@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import auth, books, children, home, quiz, reading, vocabulary, words
+from app.api import ai, auth, books, children, home, quiz, reading, vocabulary, words
 
 app = FastAPI(title="ReadingMaster API", version="0.1.0")
 
@@ -22,6 +22,7 @@ app.include_router(words.router, prefix=api_prefix)
 app.include_router(reading.router, prefix=api_prefix)
 app.include_router(quiz.router, prefix=api_prefix)
 app.include_router(vocabulary.router, prefix=api_prefix)
+app.include_router(ai.router, prefix=api_prefix)
 
 
 @app.get("/health")

@@ -4,7 +4,7 @@ AI 英语分级阅读产品。MVP 采用 **Flutter Web-first + FastAPI**：先�
 
 ## 当前阶段
 
-Phase 4：阅读核心闭环已打通，包含事件记录、quiz 更新和端到端集成测试。
+Phase 5：AI Gateway 已完成，支持 mock、OpenAI、DeepSeek Provider 与 explain-word / generate-quiz API。
 
 ## 目录
 
@@ -108,6 +108,8 @@ POST /reading/sessions
 POST /reading/events
 POST /reading/sessions/{session_id}/finish
 POST /quiz/attempt
+POST /ai/explain-word
+POST /ai/generate-quiz
 GET  /children/{child_id}/words
 ```
 

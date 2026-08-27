@@ -259,3 +259,30 @@ def test_full_reading_loop_updates_learning_data(client, seed_content):
     assert cute["correct_count"] == 1
     assert cute["wrong_count"] == 0
     assert cute["mastery_score"] == 1.0
+
+
+def test_ai_explain_word_uses_mock_provider(client):
+    registered = _register(client)
+    token = registered["access_token"]
+
+    response = client.post(
+        "/api/v1/ai/explain-word",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"word": "cute", "context": "The dog is very cute."},
+    )
+    assert response.status_code == 200, response.text
+    assert response.json()["meaning_zh"] == "可爱的"
+
+
+def test_ai_generate_quiz_uses_mock_provider(client, seed_content):
+    registered = _register(client)
+    token = registered["access_token"]
+    content = asyncio.run(seed_content())
+
+    response = client.post(
+        "/api/v1/ai/generate-quiz",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"book_id": content["book_id"]},
+    )
+    assert response.status_code == 200, response.text
+    assert len(response.json()["questions"]) == 3

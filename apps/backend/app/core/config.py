@@ -24,6 +24,14 @@ class Settings(BaseSettings):
     ai_provider: str = "mock"
     tts_provider: str = "system"
 
+    openai_api_key: str | None = None
+    openai_base_url: str = "https://api.openai.com/v1"
+    openai_model: str = "gpt-4o-mini"
+
+    deepseek_api_key: str | None = None
+    deepseek_base_url: str = "https://api.deepseek.com"
+    deepseek_model: str = "deepseek-chat"
+
     model_config = SettingsConfigDict(
         env_file=_find_env_file(),
         env_file_encoding="utf-8",

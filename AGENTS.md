@@ -2,7 +2,7 @@
 
 ## Project Status
 
-ReadingMaster（阅读王）is an AI English graded-reading product for elementary school children. The MVP is Web-first, designed for iPad Safari / Chrome; the Android APK is a later validation target. The repository is in the planning phase; [docs/DESIGN.md](docs/DESIGN.md) is the source of truth for scope, architecture, APIs, and the Phase 0–7 roadmap.
+ReadingMaster（阅读王）is an AI English graded-reading product for elementary school children. The MVP is Web-first, designed for iPad Safari / Chrome; the Android APK is a later validation target. The repository is currently in Phase 1; [docs/DESIGN.md](docs/DESIGN.md) is the source of truth for scope, architecture, APIs, and the Phase 0–7 roadmap.
 
 ## Project Structure & Module Organization
 
@@ -26,7 +26,7 @@ After Phase 0:
 - `docker compose up` — start PostgreSQL, Redis, and the FastAPI backend; verify with `GET /health`.
 - `uvicorn app.main:app --reload` — run the backend; `pytest` — backend tests.
 - `flutter run -d chrome` — run the MVP Web app in Chrome; `flutter build web` — produce the web build for iPad testing; `flutter test` — unit/widget tests.
-- `alembic upgrade head` — apply migrations; run `scripts/seed.sh` to load sample content.
+- `alembic upgrade head` — apply migrations; run `python -m app.db.seed` from `apps/backend` to load sample content.
 
 These commands do not exist yet; do not invent infrastructure.
 

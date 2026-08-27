@@ -6,6 +6,9 @@ services:
       - "${BACKEND_PORT:-8000}:8000"
     env_file:
       - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-readingmaster}:${POSTGRES_PASSWORD:-readingmaster_dev}@postgres:5432/${POSTGRES_DB:-readingmaster}
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
     depends_on:
       postgres:
         condition: service_healthy

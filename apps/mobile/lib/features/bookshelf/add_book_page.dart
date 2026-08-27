@@ -45,6 +45,7 @@ class _AddBookPageState extends State<AddBookPage> {
   String _level = 'LEVEL_2';
   final List<_QuestionDraft> _questions = [];
   bool _saving = false;
+  bool _generatingAI = false;
   String? _error;
 
   static const _levels = [
@@ -68,6 +69,53 @@ class _AddBookPageState extends State<AddBookPage> {
 
   void _addQuestion() {
     setState(() => _questions.add(_QuestionDraft()));
+  }
+
+  Future<void> _generateQuestionsWithAI() async {
+    final title = _titleController.text.trim();
+    final content = _contentController.text.trim();
+    if (title.isEmpty || content.isEmpty) {
+      setState(() => _error = '请先填写书名和正文');
+      return;
+    }
+
+    setState(() {
+      _generatingAI = true;
+      _error = null;
+    });
+
+    try {
+      final generated = await _apiService.generateQuizAI(
+        text: '$title\n\n$content',
+      );
+
+      for (final question in _questions) {
+        question.dispose();
+      }
+      _questions.clear();
+
+      for (final item in generated) {
+        final draft = _QuestionDraft();
+        draft.questionController.text = item['question']?.toString() ?? '';
+        draft.correctOption = item['correct_option']?.toString() ?? 'A';
+        final options = (item['options'] as List<dynamic>? ?? []);
+        if (options.isNotEmpty) {
+          draft.optionAController.text = options[0]['content']?.toString() ?? '';
+        }
+        if (options.length > 1) {
+          draft.optionBController.text = options[1]['content']?.toString() ?? '';
+        }
+        if (options.length > 2) {
+          draft.optionCController.text = options[2]['content']?.toString() ?? '';
+        }
+        _questions.add(draft);
+      }
+      setState(() {});
+    } catch (error) {
+      if (mounted) setState(() => _error = error.toString());
+    } finally {
+      if (mounted) setState(() => _generatingAI = false);
+    }
   }
 
   Future<void> _save() async {
@@ -178,13 +226,27 @@ class _AddBookPageState extends State<AddBookPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text('阅读理解题', style: TextStyle(fontSize: 18)),
-                  OutlinedButton.icon(
-                    onPressed: _addQuestion,
-                    icon: const Icon(Icons.add),
-                    label: const Text('添加题目'),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: _addQuestion,
+                        icon: const Icon(Icons.add),
+                        label: const Text('手动添加'),
+                      ),
+                      FilledButton.tonalIcon(
+                        onPressed: _generatingAI ? null : _generateQuestionsWithAI,
+                        icon: const Icon(Icons.auto_awesome),
+                        label: const Text('AI 生成'),
+                      ),
+                    ],
                   ),
                 ],
               ),
+              if (_generatingAI) ...[
+                const SizedBox(height: 8),
+                const LinearProgressIndicator(),
+              ],
               ..._questions.map(_buildQuestionCard),
               if (_error != null) ...[
                 const SizedBox(height: 16),

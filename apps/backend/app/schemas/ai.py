@@ -18,7 +18,8 @@ class ExplainWordResponse(BaseModel):
 
 
 class GenerateQuizRequest(BaseModel):
-    book_id: uuid.UUID
+    book_id: uuid.UUID | None = None
+    text: str | None = None
 
 
 class AIQuizOption(BaseModel):

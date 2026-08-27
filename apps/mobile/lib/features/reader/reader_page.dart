@@ -86,6 +86,9 @@ class _ReaderPageState extends State<ReaderPage> {
         context,
         detail,
         lookup: _apiService.getWord,
+        aiLookup: (word, {context}) =>
+            _apiService.explainWordAI(word, context: context),
+        contextText: _book!.pages[_pageIndex].content,
         onSpeak: () => _apiService.recordEvent(
           sessionId: _session!.id,
           eventType: 'WORD_AUDIO',

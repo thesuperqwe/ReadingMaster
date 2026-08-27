@@ -23,6 +23,6 @@ async def generate(
     user: CurrentUser,
 ) -> GenerateQuizResponse:
     try:
-        return await generate_quiz(session, data.book_id)
+        return await generate_quiz(session, data)
     except AIProviderError as exc:
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=str(exc)) from exc

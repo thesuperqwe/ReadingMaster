@@ -1,5 +1,4 @@
-import uuid
-
+from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.factory import get_ai_provider
@@ -8,6 +7,7 @@ from app.schemas.ai import (
     AIQuizQuestion,
     ExplainWordRequest,
     ExplainWordResponse,
+    GenerateQuizRequest,
     GenerateQuizResponse,
 )
 from app.services.book_service import get_book_or_404
@@ -27,9 +27,17 @@ async def explain_word(data: ExplainWordRequest) -> ExplainWordResponse:
     )
 
 
-async def generate_quiz(session: AsyncSession, book_id: uuid.UUID) -> GenerateQuizResponse:
-    book = await get_book_or_404(session, book_id)
-    text = "\n\n".join(page.content for page in book.pages)
+async def generate_quiz(session: AsyncSession, data: GenerateQuizRequest) -> GenerateQuizResponse:
+    if data.book_id is not None:
+        book = await get_book_or_404(session, data.book_id)
+        text = "\n\n".join(page.content for page in book.pages)
+    elif data.text:
+        text = data.text.strip()
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="book_id or text is required",
+        )
 
     provider = get_ai_provider()
     questions_data = await provider.generate_quiz(text)

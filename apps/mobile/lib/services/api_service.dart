@@ -132,6 +132,33 @@ class ApiService {
     return ReadingSession.fromJson(data as Map<String, dynamic>);
   }
 
+  Future<Word> explainWordAI(String word, {String? context}) async {
+    final data = await ApiClient.post(
+      '/api/v1/ai/explain-word',
+      body: {
+        'word': word,
+        'context': ?context,
+      },
+    );
+    return Word.fromJson(data as Map<String, dynamic>);
+  }
+
+  Future<List<Map<String, dynamic>>> generateQuizAI({
+    String? bookId,
+    String? text,
+  }) async {
+    final data = await ApiClient.post(
+      '/api/v1/ai/generate-quiz',
+      body: {
+        'book_id': ?bookId,
+        'text': ?text,
+      },
+    );
+    return (data['questions'] as List<dynamic>)
+        .map((item) => item as Map<String, dynamic>)
+        .toList();
+  }
+
   Future<List<QuizQuestion>> getQuiz(String bookId) async {
     final data = await ApiClient.get('/api/v1/books/$bookId/quiz');
     return (data as List<dynamic>)

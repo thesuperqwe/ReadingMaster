@@ -57,7 +57,13 @@ class _VocabularyPageState extends State<VocabularyPage> {
               title: Text(item.word.word),
               subtitle: Text(item.word.meaningZh ?? ''),
               trailing: Text('点击 ${item.clickCount}'),
-              onTap: () => showWordPopup(context, item.word, lookup: _apiService.getWord),
+              onTap: () => showWordPopup(
+                context,
+                item.word,
+                lookup: _apiService.getWord,
+                aiLookup: (word, {context}) =>
+                    _apiService.explainWordAI(word, context: context),
+              ),
             ),
           );
         },

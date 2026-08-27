@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+import 'core/api_client.dart';
+import 'features/auth/login_page.dart';
+import 'features/home/home_page.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  ApiClient.token = prefs.getString('access_token');
   runApp(const ReadingMasterApp());
 }
 
@@ -16,28 +24,9 @@ class ReadingMasterApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
       ),
-      home: const PlaceholderPage(),
-    );
-  }
-}
-
-class PlaceholderPage extends StatelessWidget {
-  const PlaceholderPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('ReadingMaster（阅读王）')),
-      body: const Center(
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Text(
-            'MVP Web 占位页\n后续阶段开始接入登录与阅读器',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 24),
-          ),
-        ),
-      ),
+      home: ApiClient.token == null || ApiClient.token!.isEmpty
+          ? const LoginPage()
+          : const HomePage(),
     );
   }
 }

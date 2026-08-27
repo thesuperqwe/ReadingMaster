@@ -1,12 +1,17 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:readingmaster/core/api_client.dart';
 import 'package:readingmaster/main.dart';
 
 void main() {
-  testWidgets('renders ReadingMaster placeholder', (WidgetTester tester) async {
+  testWidgets('renders login page when there is no saved token', (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues({});
+    ApiClient.token = null;
+
     await tester.pumpWidget(const ReadingMasterApp());
 
-    expect(find.text('ReadingMaster（阅读王）'), findsOneWidget);
-    expect(find.textContaining('MVP Web 占位页'), findsOneWidget);
+    expect(find.text('登录'), findsOneWidget);
+    expect(find.text('Email'), findsOneWidget);
   });
 }

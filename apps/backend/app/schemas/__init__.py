@@ -11,9 +11,11 @@ from app.schemas.reading import (
     ReadingSessionOut,
 )
 from app.schemas.review import ReviewResultOut, ReviewSubmitRequest, ReviewWordOut
+from app.schemas.stats import AttentionWordOut, ParentChildOut, ParentStatsResponse, WeeklyStats
 from app.schemas.word import UserWordOut, WordOut
 
 __all__ = [
+    "AttentionWordOut",
     "BookDetailOut",
     "BookOut",
     "BookPageOut",
@@ -24,6 +26,8 @@ __all__ = [
     "HomeChildOut",
     "HomeResponse",
     "LoginRequest",
+    "ParentChildOut",
+    "ParentStatsResponse",
     "QuizAttemptCreate",
     "QuizAttemptOut",
     "QuizOptionOut",
@@ -41,5 +45,6 @@ __all__ = [
     "TokenResponse",
     "UserOut",
     "UserWordOut",
+    "WeeklyStats",
     "WordOut",
 ]

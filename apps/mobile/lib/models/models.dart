@@ -261,6 +261,63 @@ class ReviewResult {
   }
 }
 
+class AttentionWord {
+  const AttentionWord({required this.word, this.meaningZh});
+
+  final String word;
+  final String? meaningZh;
+
+  factory AttentionWord.fromJson(Map<String, dynamic> json) {
+    return AttentionWord(
+      word: json['word'].toString(),
+      meaningZh: json['meaning_zh'] as String?,
+    );
+  }
+}
+
+class ParentStats {
+  const ParentStats({
+    required this.childName,
+    this.childLevel,
+    this.grade,
+    required this.booksRead,
+    required this.readingMinutes,
+    required this.newWords,
+    required this.quizAccuracy,
+    required this.wordMastery,
+    required this.attentionWords,
+  });
+
+  final String childName;
+  final String? childLevel;
+  final int? grade;
+  final int booksRead;
+  final int readingMinutes;
+  final int newWords;
+  final double quizAccuracy;
+  final double wordMastery;
+  final List<AttentionWord> attentionWords;
+
+  factory ParentStats.fromJson(Map<String, dynamic> json) {
+    final child = json['child'] as Map<String, dynamic>? ?? const {};
+    final weekly = json['weekly'] as Map<String, dynamic>? ?? const {};
+    final attention = json['attention_words'] as List<dynamic>? ?? const [];
+    return ParentStats(
+      childName: child['name']?.toString() ?? '',
+      childLevel: child['level'] as String?,
+      grade: (child['grade'] as num?)?.toInt(),
+      booksRead: (weekly['books_read'] as num?)?.toInt() ?? 0,
+      readingMinutes: (weekly['reading_minutes'] as num?)?.toInt() ?? 0,
+      newWords: (weekly['new_words'] as num?)?.toInt() ?? 0,
+      quizAccuracy: (json['quiz_accuracy'] as num?)?.toDouble() ?? 0,
+      wordMastery: (json['word_mastery'] as num?)?.toDouble() ?? 0,
+      attentionWords: attention
+          .map((item) => AttentionWord.fromJson(item as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+}
+
 class ReadingSession {
   const ReadingSession({
     required this.id,

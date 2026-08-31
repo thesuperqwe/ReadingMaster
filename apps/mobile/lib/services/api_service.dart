@@ -207,4 +207,9 @@ class ApiService {
     );
     return ReviewResult.fromJson(data as Map<String, dynamic>);
   }
+
+  Future<ParentStats> getParentStats(String childId) async {
+    final data = await ApiClient.get('/api/v1/children/$childId/stats');
+    return ParentStats.fromJson(data as Map<String, dynamic>);
+  }
 }

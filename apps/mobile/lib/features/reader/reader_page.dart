@@ -18,6 +18,14 @@ class ReaderPage extends StatefulWidget {
   State<ReaderPage> createState() => _ReaderPageState();
 }
 
+class _WordToken {
+  const _WordToken({required this.start, required this.end, required this.text});
+
+  final int start;
+  final int end;
+  final String text;
+}
+
 class _ReaderPageState extends State<ReaderPage> {
   final _apiService = ApiService();
   final _tts = FlutterTts();
@@ -25,8 +33,10 @@ class _ReaderPageState extends State<ReaderPage> {
   ReadingSession? _session;
   int _pageIndex = 0;
   double _fontScale = 1.0;
+  int _activeCharIndex = -1;
   bool _loading = true;
   bool _finishing = false;
+  bool _speaking = false;
   String? _error;
 
   @override
@@ -36,9 +46,42 @@ class _ReaderPageState extends State<ReaderPage> {
     _load();
   }
 
+  @override
+  void dispose() {
+    _tts.stop();
+    super.dispose();
+  }
+
   Future<void> _initTts() async {
     await _tts.setLanguage('en-US');
     await _tts.setSpeechRate(0.45);
+    _tts.setProgressHandler((text, start, end, word) {
+      if (mounted) setState(() => _activeCharIndex = start);
+    });
+    _tts.setCompletionHandler(() {
+      if (mounted) {
+        setState(() {
+          _speaking = false;
+          _activeCharIndex = -1;
+        });
+      }
+    });
+    _tts.setCancelHandler(() {
+      if (mounted) {
+        setState(() {
+          _speaking = false;
+          _activeCharIndex = -1;
+        });
+      }
+    });
+    _tts.setErrorHandler((_) {
+      if (mounted) {
+        setState(() {
+          _speaking = false;
+          _activeCharIndex = -1;
+        });
+      }
+    });
   }
 
   Future<void> _load() async {
@@ -77,7 +120,12 @@ class _ReaderPageState extends State<ReaderPage> {
   Future<void> _changePage(int index) async {
     if (_book == null || _session == null) return;
     if (index < 0 || index >= _book!.pages.length) return;
-    setState(() => _pageIndex = index);
+    if (_speaking) await _tts.stop();
+    setState(() {
+      _pageIndex = index;
+      _speaking = false;
+      _activeCharIndex = -1;
+    });
     await _apiService.recordEvent(
       sessionId: _session!.id,
       eventType: 'PAGE_VIEW',
@@ -121,13 +169,30 @@ class _ReaderPageState extends State<ReaderPage> {
     }
   }
 
-  Future<void> _speakPage() async {
+  Future<void> _toggleReadAlong() async {
     if (_book == null) return;
-    try {
+    if (_speaking) {
       await _tts.stop();
+      if (mounted) {
+        setState(() {
+          _speaking = false;
+          _activeCharIndex = -1;
+        });
+      }
+      return;
+    }
+
+    await _tts.stop();
+    if (!mounted) return;
+    setState(() {
+      _speaking = true;
+      _activeCharIndex = -1;
+    });
+    try {
       await _tts.speak(_book!.pages[_pageIndex].content);
     } catch (_) {
       if (!mounted) return;
+      setState(() => _speaking = false);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('暂时无法播放语音')),
       );
@@ -160,6 +225,17 @@ class _ReaderPageState extends State<ReaderPage> {
     }
   }
 
+  List<_WordToken> _wordTokens(String text) {
+    return RegExp(r'\S+')
+        .allMatches(text)
+        .map((match) => _WordToken(
+              start: match.start,
+              end: match.end,
+              text: match.group(0)!,
+            ))
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -173,6 +249,7 @@ class _ReaderPageState extends State<ReaderPage> {
     final book = _book!;
     final page = book.pages[_pageIndex];
     final isLast = _pageIndex == book.pages.length - 1;
+    final tokens = _wordTokens(page.content);
 
     return Scaffold(
       appBar: AppBar(
@@ -194,9 +271,9 @@ class _ReaderPageState extends State<ReaderPage> {
             icon: const Icon(Icons.text_increase_rounded),
           ),
           IconButton(
-            tooltip: '朗读本页',
-            onPressed: _speakPage,
-            icon: const Icon(Icons.volume_up_rounded),
+            tooltip: _speaking ? '停止朗读' : '朗读本页',
+            onPressed: _toggleReadAlong,
+            icon: Icon(_speaking ? Icons.stop_rounded : Icons.volume_up_rounded),
           ),
           const SizedBox(width: 8),
         ],
@@ -218,23 +295,23 @@ class _ReaderPageState extends State<ReaderPage> {
                   child: Wrap(
                     spacing: 8,
                     runSpacing: 14,
-                    children: page.content
-                        .split(RegExp(r'\s+'))
-                        .where((word) => word.isNotEmpty)
-                        .map(
-                          (word) => GestureDetector(
-                            onTap: () => _openWord(word),
-                            child: Text(
-                              word,
-                              style: TextStyle(
-                                fontSize: 28 * _fontScale,
-                                height: 1.4,
-                                color: AppColors.ink,
-                              ),
-                            ),
+                    children: tokens.map((token) {
+                      final active = _activeCharIndex >= token.start &&
+                          _activeCharIndex < token.end;
+                      return GestureDetector(
+                        onTap: () => _openWord(token.text),
+                        child: Text(
+                          token.text,
+                          style: TextStyle(
+                            fontSize: 28 * _fontScale,
+                            height: 1.4,
+                            color: active ? AppColors.primaryDark : AppColors.ink,
+                            fontWeight: active ? FontWeight.w800 : FontWeight.w400,
+                            backgroundColor: active ? AppColors.primarySoft : null,
                           ),
-                        )
-                        .toList(),
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ),
               ),

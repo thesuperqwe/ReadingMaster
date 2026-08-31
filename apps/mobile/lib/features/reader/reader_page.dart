@@ -37,6 +37,7 @@ class _ReaderPageState extends State<ReaderPage> {
   bool _loading = true;
   bool _finishing = false;
   bool _speaking = false;
+  DateTime? _sessionStartedAt;
   String? _error;
 
   @override
@@ -100,6 +101,7 @@ class _ReaderPageState extends State<ReaderPage> {
         eventType: 'PAGE_VIEW',
         pageNo: 1,
       );
+      _sessionStartedAt = DateTime.now();
       setState(() {
         _book = book;
         _session = session;
@@ -203,9 +205,12 @@ class _ReaderPageState extends State<ReaderPage> {
     if (_session == null || _book == null) return;
     setState(() => _finishing = true);
     try {
+      final durationSeconds = DateTime.now()
+          .difference(_sessionStartedAt ?? DateTime.now())
+          .inSeconds;
       await _apiService.finishSession(
         sessionId: _session!.id,
-        durationSeconds: 0,
+        durationSeconds: durationSeconds,
         progress: 1,
         completed: true,
       );

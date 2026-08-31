@@ -518,6 +518,7 @@ def test_generate_quiz_per_chapter(client, monkeypatch):
 def test_book_content_preview_and_delete(client):
     registered = _register(client)
     token = registered["access_token"]
+    child = _create_child(client, token)
 
     create_response = client.post(
         "/api/v1/books",
@@ -531,6 +532,13 @@ def test_book_content_preview_and_delete(client):
     assert books_response.status_code == 200
     created = next(book for book in books_response.json() if book["id"] == book_id)
     assert created["content_preview"] == "This is the first page of content."
+
+    session_response = client.post(
+        "/api/v1/reading/sessions",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"child_id": child["id"], "book_id": book_id},
+    )
+    assert session_response.status_code == 201
 
     delete_response = client.delete(
         f"/api/v1/books/{book_id}",

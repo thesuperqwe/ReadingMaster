@@ -201,9 +201,14 @@ class _BookshelfPageState extends State<BookshelfPage> {
   }
 
   Widget _bookCard(Book book) {
-    final preview = (book.contentPreview?.isNotEmpty == true)
-        ? book.contentPreview!
-        : (book.description ?? '');
+    final preview = book.contentPreview ?? '';
+    final typeParts = [
+      if (book.category?.isNotEmpty == true) book.category!,
+      levelLabel(book.level),
+    ];
+    final typeLine = typeParts.join(' · ');
+    final description = book.description?.isNotEmpty == true ? book.description! : '';
+
     return SurfaceCard(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
@@ -221,7 +226,7 @@ class _BookshelfPageState extends State<BookshelfPage> {
                 category: book.category,
                 description: book.description,
                 level: book.level,
-                height: 88,
+                height: 84,
                 width: double.infinity,
               ),
               Positioned(
@@ -247,15 +252,32 @@ class _BookshelfPageState extends State<BookshelfPage> {
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.ink),
           ),
           const SizedBox(height: 4),
-          if (preview.isNotEmpty)
+          Text(
+            typeLine,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.primaryDark),
+          ),
+          if (description.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text(
+              description,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 12, color: AppColors.inkSoft),
+            ),
+          ],
+          if (preview.isNotEmpty) ...[
+            const SizedBox(height: 4),
             Expanded(
               child: Text(
                 preview,
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 12, color: AppColors.inkSoft, height: 1.4),
+                style: const TextStyle(fontSize: 12, color: AppColors.inkSoft, height: 1.35),
               ),
             ),
+          ],
           const SizedBox(height: 6),
           Row(
             children: [

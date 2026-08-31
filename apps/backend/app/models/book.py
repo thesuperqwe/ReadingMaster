@@ -32,7 +32,7 @@ class Book(Base):
         back_populates="book", cascade="all, delete-orphan"
     )
     reading_sessions: Mapped[list["ReadingSession"]] = relationship(
-        back_populates="book"
+        back_populates="book", passive_deletes=True
     )
     quiz_questions: Mapped[list["QuizQuestion"]] = relationship(
         back_populates="book", cascade="all, delete-orphan"

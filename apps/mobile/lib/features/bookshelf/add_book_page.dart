@@ -1,17 +1,28 @@
-import 'dart:convert';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
+import '../../models/models.dart';
 import '../../services/api_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/common.dart';
+
+enum _Source { text, file }
 
 class AddBookPage extends StatefulWidget {
   const AddBookPage({super.key});
 
   @override
   State<AddBookPage> createState() => _AddBookPageState();
+}
+
+class _ChapterDraft {
+  _ChapterDraft({required String title, required this.content})
+      : titleController = TextEditingController(text: title);
+
+  final String content;
+  final TextEditingController titleController;
+
+  void dispose() => titleController.dispose();
 }
 
 class _QuestionDraft {
@@ -21,7 +32,6 @@ class _QuestionDraft {
   final optionCController = TextEditingController();
   String correctOption = 'A';
   int? chapterIndex;
-  String? chapterTitle;
 
   void dispose() {
     questionController.dispose();
@@ -51,9 +61,13 @@ class _AddBookPageState extends State<AddBookPage> {
   final _categoryController = TextEditingController();
   final _contentController = TextEditingController();
   String _level = 'LEVEL_2';
+  _Source _source = _Source.text;
+  final List<_ChapterDraft> _chapters = [];
   final List<_QuestionDraft> _questions = [];
   bool _saving = false;
   bool _generatingAI = false;
+  bool _parsing = false;
+  String? _fileName;
   String? _error;
 
   static const _levels = [
@@ -69,46 +83,118 @@ class _AddBookPageState extends State<AddBookPage> {
     _descriptionController.dispose();
     _categoryController.dispose();
     _contentController.dispose();
+    for (final chapter in _chapters) {
+      chapter.dispose();
+    }
     for (final question in _questions) {
       question.dispose();
     }
     super.dispose();
   }
 
-  void _addQuestion() {
-    setState(() => _questions.add(_QuestionDraft()));
+  void _applyParsed(List<ParsedChapter> chapters) {
+    for (final chapter in _chapters) {
+      chapter.dispose();
+    }
+    for (final question in _questions) {
+      question.dispose();
+    }
+    _chapters.clear();
+    _questions.clear();
+
+    final chapterDrafts = <_ChapterDraft>[];
+    final questionDrafts = <_QuestionDraft>[];
+    for (var i = 0; i < chapters.length; i++) {
+      chapterDrafts.add(
+        _ChapterDraft(title: chapters[i].title, content: chapters[i].content),
+      );
+      for (var j = 0; j < 3; j++) {
+        final question = _QuestionDraft();
+        question.chapterIndex = i;
+        questionDrafts.add(question);
+      }
+    }
+
+    setState(() {
+      _chapters.addAll(chapterDrafts);
+      _questions.addAll(questionDrafts);
+    });
   }
 
-  Future<void> _importEbook() async {
+  Future<void> _parseText() async {
+    final content = _contentController.text.trim();
+    if (content.isEmpty) {
+      setState(() => _error = '请先填写正文');
+      return;
+    }
+
+    setState(() {
+      _parsing = true;
+      _error = null;
+    });
+
+    try {
+      final parsed = await _apiService.parseText(content);
+      if (!mounted) return;
+      _applyParsed(parsed.chapters);
+    } catch (error) {
+      if (mounted) setState(() => _error = error.toString());
+    } finally {
+      if (mounted) setState(() => _parsing = false);
+    }
+  }
+
+  Future<void> _pickAndParseFile() async {
     final file = await FilePicker.pickFile(
       type: FileType.custom,
-      allowedExtensions: ['txt', 'md'],
+      allowedExtensions: ['pdf', 'txt', 'md'],
     );
     if (file == null) return;
 
-    final bytes = await file.readAsBytes();
-    final text = utf8.decode(bytes);
-
     setState(() {
-      if (_titleController.text.trim().isEmpty) {
-        final title = file.name.replaceAll(RegExp(r'\.(txt|md)$', caseSensitive: false), '');
-        _titleController.text = title;
-      }
-      _contentController.text = text;
+      _parsing = true;
+      _error = null;
     });
 
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('已导入：${file.name}')),
+    try {
+      final bytes = await file.readAsBytes();
+      final parsed = await _apiService.parseEbook(
+        filename: file.name,
+        bytes: bytes,
       );
+
+      if (!mounted) return;
+      setState(() {
+        _fileName = file.name;
+        if (_titleController.text.trim().isEmpty) {
+          _titleController.text = file.name.replaceAll(
+            RegExp(r'\.(pdf|txt|md)$', caseSensitive: false),
+            '',
+          );
+        }
+      });
+      _applyParsed(parsed.chapters);
+    } catch (error) {
+      if (mounted) setState(() => _error = error.toString());
+    } finally {
+      if (mounted) setState(() => _parsing = false);
     }
+  }
+
+  void _addQuestionForChapter(int index) {
+    final draft = _QuestionDraft();
+    draft.chapterIndex = index;
+    setState(() => _questions.add(draft));
   }
 
   Future<void> _generateQuestionsWithAI() async {
     final title = _titleController.text.trim();
-    final content = _contentController.text.trim();
-    if (title.isEmpty || content.isEmpty) {
-      setState(() => _error = '请先填写书名和正文');
+    if (title.isEmpty) {
+      setState(() => _error = '请先填写书名');
+      return;
+    }
+    if (_chapters.isEmpty) {
+      setState(() => _error = '请先解析章节');
       return;
     }
 
@@ -118,9 +204,10 @@ class _AddBookPageState extends State<AddBookPage> {
     });
 
     try {
-      final generated = await _apiService.generateQuizAI(
-        text: '$title\n\n$content',
-      );
+      final text = _chapters
+          .map((chapter) => '${chapter.titleController.text.trim()}\n\n${chapter.content}')
+          .join('\n\n');
+      final generated = await _apiService.generateQuizAI(text: '$title\n\n$text');
 
       for (final question in _questions) {
         question.dispose();
@@ -132,7 +219,6 @@ class _AddBookPageState extends State<AddBookPage> {
         draft.questionController.text = item['question']?.toString() ?? '';
         draft.correctOption = item['correct_option']?.toString() ?? 'A';
         draft.chapterIndex = (item['chapter_index'] as num?)?.toInt();
-        draft.chapterTitle = item['chapter_title'] as String?;
         final options = (item['options'] as List<dynamic>? ?? []);
         if (options.isNotEmpty) {
           draft.optionAController.text = options[0]['content']?.toString() ?? '';
@@ -154,8 +240,12 @@ class _AddBookPageState extends State<AddBookPage> {
   }
 
   Future<void> _save() async {
-    if (_titleController.text.trim().isEmpty || _contentController.text.trim().isEmpty) {
-      setState(() => _error = '标题和正文不能为空');
+    if (_titleController.text.trim().isEmpty) {
+      setState(() => _error = '请填写书名');
+      return;
+    }
+    if (_chapters.isEmpty) {
+      setState(() => _error = '请先解析章节或导入文件');
       return;
     }
 
@@ -165,12 +255,21 @@ class _AddBookPageState extends State<AddBookPage> {
     });
 
     try {
+      final chapters = <Map<String, String>>[];
+      for (var i = 0; i < _chapters.length; i++) {
+        final title = _chapters[i].titleController.text.trim();
+        chapters.add({
+          'title': title.isEmpty ? '第 ${i + 1} 部分' : title,
+          'content': _chapters[i].content,
+        });
+      }
+
       final questions = _questions
           .where((question) => question.questionController.text.trim().isNotEmpty)
           .map((question) => question.toJson())
           .toList();
 
-      await _apiService.createBook(
+      await _apiService.createBookFromChapters(
         title: _titleController.text.trim(),
         level: _level,
         description: _descriptionController.text.trim().isEmpty
@@ -179,7 +278,7 @@ class _AddBookPageState extends State<AddBookPage> {
         category: _categoryController.text.trim().isEmpty
             ? null
             : _categoryController.text.trim(),
-        content: _contentController.text.trim(),
+        chapters: chapters,
         questions: questions,
       );
 
@@ -203,101 +302,32 @@ class _AddBookPageState extends State<AddBookPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SurfaceCard(
-                child: Column(
-                  children: [
-                    TextField(
-                      controller: _titleController,
-                      decoration: const InputDecoration(labelText: '书名'),
-                    ),
-                    const SizedBox(height: 14),
-                    DropdownButtonFormField<String>(
-                      initialValue: _level,
-                      decoration: const InputDecoration(labelText: '等级'),
-                      items: _levels
-                          .map((option) => DropdownMenuItem(value: option.$1, child: Text(option.$2)))
-                          .toList(),
-                      onChanged: (value) => setState(() => _level = value ?? 'LEVEL_2'),
-                    ),
-                    const SizedBox(height: 14),
-                    TextField(
-                      controller: _categoryController,
-                      decoration: const InputDecoration(labelText: '分类，例如 animals'),
-                    ),
-                    const SizedBox(height: 14),
-                    TextField(
-                      controller: _descriptionController,
-                      decoration: const InputDecoration(labelText: '简介'),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              SurfaceCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Expanded(
-                          child: Text(
-                            '正文',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.ink),
-                          ),
-                        ),
-                        OutlinedButton.icon(
-                          onPressed: _importEbook,
-                          icon: const Icon(Icons.upload_file_rounded),
-                          label: const Text('导入电子书'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    const Text(
-                      '空行分隔不同的阅读页。',
-                      style: TextStyle(fontSize: 13, color: AppColors.inkSoft),
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: _contentController,
-                      minLines: 8,
-                      maxLines: 18,
-                      decoration: const InputDecoration(hintText: '在这里输入正文……'),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 22),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    '阅读理解题',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.ink),
+              SegmentedButton<_Source>(
+                segments: const [
+                  ButtonSegment(
+                    value: _Source.text,
+                    label: Text('粘贴正文'),
+                    icon: Icon(Icons.edit_note_rounded),
                   ),
-                  Wrap(
-                    spacing: 10,
-                    children: [
-                      OutlinedButton.icon(
-                        onPressed: _addQuestion,
-                        icon: const Icon(Icons.add_rounded),
-                        label: const Text('手动添加'),
-                      ),
-                      FilledButton.icon(
-                        onPressed: _generatingAI ? null : _generateQuestionsWithAI,
-                        icon: const Icon(Icons.auto_awesome_rounded),
-                        label: const Text('AI 生成'),
-                      ),
-                    ],
+                  ButtonSegment(
+                    value: _Source.file,
+                    label: Text('导入文件'),
+                    icon: Icon(Icons.upload_file_rounded),
                   ),
                 ],
+                selected: {_source},
+                onSelectionChanged: (selection) =>
+                    setState(() => _source = selection.first),
               ),
-              if (_generatingAI) ...[
-                const SizedBox(height: 12),
-                const LinearProgressIndicator(),
-              ],
-              ..._questions.map(_buildQuestionCard),
+              const SizedBox(height: 16),
+              _buildInfoCard(),
+              const SizedBox(height: 16),
+              if (_source == _Source.text)
+                _buildTextContentCard()
+              else
+                _buildFileContentCard(),
+              const SizedBox(height: 22),
+              ..._buildQuestionSection(),
               if (_error != null) ...[
                 const SizedBox(height: 16),
                 Text(
@@ -323,28 +353,200 @@ class _AddBookPageState extends State<AddBookPage> {
     );
   }
 
+  Widget _buildInfoCard() {
+    return SurfaceCard(
+      child: Column(
+        children: [
+          TextField(
+            controller: _titleController,
+            decoration: const InputDecoration(labelText: '书名'),
+          ),
+          const SizedBox(height: 14),
+          DropdownButtonFormField<String>(
+            initialValue: _level,
+            decoration: const InputDecoration(labelText: '等级'),
+            items: _levels
+                .map((option) => DropdownMenuItem(value: option.$1, child: Text(option.$2)))
+                .toList(),
+            onChanged: (value) => setState(() => _level = value ?? 'LEVEL_2'),
+          ),
+          const SizedBox(height: 14),
+          TextField(
+            controller: _categoryController,
+            decoration: const InputDecoration(labelText: '分类，例如 animals'),
+          ),
+          const SizedBox(height: 14),
+          TextField(
+            controller: _descriptionController,
+            decoration: const InputDecoration(labelText: '简介'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTextContentCard() {
+    return SurfaceCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  '正文',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.ink),
+                ),
+              ),
+              FilledButton.icon(
+                onPressed: _parsing ? null : _parseText,
+                icon: const Icon(Icons.auto_stories_rounded),
+                label: Text(_parsing ? '解析中…' : '解析章节'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            '空行分隔不同的阅读页。解析章节后可逐章设置题目。',
+            style: TextStyle(fontSize: 13, color: AppColors.inkSoft),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _contentController,
+            minLines: 8,
+            maxLines: 18,
+            decoration: const InputDecoration(hintText: '在这里输入正文……'),
+          ),
+          if (_parsing) ...[
+            const SizedBox(height: 12),
+            const LinearProgressIndicator(),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFileContentCard() {
+    return SurfaceCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          FilledButton.icon(
+            onPressed: _parsing ? null : _pickAndParseFile,
+            icon: const Icon(Icons.upload_file_rounded),
+            label: Text(_parsing ? '解析中…' : '选择文件'),
+          ),
+          if (_fileName != null) ...[
+            const SizedBox(height: 10),
+            Text(
+              _fileName!,
+              style: const TextStyle(fontSize: 13, color: AppColors.inkSoft),
+            ),
+          ],
+          const SizedBox(height: 6),
+          const Text(
+            '支持 PDF、TXT、Markdown。',
+            style: TextStyle(fontSize: 13, color: AppColors.inkSoft),
+          ),
+          if (_parsing) ...[
+            const SizedBox(height: 12),
+            const LinearProgressIndicator(),
+          ],
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildQuestionSection() {
+    if (_chapters.isEmpty) {
+      return const [
+        SurfaceCard(
+          child: Text('解析章节后，即可在这里按章节设置题目。'),
+        ),
+      ];
+    }
+
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            '阅读理解题',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.ink),
+          ),
+          FilledButton.icon(
+            onPressed: _generatingAI ? null : _generateQuestionsWithAI,
+            icon: const Icon(Icons.auto_awesome_rounded),
+            label: const Text('AI 生成全部'),
+          ),
+        ],
+      ),
+      if (_generatingAI) ...[
+        const SizedBox(height: 12),
+        const LinearProgressIndicator(),
+      ],
+      const SizedBox(height: 14),
+      ..._chapters.asMap().entries.map(
+            (entry) => _buildChapterGroup(entry.key, entry.value),
+          ),
+    ];
+  }
+
+  Widget _buildChapterGroup(int index, _ChapterDraft chapter) {
+    final chapterQuestions = _questions
+        .where((question) => question.chapterIndex == index)
+        .toList();
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: chapter.titleController,
+                  decoration: const InputDecoration(labelText: '章节标题'),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '${chapterQuestions.length} 题',
+                style: const TextStyle(fontSize: 12, color: AppColors.inkSoft),
+              ),
+              const SizedBox(width: 6),
+              TextButton.icon(
+                onPressed: () => _addQuestionForChapter(index),
+                icon: const Icon(Icons.add_rounded, size: 18),
+                label: const Text('添加题目'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          if (chapterQuestions.isEmpty)
+            const Text(
+              '暂无题目',
+              style: TextStyle(fontSize: 13, color: AppColors.inkSoft),
+            )
+          else
+            ...chapterQuestions.map(
+              (question) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _buildQuestionCard(question),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildQuestionCard(_QuestionDraft question) {
     return SurfaceCard(
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          if (question.chapterTitle?.isNotEmpty == true) ...[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppColors.primarySoft,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  question.chapterTitle!,
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primaryDark),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-          ],
           TextField(
             controller: question.questionController,
             decoration: const InputDecoration(labelText: '题目'),

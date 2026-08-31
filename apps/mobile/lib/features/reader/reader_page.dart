@@ -33,6 +33,9 @@ class _ReaderPageState extends State<ReaderPage> {
   final _tts = FlutterTts();
   BookDetail? _book;
   ReadingSession? _session;
+  List<BookChapter> _chapters = const [];
+  List<BookPageModel> _segments = const [];
+  int _chapterIndex = 0;
   int _pageIndex = 0;
   double _fontScale = 1.0;
   int _activeCharIndex = -1;
@@ -99,21 +102,46 @@ class _ReaderPageState extends State<ReaderPage> {
         childId: widget.childId,
         bookId: widget.bookId,
       );
-      await _apiService.recordEvent(
-        sessionId: session.id,
-        eventType: 'PAGE_VIEW',
-        pageNo: 1,
-      );
       _sessionStartedAt = DateTime.now();
       setState(() {
         _book = book;
         _session = session;
+        _chapters = book.chapters;
       });
+      if (book.chapters.isNotEmpty) {
+        await _loadChapter(0);
+      }
     } catch (error) {
       setState(() => _error = error.toString());
     } finally {
       if (mounted) setState(() => _loading = false);
     }
+  }
+
+  Future<void> _loadChapter(int index) async {
+    final book = _book;
+    final session = _session;
+    if (book == null || session == null) return;
+    if (index < 0 || index >= book.chapters.length) return;
+    if (_speaking) await _tts.stop();
+
+    final chapter = await _apiService.getChapter(book.id, index);
+    if (!mounted) return;
+    setState(() {
+      _chapterIndex = index;
+      _segments = chapter.segments;
+      _pageIndex = 0;
+      _speaking = false;
+      _activeCharIndex = -1;
+    });
+    if (_segments.isNotEmpty) {
+      await _apiService.recordEvent(
+        sessionId: session.id,
+        eventType: 'PAGE_VIEW',
+        pageNo: _segments.first.pageNo,
+      );
+    }
+    await _reportProgress();
   }
 
   Future<Word> _lookupWord(String text) async {
@@ -123,24 +151,69 @@ class _ReaderPageState extends State<ReaderPage> {
   }
 
   Future<void> _changePage(int index) async {
-    if (_book == null || _session == null) return;
-    if (index < 0 || index >= _book!.pages.length) return;
+    if (_segments.isEmpty) return;
+    if (index < 0 || index >= _segments.length) return;
     if (_speaking) await _tts.stop();
     setState(() {
       _pageIndex = index;
       _speaking = false;
       _activeCharIndex = -1;
     });
-    await _apiService.recordEvent(
-      sessionId: _session!.id,
-      eventType: 'PAGE_VIEW',
-      pageNo: index + 1,
-    );
+    final session = _session;
+    if (session != null) {
+      await _apiService.recordEvent(
+        sessionId: session.id,
+        eventType: 'PAGE_VIEW',
+        pageNo: _segments[_pageIndex].pageNo,
+      );
+    }
     await _reportProgress();
   }
 
+  Future<void> _goPrev() async {
+    if (_pageIndex > 0) {
+      await _changePage(_pageIndex - 1);
+    } else if (_chapterIndex > 0) {
+      await _loadChapter(_chapterIndex - 1);
+    }
+  }
+
+  Future<void> _goNext() async {
+    if (_pageIndex < _segments.length - 1) {
+      await _changePage(_pageIndex + 1);
+    } else if (_chapterIndex < _chapters.length - 1) {
+      await _loadChapter(_chapterIndex + 1);
+    } else {
+      await _finishAndQuiz();
+    }
+  }
+
+  void _openChapterSheet() {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: ListView(
+          children: _chapters.asMap().entries.map((entry) {
+            final chapter = entry.value;
+            final selected = entry.key == _chapterIndex;
+            return ListTile(
+              selected: selected,
+              title: Text(chapter.title),
+              subtitle: Text('${chapter.segmentCount} 页 · ${chapter.wordCount} 词'),
+              trailing: selected ? const Icon(Icons.check_rounded) : null,
+              onTap: () {
+                Navigator.of(ctx).pop();
+                _loadChapter(entry.key);
+              },
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
   Future<void> _openWord(String rawWord) async {
-    if (_session == null) return;
+    if (_session == null || _segments.isEmpty) return;
     final word = rawWord.replaceAll(RegExp(r"[^a-zA-Z']"), '').toLowerCase();
     if (word.isEmpty) return;
 
@@ -148,7 +221,7 @@ class _ReaderPageState extends State<ReaderPage> {
       await _apiService.recordEvent(
         sessionId: _session!.id,
         eventType: 'WORD_CLICK',
-        pageNo: _pageIndex + 1,
+        pageNo: _segments[_pageIndex].pageNo,
         word: word,
       );
       final detail = await _lookupWord(word);
@@ -159,11 +232,11 @@ class _ReaderPageState extends State<ReaderPage> {
         lookup: _lookupWord,
         aiLookup: (word, {context}) =>
             _apiService.explainWordAI(word, context: context),
-        contextText: _book!.pages[_pageIndex].content,
+        contextText: _segments[_pageIndex].content,
         onSpeak: () => _apiService.recordEvent(
           sessionId: _session!.id,
           eventType: 'WORD_AUDIO',
-          pageNo: _pageIndex + 1,
+          pageNo: _segments[_pageIndex].pageNo,
           word: detail.word,
         ),
       );
@@ -176,7 +249,7 @@ class _ReaderPageState extends State<ReaderPage> {
   }
 
   Future<void> _toggleReadAlong() async {
-    if (_book == null) return;
+    if (_segments.isEmpty) return;
     if (_speaking) {
       await _tts.stop();
       if (mounted) {
@@ -195,7 +268,7 @@ class _ReaderPageState extends State<ReaderPage> {
       _activeCharIndex = -1;
     });
     try {
-      await _tts.speak(_book!.pages[_pageIndex].content);
+      await _tts.speak(_segments[_pageIndex].content);
     } catch (_) {
       if (!mounted) return;
       setState(() => _speaking = false);
@@ -209,10 +282,13 @@ class _ReaderPageState extends State<ReaderPage> {
     final session = _session;
     final book = _book;
     if (session == null || book == null) return;
+    final total = book.chapters.fold<int>(0, (sum, chapter) => sum + chapter.segmentCount);
+    if (total == 0 || _segments.isEmpty) return;
     final durationSeconds = DateTime.now()
         .difference(_sessionStartedAt ?? DateTime.now())
         .inSeconds;
-    final progress = ((_pageIndex + 1) / book.pages.length).clamp(0.0, 1.0).toDouble();
+    final progress =
+        (_segments[_pageIndex].pageNo / total).clamp(0.0, 1.0).toDouble();
     try {
       await _apiService.updateReadingProgress(
         sessionId: session.id,
@@ -275,15 +351,20 @@ class _ReaderPageState extends State<ReaderPage> {
     }
 
     final book = _book!;
-    final page = book.pages[_pageIndex];
-    final isLast = _pageIndex == book.pages.length - 1;
-    final tokens = _wordTokens(page.content);
+    final chapter = _chapters.isEmpty
+        ? null
+        : _chapters[_chapterIndex.clamp(0, _chapters.length - 1)];
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text(book.title),
         actions: [
+          IconButton(
+            tooltip: '章节',
+            onPressed: _chapters.isEmpty ? null : _openChapterSheet,
+            icon: const Icon(Icons.menu_book_rounded),
+          ),
           IconButton(
             tooltip: '缩小字体',
             onPressed: () => setState(
@@ -306,90 +387,136 @@ class _ReaderPageState extends State<ReaderPage> {
           const SizedBox(width: 8),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(24, 12, 24, 8),
-              padding: const EdgeInsets.all(28),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: AppColors.line),
-              ),
-              child: SingleChildScrollView(
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 14,
-                    children: tokens.map((token) {
-                      final active = _activeCharIndex >= token.start &&
-                          _activeCharIndex < token.end;
-                      return GestureDetector(
-                        onTap: () => _openWord(token.text),
-                        child: Text(
-                          token.text,
-                          style: TextStyle(
-                            fontSize: 28 * _fontScale,
-                            height: 1.4,
-                            color: active ? AppColors.primaryDark : AppColors.ink,
-                            fontWeight: active ? FontWeight.w800 : FontWeight.w400,
-                            backgroundColor: active ? AppColors.primarySoft : null,
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 4, 24, 20),
-            child: Column(
+      body: _segments.isEmpty
+          ? const Center(child: Text('本书暂无内容'))
+          : Column(
               children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    '${_pageIndex + 1} / ${book.pages.length}',
-                    style: const TextStyle(fontSize: 13, color: AppColors.inkSoft),
+                _chapterHeader(chapter),
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(24, 12, 24, 8),
+                    padding: const EdgeInsets.all(28),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: AppColors.line),
+                    ),
+                    child: SingleChildScrollView(
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: _segmentContent(),
+                      ),
+                    ),
                   ),
                 ),
-                Row(
-                  children: [
-                    OutlinedButton.icon(
-                      onPressed:
-                          _pageIndex == 0 ? null : () => _changePage(_pageIndex - 1),
-                      icon: const Icon(Icons.chevron_left_rounded),
-                      label: const Text('上一页'),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Slider(
-                        value: _pageIndex.toDouble(),
-                        min: 0,
-                        max: (book.pages.length - 1).toDouble(),
-                        divisions: book.pages.length > 1 ? book.pages.length - 1 : null,
-                        onChanged: (value) => _changePage(value.round()),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    if (isLast)
-                      FilledButton(
-                        onPressed: _finishing ? null : _finishAndQuiz,
-                        child: const Text('完成并做题'),
-                      )
-                    else
-                      FilledButton.icon(
-                        onPressed: () => _changePage(_pageIndex + 1),
-                        icon: const Icon(Icons.chevron_right_rounded),
-                        label: const Text('下一页'),
-                      ),
-                  ],
-                ),
+                _pageControls(),
               ],
             ),
+    );
+  }
+
+  Widget _chapterHeader(BookChapter? chapter) {
+    final total = _chapters.length;
+    return InkWell(
+      onTap: total == 0 ? null : _openChapterSheet,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                chapter?.title ?? '',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.primaryDark,
+                ),
+              ),
+            ),
+            if (total > 0)
+              Text(
+                '第 ${_chapterIndex + 1} / $total 章',
+                style: const TextStyle(fontSize: 13, color: AppColors.inkSoft),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _segmentContent() {
+    final content = _segments[_pageIndex].content;
+    final tokens = _wordTokens(content);
+    return Wrap(
+      spacing: 8,
+      runSpacing: 14,
+      children: tokens.map((token) {
+        final active = _activeCharIndex >= token.start && _activeCharIndex < token.end;
+        return GestureDetector(
+          onTap: () => _openWord(token.text),
+          child: Text(
+            token.text,
+            style: TextStyle(
+              fontSize: 28 * _fontScale,
+              height: 1.4,
+              color: active ? AppColors.primaryDark : AppColors.ink,
+              fontWeight: active ? FontWeight.w800 : FontWeight.w400,
+              backgroundColor: active ? AppColors.primarySoft : null,
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _pageControls() {
+    final isFirstPage = _pageIndex == 0;
+    final isLastSegment = _pageIndex == _segments.length - 1;
+    final isLastChapter = _chapterIndex == _chapters.length - 1;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 4, 24, 20),
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.center,
+            child: Text(
+              '第 ${_pageIndex + 1} / ${_segments.length} 页',
+              style: const TextStyle(fontSize: 13, color: AppColors.inkSoft),
+            ),
+          ),
+          Row(
+            children: [
+              OutlinedButton.icon(
+                onPressed: isFirstPage && _chapterIndex == 0 ? null : _goPrev,
+                icon: const Icon(Icons.chevron_left_rounded),
+                label: Text(isFirstPage ? '上一章' : '上一页'),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Slider(
+                  value: _pageIndex.toDouble(),
+                  min: 0,
+                  max: (_segments.length - 1).toDouble(),
+                  divisions: _segments.length > 1 ? _segments.length - 1 : null,
+                  onChanged: (value) => _changePage(value.round()),
+                ),
+              ),
+              const SizedBox(width: 10),
+              if (isLastSegment && isLastChapter)
+                FilledButton(
+                  onPressed: _finishing ? null : _finishAndQuiz,
+                  child: const Text('完成并做题'),
+                )
+              else
+                FilledButton.icon(
+                  onPressed: _goNext,
+                  icon: const Icon(Icons.chevron_right_rounded),
+                  label: Text(isLastSegment ? '下一章' : '下一页'),
+                ),
+            ],
           ),
         ],
       ),

@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, func
+from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -27,6 +27,9 @@ class Book(Base):
 
     pages: Mapped[list["BookPage"]] = relationship(
         back_populates="book", cascade="all, delete-orphan", order_by="BookPage.page_no"
+    )
+    chapters: Mapped[list["Chapter"]] = relationship(
+        back_populates="book", cascade="all, delete-orphan", order_by="Chapter.index"
     )
     book_words: Mapped[list["BookWord"]] = relationship(
         back_populates="book", cascade="all, delete-orphan"
@@ -56,3 +59,26 @@ class BookPage(Base):
     )
 
     book: Mapped["Book"] = relationship(back_populates="pages")
+
+
+class Chapter(Base):
+    __tablename__ = "chapters"
+    __table_args__ = (UniqueConstraint("book_id", "index"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    book_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("books.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    index: Mapped[int] = mapped_column(Integer, nullable=False)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    word_count: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0, server_default="0"
+    )
+    segment_count: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0, server_default="0"
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    book: Mapped["Book"] = relationship(back_populates="chapters")

@@ -27,6 +27,7 @@ class OpenAICompatibleProvider(AIProvider):
                 {"role": "user", "content": user_prompt},
             ],
             "temperature": 0.2,
+            "response_format": {"type": "json_object"},
         }
 
         async with httpx2.AsyncClient(timeout=30) as client:

@@ -10,6 +10,7 @@ def test_core_tables_are_registered():
         "children",
         "books",
         "book_pages",
+        "chapters",
         "words",
         "book_words",
         "reading_sessions",

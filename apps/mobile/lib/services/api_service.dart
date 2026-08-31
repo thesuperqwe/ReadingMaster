@@ -86,6 +86,58 @@ class ApiService {
     return BookDetail.fromJson(data as Map<String, dynamic>);
   }
 
+  Future<BookChapterDetail> getChapter(String bookId, int index) async {
+    final data = await ApiClient.get('/api/v1/books/$bookId/chapters/$index');
+    return BookChapterDetail.fromJson(data as Map<String, dynamic>);
+  }
+
+  Future<List<BookPageModel>> getBookContent(String bookId) async {
+    final data = await ApiClient.get('/api/v1/books/$bookId/content');
+    return (data as List<dynamic>)
+        .map((item) => BookPageModel.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<ParsedBook> parseText(String content) async {
+    final data = await ApiClient.post(
+      '/api/v1/books/preview',
+      body: {'content': content},
+    );
+    return ParsedBook.fromJson(data as Map<String, dynamic>);
+  }
+  Future<ParsedBook> parseEbook({
+    required String filename,
+    required List<int> bytes,
+  }) async {
+    final data = await ApiClient.postMultipart(
+      '/api/v1/books/import/parse',
+      filename: filename,
+      bytes: bytes,
+    );
+    return ParsedBook.fromJson(data as Map<String, dynamic>);
+  }
+
+  Future<Book> createBookFromChapters({
+    required String title,
+    required String level,
+    String? description,
+    String? category,
+    required List<Map<String, String>> chapters,
+    List<Map<String, dynamic>> questions = const [],
+  }) async {
+    final data = await ApiClient.post(
+      '/api/v1/books/import',
+      body: {
+        'title': title,
+        'level': level,
+        'description': ?description,
+        'category': ?category,
+        'chapters': chapters,
+        'questions': questions,
+      },
+    );
+    return Book.fromJson(data as Map<String, dynamic>);
+  }
   Future<Word> getWord(String word) async {
     final data = await ApiClient.get('/api/v1/words/$word');
     return Word.fromJson(data as Map<String, dynamic>);

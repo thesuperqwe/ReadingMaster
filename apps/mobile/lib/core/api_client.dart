@@ -40,6 +40,24 @@ class ApiClient {
     return _request('DELETE', path);
   }
 
+  static Future<dynamic> postMultipart(
+    String path, {
+    required String filename,
+    required List<int> bytes,
+  }) async {
+    final uri = Uri.parse('${AppConfig.apiBaseUrl}$path');
+    final hadAuth = token != null && token!.isNotEmpty;
+    final request = http.MultipartRequest('POST', uri);
+    if (hadAuth) request.headers['Authorization'] = 'Bearer $token';
+    request.files.add(
+      http.MultipartFile.fromBytes('file', bytes, filename: filename),
+    );
+
+    final streamed = await request.send();
+    final response = await http.Response.fromStream(streamed);
+    return _handleResponse(response, hadAuth: hadAuth);
+  }
+
   static Future<dynamic> _request(
     String method,
     String path, {
@@ -64,9 +82,16 @@ class ApiClient {
       throw UnsupportedError('Unsupported method: $method');
     }
 
+    return _handleResponse(response, hadAuth: hadAuth);
+  }
+
+  static Future<dynamic> _handleResponse(
+    http.Response response, {
+    required bool hadAuth,
+  }) async {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       _handlingUnauthorized = false;
-      if (response.body.isEmpty) return null;
+      if (response.bodyBytes.isEmpty) return null;
       return jsonDecode(utf8.decode(response.bodyBytes));
     }
 
@@ -89,7 +114,9 @@ class ApiClient {
       if (detail is String) message = detail;
       if (detail is List && detail.isNotEmpty) {
         final first = detail.first;
-        if (first is Map && first['msg'] != null) message = first['msg'].toString();
+        if (first is Map && first['msg'] != null) {
+          message = first['msg'].toString();
+        }
       }
     } catch (_) {
       // Keep the generic message.

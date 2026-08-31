@@ -67,7 +67,7 @@ def client():
 
 
 async def seed_test_content() -> dict:
-    from app.models import Book, BookPage, BookWord, QuizOption, QuizQuestion, Word
+    from app.models import Book, BookPage, BookWord, Chapter, QuizOption, QuizQuestion, Word
 
     async with TestSession() as session:
         book = Book(
@@ -82,12 +82,13 @@ async def seed_test_content() -> dict:
         session.add(book)
         await session.flush()
 
+        chapter = Chapter(book_id=book.id, index=0, title="正文", word_count=17, segment_count=3)
         pages = [
-            BookPage(page_no=1, content="Tom has a little dog.", book_id=book.id),
-            BookPage(page_no=2, content="The dog is very cute.", book_id=book.id),
-            BookPage(page_no=3, content="Tom likes to play with his dog.", book_id=book.id),
+            BookPage(page_no=1, content="Tom has a little dog.", book_id=book.id, chapter_index=0, chapter_title="正文"),
+            BookPage(page_no=2, content="The dog is very cute.", book_id=book.id, chapter_index=0, chapter_title="正文"),
+            BookPage(page_no=3, content="Tom likes to play with his dog.", book_id=book.id, chapter_index=0, chapter_title="正文"),
         ]
-        session.add_all(pages)
+        session.add_all([chapter, *pages])
 
         word_rows = {}
         for text, meaning in (

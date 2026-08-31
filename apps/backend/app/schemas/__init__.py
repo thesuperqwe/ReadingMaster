@@ -1,5 +1,5 @@
 from app.schemas.auth import LoginRequest, RegisterRequest, TokenResponse, UserOut
-from app.schemas.book import BookDetailOut, BookOut, BookPageOut
+from app.schemas.book import BookDetailOut, BookOut, BookPageOut, ChapterDetailOut, ChapterOut
 from app.schemas.child import ChildCreate, ChildOut
 from app.schemas.home import ContinueReadingOut, HomeChildOut, HomeResponse, RecommendedBookOut, TodayStats
 from app.schemas.quiz import QuizAttemptCreate, QuizAttemptOut, QuizOptionOut, QuizQuestionOut
@@ -19,6 +19,8 @@ __all__ = [
     "BookDetailOut",
     "BookOut",
     "BookPageOut",
+    "ChapterDetailOut",
+    "ChapterOut",
     "ChildCreate",
     "ChildOut",
     "ContinueReadingOut",

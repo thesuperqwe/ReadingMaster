@@ -10,6 +10,11 @@ class AIProviderError(RuntimeError):
 
 def extract_json(text: str) -> Any:
     text = text.strip()
+
+    fence = re.match(r"^```(?:json)?\s*\n?(.*?)\n?```$", text, re.DOTALL)
+    if fence:
+        text = fence.group(1).strip()
+
     try:
         return json.loads(text)
     except json.JSONDecodeError:
@@ -23,7 +28,8 @@ def extract_json(text: str) -> Any:
             except json.JSONDecodeError:
                 pass
 
-    raise AIProviderError("AI response did not contain valid JSON")
+    snippet = text[:200].replace("\n", " ")
+    raise AIProviderError(f"AI response did not contain valid JSON: {snippet!r}")
 
 
 class AIProvider(ABC):

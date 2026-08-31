@@ -49,7 +49,21 @@ def test_books_words_and_home(client, seed_content):
         headers={"Authorization": f"Bearer {token}"},
     )
     assert detail_response.status_code == 200
-    assert len(detail_response.json()["pages"]) == 3
+    assert len(detail_response.json()["chapters"]) == 1
+
+    chapter_response = client.get(
+        f"/api/v1/books/{content['book_id']}/chapters/0",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert chapter_response.status_code == 200
+    assert len(chapter_response.json()["segments"]) == 3
+
+    content_response = client.get(
+        f"/api/v1/books/{content['book_id']}/content",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert content_response.status_code == 200
+    assert len(content_response.json()) == 3
 
     word_response = client.get(
         "/api/v1/words/cute", headers={"Authorization": f"Bearer {token}"}
@@ -477,10 +491,19 @@ def test_create_book_splits_chapters(client):
         headers={"Authorization": f"Bearer {token}"},
     )
     assert detail_response.status_code == 200
-    pages = detail_response.json()["pages"]
-    assert [page["chapter_index"] for page in pages] == [0, 0, 1]
-    assert pages[0]["chapter_title"] == "Chapter 1"
-    assert pages[2]["chapter_title"] == "Chapter 2"
+    chapters = detail_response.json()["chapters"]
+    assert [chapter["index"] for chapter in chapters] == [0, 1]
+    assert chapters[0]["title"] == "Chapter 1"
+    assert chapters[1]["title"] == "Chapter 2"
+
+    chapter_response = client.get(
+        f"/api/v1/books/{book_id}/chapters/0",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert chapter_response.status_code == 200
+    segments = chapter_response.json()["segments"]
+    assert all(segment["chapter_index"] == 0 for segment in segments)
+    assert segments[0]["chapter_title"] == "Chapter 1"
 
     quiz_response = client.get(
         f"/api/v1/books/{book_id}/quiz",
@@ -531,7 +554,7 @@ def test_book_content_preview_and_delete(client):
     books_response = client.get("/api/v1/books", headers={"Authorization": f"Bearer {token}"})
     assert books_response.status_code == 200
     created = next(book for book in books_response.json() if book["id"] == book_id)
-    assert created["content_preview"] == "This is the first page of content."
+    assert created["content_preview"] == "This is the first page of content. Second page content."
 
     session_response = client.post(
         "/api/v1/reading/sessions",
@@ -551,3 +574,168 @@ def test_book_content_preview_and_delete(client):
         headers={"Authorization": f"Bearer {token}"},
     )
     assert detail_response.status_code == 404
+
+def test_create_book_segments_long_content(client):
+    registered = _register(client)
+    token = registered["access_token"]
+
+    content = " ".join(["word"] * 300)
+    create_response = client.post(
+        "/api/v1/books",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"title": "Long Book", "level": "LEVEL_2", "content": content},
+    )
+    assert create_response.status_code == 201
+    book_id = create_response.json()["id"]
+
+    detail_response = client.get(
+        f"/api/v1/books/{book_id}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert detail_response.status_code == 200
+    assert len(detail_response.json()["chapters"]) == 1
+
+    chapter_response = client.get(
+        f"/api/v1/books/{book_id}/chapters/0",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert chapter_response.status_code == 200
+    segments = chapter_response.json()["segments"]
+    assert [len(segment["content"].split()) for segment in segments] == [140, 140, 20]
+
+
+def test_create_book_detects_bare_chapter_numbers(client):
+    registered = _register(client)
+    token = registered["access_token"]
+
+    content = "I\nThe first chapter.\n\nII\nThe second chapter."
+    create_response = client.post(
+        "/api/v1/books",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"title": "Numbered Book", "level": "LEVEL_2", "content": content},
+    )
+    assert create_response.status_code == 201
+    book_id = create_response.json()["id"]
+
+    detail_response = client.get(
+        f"/api/v1/books/{book_id}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert detail_response.status_code == 200
+    titles = [chapter["title"] for chapter in detail_response.json()["chapters"]]
+    assert titles == ["I", "II"]
+
+def test_preview_drops_front_matter(client):
+    registered = _register(client)
+    token = registered["access_token"]
+
+    content = "Dedication text.\n\n[ Chapter 1 ]\nThe story begins.\n\n[ Chapter 2 ]\nThe end."
+    response = client.post(
+        "/api/v1/books/preview",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"content": content},
+    )
+    assert response.status_code == 200
+    chapters = response.json()["chapters"]
+    assert [chapter["title"] for chapter in chapters] == ["Chapter 1", "Chapter 2"]
+    assert chapters[0]["content"] == "The story begins."
+    assert chapters[1]["content"] == "The end."
+
+def test_import_parse_txt(client):
+    registered = _register(client)
+    token = registered["access_token"]
+
+    response = client.post(
+        "/api/v1/books/import/parse",
+        headers={"Authorization": f"Bearer {token}"},
+        files={"file": ("book.txt", b"[ Chapter 1 ]\nhello world.\n\n[ Chapter 2 ]\nbye.", "text/plain")},
+    )
+    assert response.status_code == 200
+    chapters = response.json()["chapters"]
+    assert [chapter["title"] for chapter in chapters] == ["Chapter 1", "Chapter 2"]
+
+
+def test_import_book_from_chapters(client):
+    registered = _register(client)
+    token = registered["access_token"]
+
+    response = client.post(
+        "/api/v1/books/import",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "title": "Imported Book",
+            "level": "LEVEL_2",
+            "chapters": [
+                {"title": "Chapter 1", "content": "First chapter text."},
+                {"title": "Chapter 2", "content": "Second chapter text."},
+            ],
+        },
+    )
+    assert response.status_code == 201
+    book_id = response.json()["id"]
+
+    detail = client.get(
+        f"/api/v1/books/{book_id}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert detail.status_code == 200
+    assert [chapter["title"] for chapter in detail.json()["chapters"]] == ["Chapter 1", "Chapter 2"]
+
+
+def test_parse_pdf_uses_toc():
+    import fitz
+
+    doc = fitz.open()
+    page1 = doc.new_page()
+    page1.insert_text((72, 72), "Hello from chapter one.")
+    page2 = doc.new_page()
+    page2.insert_text((72, 72), "Hello from chapter two.")
+    doc.set_toc([[1, "Chapter 1", 1], [1, "Chapter 2", 2]])
+    data = doc.tobytes()
+    doc.close()
+
+    from app.services.import_service import _parse_pdf
+
+    chapters = _parse_pdf(data)
+    assert [chapter.title for chapter in chapters] == ["Chapter 1", "Chapter 2"]
+
+def test_parse_pdf_splits_by_content_not_page_bleed():
+    import fitz
+
+    doc = fitz.open()
+    page1 = doc.new_page()
+    page1.insert_textbox(
+        fitz.Rect(50, 50, 500, 700),
+        "Front matter for the whole book.\n[ Chapter 1 ]\nChapter one body.\nClosing line of chapter one.",
+    )
+    page2 = doc.new_page()
+    page2.insert_textbox(
+        fitz.Rect(50, 50, 500, 700),
+        "[ Chapter 2 ]\nChapter two body.",
+    )
+    doc.set_toc([[1, "Chapter 1", 1], [1, "Chapter 2", 2]])
+    data = doc.tobytes()
+    doc.close()
+
+    from app.services.import_service import _parse_pdf
+
+    chapters = _parse_pdf(data)
+    assert len(chapters) == 2
+    assert [chapter.title for chapter in chapters] == ["Chapter 1", "Chapter 2"]
+    assert chapters[0].content.startswith("Chapter one body.")
+    assert "Front matter" not in chapters[0].content
+    assert "Closing line of chapter one." in chapters[0].content
+    assert "Closing line of chapter one." not in chapters[1].content
+    assert chapters[1].content.startswith("Chapter two body.")
+
+def test_extract_json_handles_markdown_fence():
+    from app.ai.base import extract_json
+
+    raw = (
+        '```json\n'
+        '{"questions": [{"question": "What is it?", "correct_option": "A", '
+        '"options": [{"option_key": "A", "content": "A thing"}]}]}\n'
+        '```'
+    )
+    data = extract_json(raw)
+    assert data["questions"][0]["question"] == "What is it?"

@@ -27,8 +27,25 @@ class BookPageOut(BaseModel):
     chapter_title: str | None = None
 
 
+class ChapterOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    index: int
+    title: str
+    word_count: int
+    segment_count: int
+
+
+class ChapterDetailOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    index: int
+    title: str
+    segments: list[BookPageOut]
+
+
 class BookDetailOut(BookOut):
-    pages: list[BookPageOut]
+    chapters: list[ChapterOut]
 
 
 class BookOptionCreate(BaseModel):
@@ -50,4 +67,30 @@ class BookCreate(BaseModel):
     category: str | None = None
     estimated_minutes: int | None = Field(default=None, ge=1)
     content: str = Field(min_length=1)
+    questions: list[BookQuestionCreate] = []
+
+class BookPreviewRequest(BaseModel):
+    content: str = Field(min_length=1)
+
+class ParsedChapterOut(BaseModel):
+    title: str
+    content: str
+
+
+class ParsedBookOut(BaseModel):
+    chapters: list[ParsedChapterOut]
+
+
+class BookImportChapter(BaseModel):
+    title: str = Field(min_length=1, max_length=255)
+    content: str = Field(min_length=1)
+
+
+class BookImportCreate(BaseModel):
+    title: str = Field(min_length=1, max_length=255)
+    level: str = Field(min_length=1, max_length=20)
+    description: str | None = None
+    category: str | None = None
+    estimated_minutes: int | None = Field(default=None, ge=1)
+    chapters: list[BookImportChapter] = Field(min_length=1)
     questions: list[BookQuestionCreate] = []

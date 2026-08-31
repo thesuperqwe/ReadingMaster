@@ -3,7 +3,7 @@ import asyncio
 from sqlalchemy import select
 
 from app.db.session import async_session_factory
-from app.models import Book, BookPage, BookWord, Child, QuizOption, QuizQuestion, User, Word
+from app.models import Book, BookPage, BookWord, Chapter, Child, QuizOption, QuizQuestion, User, Word
 
 
 async def seed() -> None:
@@ -27,16 +27,17 @@ async def seed() -> None:
             description="A simple story about Tom and his dog.",
             level="LEVEL_2",
             estimated_minutes=8,
-            word_count=32,
+            word_count=17,
             category="animals",
             status="PUBLISHED",
         )
+        chapter = Chapter(book_id=book.id, index=0, title="正文", word_count=17, segment_count=3)
         pages = [
-            BookPage(page_no=1, content="Tom has a little dog.", book=book),
-            BookPage(page_no=2, content="The dog is very cute.", book=book),
-            BookPage(page_no=3, content="Tom likes to play with his dog.", book=book),
+            BookPage(page_no=1, content="Tom has a little dog.", book=book, chapter_index=0, chapter_title="正文"),
+            BookPage(page_no=2, content="The dog is very cute.", book=book, chapter_index=0, chapter_title="正文"),
+            BookPage(page_no=3, content="Tom likes to play with his dog.", book=book, chapter_index=0, chapter_title="正文"),
         ]
-        session.add_all([book, *pages])
+        session.add_all([book, chapter, *pages])
         await session.flush()
 
         word_rows = {

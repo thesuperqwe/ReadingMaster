@@ -115,6 +115,50 @@ class BookPageModel {
   }
 }
 
+class BookChapter {
+  const BookChapter({
+    required this.index,
+    required this.title,
+    required this.wordCount,
+    required this.segmentCount,
+  });
+
+  final int index;
+  final String title;
+  final int wordCount;
+  final int segmentCount;
+
+  factory BookChapter.fromJson(Map<String, dynamic> json) {
+    return BookChapter(
+      index: (json['index'] as num).toInt(),
+      title: json['title'].toString(),
+      wordCount: (json['word_count'] as num?)?.toInt() ?? 0,
+      segmentCount: (json['segment_count'] as num?)?.toInt() ?? 0,
+    );
+  }
+}
+
+class BookChapterDetail {
+  const BookChapterDetail({
+    required this.index,
+    required this.title,
+    required this.segments,
+  });
+
+  final int index;
+  final String title;
+  final List<BookPageModel> segments;
+
+  factory BookChapterDetail.fromJson(Map<String, dynamic> json) {
+    return BookChapterDetail(
+      index: (json['index'] as num).toInt(),
+      title: json['title'].toString(),
+      segments: (json['segments'] as List<dynamic>)
+          .map((item) => BookPageModel.fromJson(item as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+}
 class BookDetail {
   const BookDetail({
     required this.id,
@@ -124,7 +168,7 @@ class BookDetail {
     this.estimatedMinutes,
     this.wordCount,
     this.category,
-    required this.pages,
+    required this.chapters,
   });
 
   final String id;
@@ -134,7 +178,7 @@ class BookDetail {
   final int? estimatedMinutes;
   final int? wordCount;
   final String? category;
-  final List<BookPageModel> pages;
+  final List<BookChapter> chapters;
 
   factory BookDetail.fromJson(Map<String, dynamic> json) {
     return BookDetail(
@@ -145,13 +189,40 @@ class BookDetail {
       estimatedMinutes: (json['estimated_minutes'] as num?)?.toInt(),
       wordCount: (json['word_count'] as num?)?.toInt(),
       category: json['category'] as String?,
-      pages: (json['pages'] as List<dynamic>)
-          .map((item) => BookPageModel.fromJson(item as Map<String, dynamic>))
+      chapters: (json['chapters'] as List<dynamic>)
+          .map((item) => BookChapter.fromJson(item as Map<String, dynamic>))
           .toList(),
     );
   }
 }
 
+class ParsedChapter {
+  const ParsedChapter({required this.title, required this.content});
+
+  final String title;
+  final String content;
+
+  factory ParsedChapter.fromJson(Map<String, dynamic> json) {
+    return ParsedChapter(
+      title: json['title'].toString(),
+      content: json['content'].toString(),
+    );
+  }
+}
+
+class ParsedBook {
+  const ParsedBook({required this.chapters});
+
+  final List<ParsedChapter> chapters;
+
+  factory ParsedBook.fromJson(Map<String, dynamic> json) {
+    return ParsedBook(
+      chapters: (json['chapters'] as List<dynamic>)
+          .map((item) => ParsedChapter.fromJson(item as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+}
 class Word {
   const Word({
     required this.word,

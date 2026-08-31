@@ -7,10 +7,22 @@ import '../../widgets/common.dart';
 import 'quiz_result_page.dart';
 
 class QuizPage extends StatefulWidget {
-  const QuizPage({super.key, required this.bookId, required this.childId});
+  const QuizPage({
+    super.key,
+    required this.bookId,
+    required this.childId,
+    this.chapterIndex,
+    this.chapterTitle,
+    this.questions,
+    this.pages,
+  });
 
   final String bookId;
   final String childId;
+  final int? chapterIndex;
+  final String? chapterTitle;
+  final List<QuizQuestion>? questions;
+  final List<BookPageModel>? pages;
 
   @override
   State<QuizPage> createState() => _QuizPageState();
@@ -19,6 +31,7 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   final _apiService = ApiService();
   BookDetail? _book;
+  List<BookPageModel> _pages = [];
   List<QuizQuestion> _questions = [];
   int _index = 0;
   String? _selected;
@@ -40,11 +53,23 @@ class _QuizPageState extends State<QuizPage> {
     });
     try {
       final bookFuture = _apiService.getBook(widget.bookId);
-      final quizFuture = _apiService.getQuiz(widget.bookId);
+      final pagesFuture = widget.pages != null
+          ? Future.value(widget.pages)
+          : _apiService.getBookContent(widget.bookId);
+      final quizFuture = widget.questions != null
+          ? Future.value(widget.questions)
+          : _apiService.getQuiz(widget.bookId);
       final book = await bookFuture;
-      final questions = await quizFuture;
+      final pages = await pagesFuture;
+      final allQuestions = await quizFuture;
+      final questions = widget.chapterIndex != null
+          ? allQuestions
+              .where((q) => q.chapterIndex == widget.chapterIndex)
+              .toList()
+          : allQuestions;
       setState(() {
         _book = book;
+        _pages = pages;
         _questions = questions;
       });
     } catch (error) {
@@ -69,16 +94,20 @@ class _QuizPageState extends State<QuizPage> {
 
       if (_index + 1 >= _questions.length) {
         if (!mounted) return;
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (_) => QuizResultPage(
-              total: _questions.length,
-              correct: _correctCount,
-              bookId: widget.bookId,
-              childId: widget.childId,
+        if (widget.chapterIndex != null) {
+          Navigator.of(context).pop(_correctCount);
+        } else {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => QuizResultPage(
+                total: _questions.length,
+                correct: _correctCount,
+                bookId: widget.bookId,
+                childId: widget.childId,
+              ),
             ),
-          ),
-        );
+          );
+        }
       } else {
         setState(() {
           _index += 1;
@@ -134,7 +163,7 @@ class _QuizPageState extends State<QuizPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('阅读理解'),
+        title: Text(widget.chapterTitle ?? '阅读理解'),
         actions: [
           if (!wide)
             IconButton(
@@ -190,13 +219,13 @@ class _QuizPageState extends State<QuizPage> {
               ],
             ),
             const SizedBox(height: 16),
-            ...book.pages.map(
+            ..._pages.map(
               (page) => Padding(
                 padding: const EdgeInsets.only(bottom: 18),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (book.pages.length > 1) ...[
+                    if (_pages.length > 1) ...[
                       Text(
                         '第 ${page.pageNo} 页',
                         style: const TextStyle(

@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/api_service.dart';
@@ -71,6 +74,31 @@ class _AddBookPageState extends State<AddBookPage> {
 
   void _addQuestion() {
     setState(() => _questions.add(_QuestionDraft()));
+  }
+
+  Future<void> _importEbook() async {
+    final file = await FilePicker.pickFile(
+      type: FileType.custom,
+      allowedExtensions: ['txt', 'md'],
+    );
+    if (file == null) return;
+
+    final bytes = await file.readAsBytes();
+    final text = utf8.decode(bytes);
+
+    setState(() {
+      if (_titleController.text.trim().isEmpty) {
+        final title = file.name.replaceAll(RegExp(r'\.(txt|md)$', caseSensitive: false), '');
+        _titleController.text = title;
+      }
+      _contentController.text = text;
+    });
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('已导入：${file.name}')),
+      );
+    }
   }
 
   Future<void> _generateQuestionsWithAI() async {
@@ -204,9 +232,20 @@ class _AddBookPageState extends State<AddBookPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      '正文',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.ink),
+                    Row(
+                      children: [
+                        const Expanded(
+                          child: Text(
+                            '正文',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.ink),
+                          ),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: _importEbook,
+                          icon: const Icon(Icons.upload_file_rounded),
+                          label: const Text('导入电子书'),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 6),
                     const Text(

@@ -37,6 +37,7 @@ dependencies:
   http: ^1.6.0
   flutter_tts: ^4.2.5
   shared_preferences: ^2.5.5
+  file_picker: ^12.1.2
 
 dev_dependencies:
   flutter_test:

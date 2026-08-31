@@ -132,6 +132,18 @@ class ApiService {
     return ReadingSession.fromJson(data as Map<String, dynamic>);
   }
 
+  Future<ReadingSession> updateReadingProgress({
+    required String sessionId,
+    required int durationSeconds,
+    required double progress,
+  }) async {
+    final data = await ApiClient.post(
+      '/api/v1/reading/sessions/$sessionId/progress',
+      body: {'duration_seconds': durationSeconds, 'progress': progress},
+    );
+    return ReadingSession.fromJson(data as Map<String, dynamic>);
+  }
+
   Future<Word> explainWordAI(String word, {String? context}) async {
     final data = await ApiClient.post(
       '/api/v1/ai/explain-word',

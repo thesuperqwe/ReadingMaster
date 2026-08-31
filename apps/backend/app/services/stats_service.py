@@ -25,8 +25,7 @@ async def build_parent_stats(session: AsyncSession, child: Child) -> ParentStats
     reading_seconds = await session.scalar(
         select(func.coalesce(func.sum(ReadingSession.duration_seconds), 0)).where(
             ReadingSession.child_id == child.id,
-            ReadingSession.completed.is_(True),
-            ReadingSession.finished_at >= week_ago,
+            ReadingSession.last_activity_at >= week_ago,
         )
     )
     new_words = await session.scalar(

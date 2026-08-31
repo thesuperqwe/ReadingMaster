@@ -44,8 +44,7 @@ async def build_home(
     reading_seconds = await session.scalar(
         select(func.coalesce(func.sum(ReadingSession.duration_seconds), 0)).where(
             ReadingSession.child_id == child_id,
-            ReadingSession.completed.is_(True),
-            ReadingSession.finished_at >= today_start,
+            ReadingSession.last_activity_at >= today_start,
         )
     )
     new_words = await session.scalar(

@@ -10,6 +10,7 @@ from app.schemas.reading import (
     FinishSessionRequest,
     ReadingEventCreate,
     ReadingEventOut,
+    ReadingProgressUpdate,
     ReadingSessionCreate,
 )
 from app.services.child_service import get_child_for_parent
@@ -25,10 +26,12 @@ async def start_session(
     if book is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
 
+    now = datetime.now(timezone.utc)
     reading_session = ReadingSession(
         child_id=data.child_id,
         book_id=data.book_id,
-        started_at=datetime.now(timezone.utc),
+        started_at=now,
+        last_activity_at=now,
         duration_seconds=0,
         progress=0,
         completed=False,
@@ -98,10 +101,12 @@ async def finish_session(
 
     await get_child_for_parent(session, reading_session.child_id, parent_id)
 
+    now = datetime.now(timezone.utc)
     reading_session.duration_seconds = data.duration_seconds
     reading_session.progress = data.progress
     reading_session.completed = data.completed
-    reading_session.finished_at = datetime.now(timezone.utc)
+    reading_session.finished_at = now
+    reading_session.last_activity_at = now
 
     if data.completed:
         session.add(
@@ -112,6 +117,27 @@ async def finish_session(
                 event_type="BOOK_FINISH",
             )
         )
+
+    await session.commit()
+    await session.refresh(reading_session)
+    return reading_session
+
+
+async def update_progress(
+    session: AsyncSession,
+    parent_id: uuid.UUID,
+    session_id: uuid.UUID,
+    data: ReadingProgressUpdate,
+) -> ReadingSession:
+    reading_session = await session.get(ReadingSession, session_id)
+    if reading_session is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Reading session not found")
+
+    await get_child_for_parent(session, reading_session.child_id, parent_id)
+
+    reading_session.duration_seconds = data.duration_seconds
+    reading_session.progress = data.progress
+    reading_session.last_activity_at = datetime.now(timezone.utc)
 
     await session.commit()
     await session.refresh(reading_session)

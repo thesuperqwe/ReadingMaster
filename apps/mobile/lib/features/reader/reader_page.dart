@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -50,6 +52,7 @@ class _ReaderPageState extends State<ReaderPage> {
   @override
   void dispose() {
     _tts.stop();
+    unawaited(_reportProgress());
     super.dispose();
   }
 
@@ -133,6 +136,7 @@ class _ReaderPageState extends State<ReaderPage> {
       eventType: 'PAGE_VIEW',
       pageNo: index + 1,
     );
+    await _reportProgress();
   }
 
   Future<void> _openWord(String rawWord) async {
@@ -198,6 +202,25 @@ class _ReaderPageState extends State<ReaderPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('暂时无法播放语音')),
       );
+    }
+  }
+
+  Future<void> _reportProgress() async {
+    final session = _session;
+    final book = _book;
+    if (session == null || book == null) return;
+    final durationSeconds = DateTime.now()
+        .difference(_sessionStartedAt ?? DateTime.now())
+        .inSeconds;
+    final progress = ((_pageIndex + 1) / book.pages.length).clamp(0.0, 1.0).toDouble();
+    try {
+      await _apiService.updateReadingProgress(
+        sessionId: session.id,
+        durationSeconds: durationSeconds,
+        progress: progress,
+      );
+    } catch (_) {
+      // Progress reporting is best-effort and should not interrupt reading.
     }
   }
 

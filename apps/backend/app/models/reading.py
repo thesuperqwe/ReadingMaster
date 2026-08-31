@@ -28,6 +28,7 @@ class ReadingSession(Base):
     completed: Mapped[bool] = mapped_column(
         Boolean, nullable=False, default=False, server_default="false"
     )
+    last_activity_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     child: Mapped["Child"] = relationship(back_populates="reading_sessions")
     book: Mapped["Book"] = relationship(back_populates="reading_sessions")

@@ -397,3 +397,42 @@ def test_parent_stats_aggregate_weekly_data(client, seed_content):
     assert body["quiz_accuracy"] == 0.0
     assert body["word_mastery"] == 0.0
     assert [item["word"] for item in body["attention_words"]] == ["cute"]
+
+
+def test_reading_progress_counts_partial_duration(client, seed_content):
+    registered = _register(client)
+    token = registered["access_token"]
+    child = _create_child(client, token)
+    content = asyncio.run(seed_content())
+
+    session_response = client.post(
+        "/api/v1/reading/sessions",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"child_id": child["id"], "book_id": content["book_id"]},
+    )
+    assert session_response.status_code == 201
+    session_id = session_response.json()["id"]
+
+    progress_response = client.post(
+        f"/api/v1/reading/sessions/{session_id}/progress",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"duration_seconds": 90, "progress": 0.5},
+    )
+    assert progress_response.status_code == 200
+    assert progress_response.json()["duration_seconds"] == 90
+    assert progress_response.json()["progress"] == 0.5
+
+    home_response = client.get(
+        f"/api/v1/home?child_id={child['id']}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert home_response.status_code == 200
+    assert home_response.json()["today"]["reading_minutes"] == 1
+
+    stats_response = client.get(
+        f"/api/v1/children/{child['id']}/stats",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert stats_response.status_code == 200
+    assert stats_response.json()["weekly"]["reading_minutes"] == 1
+    assert stats_response.json()["weekly"]["books_read"] == 0

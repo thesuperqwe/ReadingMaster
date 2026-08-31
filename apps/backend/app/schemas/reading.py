@@ -45,3 +45,8 @@ class FinishSessionRequest(BaseModel):
     duration_seconds: int = Field(default=0, ge=0)
     progress: float = Field(default=0, ge=0, le=1)
     completed: bool = False
+
+
+class ReadingProgressUpdate(BaseModel):
+    duration_seconds: int = Field(default=0, ge=0)
+    progress: float = Field(default=0, ge=0, le=1)

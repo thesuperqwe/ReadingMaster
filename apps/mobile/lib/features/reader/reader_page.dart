@@ -8,6 +8,7 @@ import '../../services/api_service.dart';
 import '../../services/offline_dictionary.dart';
 import '../../theme/app_theme.dart';
 import '../quiz/quiz_page.dart';
+import '../quiz/quiz_result_page.dart';
 import 'word_popup.dart';
 
 class ReaderPage extends StatefulWidget {
@@ -41,6 +42,10 @@ class _ReaderPageState extends State<ReaderPage> {
   int _activeCharIndex = -1;
   bool _loading = true;
   bool _finishing = false;
+  List<QuizQuestion> _allQuestions = const [];
+  int _quizCorrect = 0;
+  int _quizTotal = 0;
+  bool _hasChapterQuestions = false;
   bool _speaking = false;
   DateTime? _sessionStartedAt;
   String? _error;
@@ -102,11 +107,14 @@ class _ReaderPageState extends State<ReaderPage> {
         childId: widget.childId,
         bookId: widget.bookId,
       );
+      final quiz = await _apiService.getQuiz(widget.bookId);
       _sessionStartedAt = DateTime.now();
       setState(() {
         _book = book;
         _session = session;
         _chapters = book.chapters;
+        _allQuestions = quiz;
+        _hasChapterQuestions = quiz.any((q) => q.chapterIndex != null);
       });
       if (book.chapters.isNotEmpty) {
         await _loadChapter(0);
@@ -181,10 +189,8 @@ class _ReaderPageState extends State<ReaderPage> {
   Future<void> _goNext() async {
     if (_pageIndex < _segments.length - 1) {
       await _changePage(_pageIndex + 1);
-    } else if (_chapterIndex < _chapters.length - 1) {
-      await _loadChapter(_chapterIndex + 1);
     } else {
-      await _finishAndQuiz();
+      await _onChapterComplete();
     }
   }
 
@@ -317,6 +323,79 @@ class _ReaderPageState extends State<ReaderPage> {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) => QuizPage(bookId: widget.bookId, childId: widget.childId),
+        ),
+      );
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          _finishing = false;
+          _error = error.toString();
+        });
+      }
+    }
+  }
+
+  bool _chapterHasQuestions(int index) =>
+      _allQuestions.any((q) => q.chapterIndex == index);
+
+  Future<void> _onChapterComplete() async {
+    final book = _book;
+    if (book == null || _segments.isEmpty) return;
+    final isLastChapter = _chapterIndex >= _chapters.length - 1;
+    final chapterQuestions = _chapterHasQuestions(_chapterIndex)
+        ? _allQuestions.where((q) => q.chapterIndex == _chapterIndex).toList()
+        : const <QuizQuestion>[];
+
+    if (_hasChapterQuestions && chapterQuestions.isNotEmpty) {
+      final correct = await Navigator.of(context).push<int>(
+        MaterialPageRoute(
+          builder: (_) => QuizPage(
+            bookId: widget.bookId,
+            childId: widget.childId,
+            chapterIndex: _chapterIndex,
+            chapterTitle: book.chapters[_chapterIndex].title,
+            questions: chapterQuestions,
+            pages: _segments,
+          ),
+        ),
+      );
+      if (!mounted || correct == null) return;
+      _quizCorrect += correct;
+      _quizTotal += chapterQuestions.length;
+      if (isLastChapter) {
+        await _finishSession(_quizCorrect, _quizTotal);
+      } else {
+        await _loadChapter(_chapterIndex + 1);
+      }
+    } else if (isLastChapter) {
+      await _finishAndQuiz();
+    } else {
+      await _loadChapter(_chapterIndex + 1);
+    }
+  }
+
+  Future<void> _finishSession(int correct, int total) async {
+    if (_session == null || _book == null) return;
+    setState(() => _finishing = true);
+    try {
+      final durationSeconds = DateTime.now()
+          .difference(_sessionStartedAt ?? DateTime.now())
+          .inSeconds;
+      await _apiService.finishSession(
+        sessionId: _session!.id,
+        durationSeconds: durationSeconds,
+        progress: 1,
+        completed: true,
+      );
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => QuizResultPage(
+            total: total,
+            correct: correct,
+            bookId: widget.bookId,
+            childId: widget.childId,
+          ),
         ),
       );
     } catch (error) {
@@ -507,14 +586,24 @@ class _ReaderPageState extends State<ReaderPage> {
               const SizedBox(width: 10),
               if (isLastSegment && isLastChapter)
                 FilledButton(
-                  onPressed: _finishing ? null : _finishAndQuiz,
+                  onPressed: _finishing ? null : _goNext,
                   child: const Text('完成并做题'),
+                )
+              else if (isLastSegment)
+                FilledButton.icon(
+                  onPressed: _goNext,
+                  icon: const Icon(Icons.chevron_right_rounded),
+                  label: Text(
+                    _hasChapterQuestions && _chapterHasQuestions(_chapterIndex)
+                        ? '完成本章'
+                        : '下一章',
+                  ),
                 )
               else
                 FilledButton.icon(
                   onPressed: _goNext,
                   icon: const Icon(Icons.chevron_right_rounded),
-                  label: Text(isLastSegment ? '下一章' : '下一页'),
+                  label: const Text('下一页'),
                 ),
             ],
           ),

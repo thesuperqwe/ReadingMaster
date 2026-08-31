@@ -54,10 +54,10 @@ class _QuizPageState extends State<QuizPage> {
     try {
       final bookFuture = _apiService.getBook(widget.bookId);
       final pagesFuture = widget.pages != null
-          ? Future.value(widget.pages)
+          ? Future.value(widget.pages!)
           : _apiService.getBookContent(widget.bookId);
       final quizFuture = widget.questions != null
-          ? Future.value(widget.questions)
+          ? Future.value(widget.questions!)
           : _apiService.getQuiz(widget.bookId);
       final book = await bookFuture;
       final pages = await pagesFuture;

@@ -513,3 +513,33 @@ def test_generate_quiz_per_chapter(client, monkeypatch):
     assert all(q["chapter_index"] == 1 for q in questions[3:])
     assert questions[0]["chapter_title"] == "Chapter 1"
     assert questions[3]["chapter_title"] == "Chapter 2"
+
+
+def test_book_content_preview_and_delete(client):
+    registered = _register(client)
+    token = registered["access_token"]
+
+    create_response = client.post(
+        "/api/v1/books",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"title": "Preview Book", "level": "LEVEL_2", "content": "This is the first page of content.\n\nSecond page content."},
+    )
+    assert create_response.status_code == 201
+    book_id = create_response.json()["id"]
+
+    books_response = client.get("/api/v1/books", headers={"Authorization": f"Bearer {token}"})
+    assert books_response.status_code == 200
+    created = next(book for book in books_response.json() if book["id"] == book_id)
+    assert created["content_preview"] == "This is the first page of content."
+
+    delete_response = client.delete(
+        f"/api/v1/books/{book_id}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert delete_response.status_code == 204
+
+    detail_response = client.get(
+        f"/api/v1/books/{book_id}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert detail_response.status_code == 404

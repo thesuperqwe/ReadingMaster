@@ -77,6 +77,10 @@ class ApiService {
         .toList();
   }
 
+  Future<void> deleteBook(String bookId) async {
+    await ApiClient.delete('/api/v1/books/$bookId');
+  }
+
   Future<BookDetail> getBook(String bookId) async {
     final data = await ApiClient.get('/api/v1/books/$bookId');
     return BookDetail.fromJson(data as Map<String, dynamic>);

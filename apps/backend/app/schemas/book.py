@@ -14,6 +14,7 @@ class BookOut(BaseModel):
     word_count: int | None
     category: str | None
     status: str
+    content_preview: str | None = None
 
 
 class BookPageOut(BaseModel):

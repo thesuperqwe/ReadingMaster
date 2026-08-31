@@ -36,6 +36,10 @@ class ApiClient {
     return _request('POST', path, body: body);
   }
 
+  static Future<dynamic> delete(String path) async {
+    return _request('DELETE', path);
+  }
+
   static Future<dynamic> _request(
     String method,
     String path, {
@@ -54,6 +58,8 @@ class ApiClient {
         headers: headers,
         body: body == null ? null : jsonEncode(body),
       );
+    } else if (method == 'DELETE') {
+      response = await http.delete(uri, headers: headers);
     } else {
       throw UnsupportedError('Unsupported method: $method');
     }

@@ -67,6 +67,7 @@ class Book {
     this.wordCount,
     this.category,
     this.status,
+    this.contentPreview,
   });
 
   final String id;
@@ -77,6 +78,7 @@ class Book {
   final int? wordCount;
   final String? category;
   final String? status;
+  final String? contentPreview;
 
   factory Book.fromJson(Map<String, dynamic> json) {
     return Book(
@@ -88,6 +90,7 @@ class Book {
       wordCount: (json['word_count'] as num?)?.toInt(),
       category: json['category'] as String?,
       status: json['status'] as String?,
+      contentPreview: json['content_preview'] as String?,
     );
   }
 }

@@ -59,6 +59,38 @@ class _BookshelfPageState extends State<BookshelfPage> {
     if (created == true) await _load();
   }
 
+  Future<void> _deleteBook(Book book) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('删除图书'),
+        content: Text('确定要删除「${book.title}」吗？删除后无法恢复。'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('取消'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('删除'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    try {
+      await _apiService.deleteBook(book.id);
+      await _load();
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('删除失败：$error')),
+        );
+      }
+    }
+  }
+
   List<Book> get _filtered {
     final query = _query.trim().toLowerCase();
     return _books.where((book) {
@@ -136,7 +168,7 @@ class _BookshelfPageState extends State<BookshelfPage> {
                     crossAxisCount: MediaQuery.of(context).size.width >= 900 ? 4 : 2,
                     mainAxisSpacing: 16,
                     crossAxisSpacing: 16,
-                    childAspectRatio: 0.78,
+                    childAspectRatio: 0.68,
                   ),
                   itemCount: books.length,
                   itemBuilder: (context, index) => _bookCard(books[index]),
@@ -169,6 +201,9 @@ class _BookshelfPageState extends State<BookshelfPage> {
   }
 
   Widget _bookCard(Book book) {
+    final preview = (book.contentPreview?.isNotEmpty == true)
+        ? book.contentPreview!
+        : (book.description ?? '');
     return SurfaceCard(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
@@ -179,21 +214,48 @@ class _BookshelfPageState extends State<BookshelfPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          BookCover(
-            title: book.title,
-            category: book.category,
-            description: book.description,
-            level: book.level,
-            height: 116,
-            width: double.infinity,
+          Stack(
+            children: [
+              BookCover(
+                title: book.title,
+                category: book.category,
+                description: book.description,
+                level: book.level,
+                height: 88,
+                width: double.infinity,
+              ),
+              Positioned(
+                top: 4,
+                right: 4,
+                child: Material(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  shape: const CircleBorder(),
+                  child: IconButton(
+                    tooltip: '删除',
+                    onPressed: () => _deleteBook(book),
+                    icon: const Icon(Icons.delete_outline_rounded, size: 19, color: AppColors.danger),
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           Text(
             book.title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.ink),
           ),
+          const SizedBox(height: 4),
+          if (preview.isNotEmpty)
+            Expanded(
+              child: Text(
+                preview,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 12, color: AppColors.inkSoft, height: 1.4),
+              ),
+            ),
           const SizedBox(height: 6),
           Row(
             children: [

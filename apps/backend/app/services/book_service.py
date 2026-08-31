@@ -13,7 +13,10 @@ from app.services.chapter_service import chapter_title_for, split_chapters
 
 async def list_books(session: AsyncSession) -> list[Book]:
     rows = await session.scalars(
-        select(Book).where(Book.status == "PUBLISHED").order_by(Book.level, Book.title)
+        select(Book)
+        .options(selectinload(Book.pages))
+        .where(Book.status == "PUBLISHED")
+        .order_by(Book.level, Book.title)
     )
     return list(rows)
 
@@ -25,6 +28,14 @@ async def get_book_or_404(session: AsyncSession, book_id: uuid.UUID) -> Book:
     if book is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
     return book
+
+
+async def delete_book(session: AsyncSession, book_id: uuid.UUID) -> None:
+    book = await session.get(Book, book_id)
+    if book is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
+    await session.delete(book)
+    await session.commit()
 
 
 async def create_book(session: AsyncSession, data: BookCreate) -> Book:

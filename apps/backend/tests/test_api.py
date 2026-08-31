@@ -739,3 +739,34 @@ def test_extract_json_handles_markdown_fence():
     )
     data = extract_json(raw)
     assert data["questions"][0]["question"] == "What is it?"
+
+
+def test_favorite_word(client):
+    registered = _register(client)
+    token = registered["access_token"]
+    child = _create_child(client, token)
+
+    response = client.post(
+        f"/api/v1/children/{child['id']}/words/cute/favorite",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"favorite": True},
+    )
+    assert response.status_code == 200, response.text
+    assert response.json()["favorite"] is True
+    assert response.json()["word"]["word"] == "cute"
+
+    vocabulary = client.get(
+        f"/api/v1/children/{child['id']}/words",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert vocabulary.status_code == 200
+    cute = next(item for item in vocabulary.json() if item["word"]["word"] == "cute")
+    assert cute["favorite"] is True
+
+    unfavorite = client.post(
+        f"/api/v1/children/{child['id']}/words/cute/favorite",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"favorite": False},
+    )
+    assert unfavorite.status_code == 200
+    assert unfavorite.json()["favorite"] is False

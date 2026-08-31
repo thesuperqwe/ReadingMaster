@@ -259,17 +259,27 @@ class Word {
 }
 
 class UserWord {
-  const UserWord({required this.word, required this.masteryScore, required this.clickCount});
+  const UserWord({
+    required this.id,
+    required this.word,
+    required this.masteryScore,
+    required this.clickCount,
+    required this.favorite,
+  });
 
+  final String id;
   final Word word;
   final double masteryScore;
   final int clickCount;
+  final bool favorite;
 
   factory UserWord.fromJson(Map<String, dynamic> json) {
     return UserWord(
+      id: json['id'].toString(),
       word: Word.fromJson(json['word'] as Map<String, dynamic>),
       masteryScore: (json['mastery_score'] as num?)?.toDouble() ?? 0,
       clickCount: (json['click_count'] as num?)?.toInt() ?? 0,
+      favorite: json['favorite'] as bool? ?? false,
     );
   }
 }

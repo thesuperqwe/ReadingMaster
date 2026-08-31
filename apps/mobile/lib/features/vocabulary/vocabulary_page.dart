@@ -25,6 +25,7 @@ class _VocabularyPageState extends State<VocabularyPage> {
   bool _loading = true;
   String? _error;
   String _query = '';
+  bool _favoritesOnly = false;
 
   @override
   void initState() {
@@ -65,12 +66,35 @@ class _VocabularyPageState extends State<VocabularyPage> {
     );
   }
 
+  Future<void> _toggleFavorite(UserWord item) async {
+    try {
+      final updated = await _apiService.setWordFavorite(
+        childId: widget.childId,
+        word: item.word.word,
+        favorite: !item.favorite,
+      );
+      if (!mounted) return;
+      setState(() {
+        final index = _words.indexWhere((w) => w.id == item.id);
+        if (index >= 0) _words[index] = updated;
+      });
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('操作失败：$error')),
+        );
+      }
+    }
+  }
+
   List<UserWord> get _filtered {
     final query = _query.trim().toLowerCase();
-    if (query.isEmpty) return _words;
-    return _words
-        .where((item) => item.word.word.toLowerCase().contains(query))
-        .toList();
+    return _words.where((item) {
+      final matchesQuery =
+          query.isEmpty || item.word.word.toLowerCase().contains(query);
+      final matchesFavorite = !_favoritesOnly || item.favorite;
+      return matchesQuery && matchesFavorite;
+    }).toList();
   }
 
   @override
@@ -115,6 +139,21 @@ class _VocabularyPageState extends State<VocabularyPage> {
                   hintText: '搜索生词',
                   prefixIcon: Icon(Icons.search_rounded),
                 ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  FilterChip(
+                    label: const Text('只看收藏'),
+                    selected: _favoritesOnly,
+                    onSelected: (value) => setState(() => _favoritesOnly = value),
+                    selectedColor: AppColors.gold.withValues(alpha: 0.2),
+                    checkmarkColor: AppColors.gold,
+                    side: BorderSide(
+                      color: _favoritesOnly ? AppColors.gold : AppColors.line,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -201,6 +240,14 @@ class _VocabularyPageState extends State<VocabularyPage> {
                   style: const TextStyle(fontSize: 13, color: AppColors.inkSoft),
                 ),
               ],
+            ),
+          ),
+          IconButton(
+            onPressed: () => _toggleFavorite(item),
+            tooltip: item.favorite ? '取消收藏' : '收藏',
+            icon: Icon(
+              item.favorite ? Icons.star_rounded : Icons.star_border_rounded,
+              color: item.favorite ? AppColors.gold : AppColors.inkSoft,
             ),
           ),
           IconButton(

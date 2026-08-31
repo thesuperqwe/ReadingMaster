@@ -4,8 +4,8 @@ from fastapi import APIRouter
 
 from app.api.deps import CurrentUser, SessionDep
 from app.schemas.review import ReviewResultOut, ReviewSubmitRequest, ReviewWordOut
-from app.schemas.word import UserWordOut
-from app.services.book_service import list_user_words
+from app.schemas.word import UserWordOut, WordFavoriteRequest
+from app.services.book_service import list_user_words, set_word_favorite
 from app.services.child_service import get_child_for_parent
 from app.services.review_service import list_due_review_words, submit_review
 
@@ -26,6 +26,18 @@ async def get_review_words(
 ) -> list[ReviewWordOut]:
     await get_child_for_parent(session, child_id, user)
     return await list_due_review_words(session, child_id)
+
+
+@router.post("/{child_id}/words/{word}/favorite", response_model=UserWordOut)
+async def set_word_favorite_route(
+    session: SessionDep,
+    user: CurrentUser,
+    child_id: uuid.UUID,
+    word: str,
+    data: WordFavoriteRequest,
+) -> UserWordOut:
+    await get_child_for_parent(session, child_id, user)
+    return await set_word_favorite(session, child_id, word, data.favorite)
 
 
 @router.post("/{child_id}/review", response_model=ReviewResultOut)

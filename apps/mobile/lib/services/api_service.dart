@@ -257,6 +257,18 @@ class ApiService {
         .toList();
   }
 
+  Future<UserWord> setWordFavorite({
+    required String childId,
+    required String word,
+    required bool favorite,
+  }) async {
+    final data = await ApiClient.post(
+      '/api/v1/children/$childId/words/$word/favorite',
+      body: {'favorite': favorite},
+    );
+    return UserWord.fromJson(data as Map<String, dynamic>);
+  }
+
   Future<List<ReviewWord>> getReviewWords(String childId) async {
     final data = await ApiClient.get('/api/v1/children/$childId/review');
     return (data as List<dynamic>)

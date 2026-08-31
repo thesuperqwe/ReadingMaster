@@ -203,6 +203,44 @@ async def get_word_by_text(session: AsyncSession, word: str) -> Word:
     return row
 
 
+async def set_word_favorite(
+    session: AsyncSession, child_id: uuid.UUID, word_text: str, favorite: bool
+) -> UserWordOut:
+    normalized = word_text.strip().lower()
+    word = await session.scalar(select(Word).where(Word.word == normalized))
+    if word is None:
+        word = Word(word=normalized)
+        session.add(word)
+        await session.flush()
+
+    user_word = await session.scalar(
+        select(UserWord).where(
+            UserWord.child_id == child_id,
+            UserWord.word_id == word.id,
+        )
+    )
+    if user_word is None:
+        user_word = UserWord(child_id=child_id, word_id=word.id)
+        session.add(user_word)
+        await session.flush()
+
+    user_word.favorite = favorite
+    await session.commit()
+    await session.refresh(user_word)
+
+    return UserWordOut(
+        id=user_word.id,
+        word=WordOut.model_validate(word),
+        mastery_score=user_word.mastery_score,
+        encounter_count=user_word.encounter_count,
+        click_count=user_word.click_count,
+        audio_count=user_word.audio_count,
+        correct_count=user_word.correct_count,
+        wrong_count=user_word.wrong_count,
+        favorite=user_word.favorite,
+    )
+
+
 async def list_user_words(session: AsyncSession, child_id: uuid.UUID) -> list[UserWordOut]:
     rows = await session.execute(
         select(UserWord, Word)
@@ -214,6 +252,7 @@ async def list_user_words(session: AsyncSession, child_id: uuid.UUID) -> list[Us
     for user_word, word in rows:
         result.append(
             UserWordOut(
+                id=user_word.id,
                 word=WordOut.model_validate(word),
                 mastery_score=user_word.mastery_score,
                 encounter_count=user_word.encounter_count,
@@ -221,6 +260,7 @@ async def list_user_words(session: AsyncSession, child_id: uuid.UUID) -> list[Us
                 audio_count=user_word.audio_count,
                 correct_count=user_word.correct_count,
                 wrong_count=user_word.wrong_count,
+                favorite=user_word.favorite,
             )
         )
     return result

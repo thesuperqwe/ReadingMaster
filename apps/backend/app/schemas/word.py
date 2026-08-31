@@ -1,3 +1,5 @@
+import uuid
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -15,6 +17,7 @@ class WordOut(BaseModel):
 
 
 class UserWordOut(BaseModel):
+    id: uuid.UUID
     word: WordOut
     mastery_score: float
     encounter_count: int
@@ -22,3 +25,8 @@ class UserWordOut(BaseModel):
     audio_count: int
     correct_count: int
     wrong_count: int
+    favorite: bool
+
+
+class WordFavoriteRequest(BaseModel):
+    favorite: bool

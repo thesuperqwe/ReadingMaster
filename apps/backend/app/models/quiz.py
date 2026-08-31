@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String, Text, func
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -17,6 +17,8 @@ class QuizQuestion(Base):
     question: Mapped[str] = mapped_column(Text, nullable=False)
     question_type: Mapped[str | None] = mapped_column(String(30))
     correct_option: Mapped[str | None] = mapped_column(String(10))
+    chapter_index: Mapped[int | None] = mapped_column(Integer)
+    chapter_title: Mapped[str | None] = mapped_column(String(255))
 
     book: Mapped["Book"] = relationship(back_populates="quiz_questions")
     options: Mapped[list["QuizOption"]] = relationship(

@@ -29,6 +29,8 @@ async def list_quiz(session: AsyncSession, book_id: uuid.UUID) -> list[QuizQuest
                 question=question.question,
                 question_type=question.question_type,
                 options=[QuizOptionOut.model_validate(option) for option in options],
+                chapter_index=question.chapter_index,
+                chapter_title=question.chapter_title,
             )
         )
     return result

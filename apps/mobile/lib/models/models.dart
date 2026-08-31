@@ -363,11 +363,15 @@ class QuizQuestion {
     required this.id,
     required this.question,
     required this.options,
+    this.chapterIndex,
+    this.chapterTitle,
   });
 
   final String id;
   final String question;
   final List<QuizOption> options;
+  final int? chapterIndex;
+  final String? chapterTitle;
 
   factory QuizQuestion.fromJson(Map<String, dynamic> json) {
     return QuizQuestion(
@@ -376,6 +380,8 @@ class QuizQuestion {
       options: (json['options'] as List<dynamic>)
           .map((item) => QuizOption.fromJson(item as Map<String, dynamic>))
           .toList(),
+      chapterIndex: (json['chapter_index'] as num?)?.toInt(),
+      chapterTitle: json['chapter_title'] as String?,
     );
   }
 }

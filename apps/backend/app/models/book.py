@@ -49,6 +49,8 @@ class BookPage(Base):
     page_no: Mapped[int] = mapped_column(Integer, nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
     image_url: Mapped[str | None] = mapped_column(Text)
+    chapter_index: Mapped[int | None] = mapped_column(Integer)
+    chapter_title: Mapped[str | None] = mapped_column(String(255))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

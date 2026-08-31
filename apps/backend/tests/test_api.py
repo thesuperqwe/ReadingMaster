@@ -436,3 +436,80 @@ def test_reading_progress_counts_partial_duration(client, seed_content):
     assert stats_response.status_code == 200
     assert stats_response.json()["weekly"]["reading_minutes"] == 1
     assert stats_response.json()["weekly"]["books_read"] == 0
+
+
+def test_create_book_splits_chapters(client):
+    registered = _register(client)
+    token = registered["access_token"]
+
+    content = (
+        "Chapter 1\n"
+        "This is page one.\n\n"
+        "This is page two.\n\n"
+        "Chapter 2\n"
+        "This is chapter two text."
+    )
+    create_response = client.post(
+        "/api/v1/books",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "title": "Chaptered Story",
+            "level": "LEVEL_2",
+            "content": content,
+            "questions": [
+                {
+                    "question": "What is in chapter one?",
+                    "correct_option": "A",
+                    "options": [
+                        {"option_key": "A", "content": "Pages"},
+                        {"option_key": "B", "content": "Nothing"},
+                    ],
+                    "chapter_index": 0,
+                }
+            ],
+        },
+    )
+    assert create_response.status_code == 201, create_response.text
+    book_id = create_response.json()["id"]
+
+    detail_response = client.get(
+        f"/api/v1/books/{book_id}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert detail_response.status_code == 200
+    pages = detail_response.json()["pages"]
+    assert [page["chapter_index"] for page in pages] == [0, 0, 1]
+    assert pages[0]["chapter_title"] == "Chapter 1"
+    assert pages[2]["chapter_title"] == "Chapter 2"
+
+    quiz_response = client.get(
+        f"/api/v1/books/{book_id}/quiz",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert quiz_response.status_code == 200
+    question = quiz_response.json()[0]
+    assert question["chapter_index"] == 0
+    assert question["chapter_title"] == "Chapter 1"
+
+
+def test_generate_quiz_per_chapter(client, monkeypatch):
+    from app.ai.mock_provider import MockProvider
+
+    monkeypatch.setattr("app.services.ai_service.get_ai_provider", lambda: MockProvider())
+
+    registered = _register(client)
+    token = registered["access_token"]
+
+    content = "Chapter 1\nOnce upon a time.\n\nChapter 2\nThe end."
+    response = client.post(
+        "/api/v1/ai/generate-quiz",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"text": content},
+    )
+    assert response.status_code == 200, response.text
+    questions = response.json()["questions"]
+    assert len(questions) == 6
+    assert all(q["chapter_index"] == 0 for q in questions[:3])
+    assert all(q["chapter_index"] == 1 for q in questions[3:])
+    assert questions[0]["chapter_title"] == "Chapter 1"
+    assert questions[3]["chapter_title"] == "Chapter 2"

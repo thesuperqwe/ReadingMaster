@@ -22,6 +22,8 @@ class BookPageOut(BaseModel):
     page_no: int
     content: str
     image_url: str | None
+    chapter_index: int | None = None
+    chapter_title: str | None = None
 
 
 class BookDetailOut(BookOut):
@@ -37,6 +39,7 @@ class BookQuestionCreate(BaseModel):
     question: str = Field(min_length=1)
     correct_option: str = Field(min_length=1, max_length=10)
     options: list[BookOptionCreate] = Field(min_length=2)
+    chapter_index: int | None = None
 
 
 class BookCreate(BaseModel):

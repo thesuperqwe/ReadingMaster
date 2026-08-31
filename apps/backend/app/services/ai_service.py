@@ -11,6 +11,7 @@ from app.schemas.ai import (
     GenerateQuizResponse,
 )
 from app.services.book_service import get_book_or_404
+from app.services.chapter_service import chapter_title_for, split_chapters
 
 
 async def explain_word(data: ExplainWordRequest) -> ExplainWordResponse:
@@ -27,6 +28,27 @@ async def explain_word(data: ExplainWordRequest) -> ExplainWordResponse:
     )
 
 
+def _to_ai_question(
+    item: dict,
+    chapter_index: int | None = None,
+    chapter_title: str | None = None,
+) -> AIQuizQuestion:
+    options = [
+        AIQuizOption(
+            option_key=option["option_key"],
+            content=option["content"],
+        )
+        for option in item["options"]
+    ]
+    return AIQuizQuestion(
+        question=item["question"],
+        correct_option=item["correct_option"],
+        options=options,
+        chapter_index=chapter_index,
+        chapter_title=chapter_title,
+    )
+
+
 async def generate_quiz(session: AsyncSession, data: GenerateQuizRequest) -> GenerateQuizResponse:
     if data.book_id is not None:
         book = await get_book_or_404(session, data.book_id)
@@ -40,23 +62,19 @@ async def generate_quiz(session: AsyncSession, data: GenerateQuizRequest) -> Gen
         )
 
     provider = get_ai_provider()
-    questions_data = await provider.generate_quiz(text)
+    parts = split_chapters(text)
+    has_chapters = any(part.title is not None for part in parts)
 
-    questions = []
-    for item in questions_data:
-        options = [
-            AIQuizOption(
-                option_key=option["option_key"],
-                content=option["content"],
-            )
-            for option in item["options"]
-        ]
-        questions.append(
-            AIQuizQuestion(
-                question=item["question"],
-                correct_option=item["correct_option"],
-                options=options,
-            )
-        )
+    questions: list[AIQuizQuestion] = []
+    if has_chapters:
+        for index, part in enumerate(parts):
+            if not part.body:
+                continue
+            title = chapter_title_for(parts, index) or f"第 {index + 1} 部分"
+            for item in await provider.generate_quiz(part.body):
+                questions.append(_to_ai_question(item, chapter_index=index, chapter_title=title))
+    else:
+        for item in await provider.generate_quiz(text):
+            questions.append(_to_ai_question(item))
 
     return GenerateQuizResponse(questions=questions)

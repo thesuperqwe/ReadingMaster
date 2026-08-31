@@ -20,6 +20,8 @@ class _QuestionDraft {
   final optionBController = TextEditingController();
   final optionCController = TextEditingController();
   String correctOption = 'A';
+  int? chapterIndex;
+  String? chapterTitle;
 
   void dispose() {
     questionController.dispose();
@@ -32,6 +34,7 @@ class _QuestionDraft {
     return {
       'question': questionController.text.trim(),
       'correct_option': correctOption,
+      if (chapterIndex != null) 'chapter_index': chapterIndex,
       'options': [
         {'option_key': 'A', 'content': optionAController.text.trim()},
         {'option_key': 'B', 'content': optionBController.text.trim()},
@@ -128,6 +131,8 @@ class _AddBookPageState extends State<AddBookPage> {
         final draft = _QuestionDraft();
         draft.questionController.text = item['question']?.toString() ?? '';
         draft.correctOption = item['correct_option']?.toString() ?? 'A';
+        draft.chapterIndex = (item['chapter_index'] as num?)?.toInt();
+        draft.chapterTitle = item['chapter_title'] as String?;
         final options = (item['options'] as List<dynamic>? ?? []);
         if (options.isNotEmpty) {
           draft.optionAController.text = options[0]['content']?.toString() ?? '';
@@ -323,6 +328,23 @@ class _AddBookPageState extends State<AddBookPage> {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
+          if (question.chapterTitle?.isNotEmpty == true) ...[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.primarySoft,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  question.chapterTitle!,
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primaryDark),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
           TextField(
             controller: question.questionController,
             decoration: const InputDecoration(labelText: '题目'),

@@ -255,9 +255,28 @@ class _QuizPageState extends State<QuizPage> {
         const SizedBox(height: 26),
         SurfaceCard(
           color: AppColors.panel,
-          child: Text(
-            question.question,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.ink, height: 1.4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (question.chapterTitle?.isNotEmpty == true) ...[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppColors.primarySoft,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    question.chapterTitle!,
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primaryDark),
+                  ),
+                ),
+                const SizedBox(height: 10),
+              ],
+              Text(
+                question.question,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.ink, height: 1.4),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 20),

@@ -31,6 +31,8 @@ class AIQuizQuestion(BaseModel):
     question: str
     correct_option: str
     options: list[AIQuizOption]
+    chapter_index: int | None = None
+    chapter_title: str | None = None
 
 
 class GenerateQuizResponse(BaseModel):

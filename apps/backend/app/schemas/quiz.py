@@ -17,6 +17,8 @@ class QuizQuestionOut(BaseModel):
     question: str
     question_type: str | None
     options: list[QuizOptionOut]
+    chapter_index: int | None = None
+    chapter_title: str | None = None
 
 
 class QuizAttemptCreate(BaseModel):

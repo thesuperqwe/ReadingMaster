@@ -48,10 +48,10 @@ class OpenAICompatibleProvider(AIProvider):
 
     async def generate_quiz(self, text: str) -> list[dict[str, Any]]:
         system_prompt = (
-            "Create three single-choice reading comprehension questions for a child. "
+            "Create exactly three single-choice reading comprehension questions for a child. "
             "Return JSON only as {\"questions\": [{\"question\": \"...\", "
             "\"correct_option\": \"A\", \"options\": [{\"option_key\": \"A\", "
-            "\"content\": \"...\"}]}]}."
+            "\"content\": \"...\"}]}]} with exactly three items."
         )
         user_prompt = f"Story text:\n{text}"
         data = await self._chat_json(system_prompt, user_prompt)

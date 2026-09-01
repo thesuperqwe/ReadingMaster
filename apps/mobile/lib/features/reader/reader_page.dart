@@ -51,6 +51,7 @@ class _ReaderPageState extends State<ReaderPage> {
   String? _error;
   List<KeyItem> _keyItems = const [];
   bool _keyItemsLoading = false;
+  bool _highlightUnknown = false;
 
   @override
   void initState() {
@@ -578,6 +579,12 @@ class _ReaderPageState extends State<ReaderPage> {
     );
   }
 
+  bool _isKnown(String text) {
+    final normalized = text.replaceAll(RegExp(r"[^a-zA-Z']"), '').toLowerCase();
+    if (normalized.isEmpty) return true;
+    return OfflineDictionary.lookup(normalized) != null;
+  }
+
   List<_WordToken> _wordTokens(String text) {
     return RegExp(r'\S+')
         .allMatches(text)
@@ -634,6 +641,14 @@ class _ReaderPageState extends State<ReaderPage> {
               () => _fontScale = (_fontScale + 0.1).clamp(0.85, 1.5),
             ),
             icon: const Icon(Icons.text_increase_rounded),
+          ),
+          IconButton(
+            tooltip: _highlightUnknown ? '关闭生词高亮' : '生词高亮',
+            onPressed: () => setState(() => _highlightUnknown = !_highlightUnknown),
+            icon: Icon(
+              Icons.highlight_rounded,
+              color: _highlightUnknown ? AppColors.gold : null,
+            ),
           ),
           IconButton(
             tooltip: _speaking ? '停止朗读' : '朗读本页',
@@ -696,6 +711,7 @@ class _ReaderPageState extends State<ReaderPage> {
       runSpacing: 14,
       children: tokens.map((token) {
         final active = _activeCharIndex >= token.start && _activeCharIndex < token.end;
+        final unknown = _highlightUnknown && !_isKnown(token.text);
         return GestureDetector(
           onTap: () => _openWord(token.text),
           child: Text(
@@ -705,7 +721,11 @@ class _ReaderPageState extends State<ReaderPage> {
               height: 1.4,
               color: active ? AppColors.primaryDark : AppColors.ink,
               fontWeight: active ? FontWeight.w800 : FontWeight.w400,
-              backgroundColor: active ? AppColors.primarySoft : null,
+              backgroundColor: active
+                  ? AppColors.primarySoft
+                  : unknown
+                      ? AppColors.gold.withValues(alpha: 0.22)
+                      : null,
             ),
           ),
         );

@@ -104,29 +104,51 @@ class _ReaderPageState extends State<ReaderPage> {
       _loading = true;
       _error = null;
     });
+
+    BookDetail? book;
     try {
-      final book = await _apiService.getBook(widget.bookId);
-      final session = await _apiService.startSession(
+      book = await _apiService.getBook(widget.bookId);
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          _error = error.toString();
+          _loading = false;
+        });
+      }
+      return;
+    }
+
+    ReadingSession? session;
+    try {
+      session = await _apiService.startSession(
         childId: widget.childId,
         bookId: widget.bookId,
       );
-      final quiz = await _apiService.getQuiz(widget.bookId);
       _sessionStartedAt = DateTime.now();
-      setState(() {
-        _book = book;
-        _session = session;
-        _chapters = book.chapters;
-        _allQuestions = quiz;
-        _hasChapterQuestions = quiz.any((q) => q.chapterIndex != null);
-      });
-      if (book.chapters.isNotEmpty) {
-        await _loadChapter(0);
-      }
-    } catch (error) {
-      setState(() => _error = error.toString());
-    } finally {
-      if (mounted) setState(() => _loading = false);
+    } catch (_) {
+      // Offline reading is still allowed; progress just will not be tracked.
     }
+
+    List<QuizQuestion> quiz = const [];
+    try {
+      quiz = await _apiService.getQuiz(widget.bookId);
+    } catch (_) {
+      // Quiz is unavailable offline.
+    }
+
+    final loadedBook = book;
+    if (!mounted) return;
+    setState(() {
+      _book = loadedBook;
+      _session = session;
+      _chapters = loadedBook.chapters;
+      _allQuestions = quiz;
+      _hasChapterQuestions = quiz.any((q) => q.chapterIndex != null);
+    });
+    if (loadedBook.chapters.isNotEmpty) {
+      await _loadChapter(0);
+    }
+    if (mounted) setState(() => _loading = false);
   }
 
   Future<void> _loadChapter(int index) async {
@@ -147,7 +169,7 @@ class _ReaderPageState extends State<ReaderPage> {
     });
     unawaited(_loadKeyItems(index));
     if (_segments.isNotEmpty) {
-      await _apiService.recordEvent(
+      await _tryRecordEvent(
         sessionId: session.id,
         eventType: 'PAGE_VIEW',
         pageNo: _segments.first.pageNo,
@@ -173,7 +195,7 @@ class _ReaderPageState extends State<ReaderPage> {
     });
     final session = _session;
     if (session != null) {
-      await _apiService.recordEvent(
+      await _tryRecordEvent(
         sessionId: session.id,
         eventType: 'PAGE_VIEW',
         pageNo: _segments[_pageIndex].pageNo,
@@ -228,7 +250,7 @@ class _ReaderPageState extends State<ReaderPage> {
     if (word.isEmpty) return;
 
     try {
-      await _apiService.recordEvent(
+      await _tryRecordEvent(
         sessionId: _session!.id,
         eventType: 'WORD_CLICK',
         pageNo: _segments[_pageIndex].pageNo,
@@ -251,7 +273,7 @@ class _ReaderPageState extends State<ReaderPage> {
             _apiService.explainWordAI(word, context: context),
         contextText: _segments[_pageIndex].content,
         isMastered: userWord?.mastered ?? false,
-        onSpeak: () => _apiService.recordEvent(
+        onSpeak: () => _tryRecordEvent(
           sessionId: _session!.id,
           eventType: 'WORD_AUDIO',
           pageNo: _segments[_pageIndex].pageNo,
@@ -296,6 +318,24 @@ class _ReaderPageState extends State<ReaderPage> {
     }
   }
 
+  Future<void> _tryRecordEvent({
+    required String sessionId,
+    required String eventType,
+    int? pageNo,
+    String? word,
+  }) async {
+    try {
+      await _apiService.recordEvent(
+        sessionId: sessionId,
+        eventType: eventType,
+        pageNo: pageNo,
+        word: word,
+      );
+    } catch (_) {
+      // Offline: event tracking is best-effort.
+    }
+  }
+
   Future<void> _reportProgress() async {
     final session = _session;
     final book = _book;
@@ -319,32 +359,29 @@ class _ReaderPageState extends State<ReaderPage> {
   }
 
   Future<void> _finishAndQuiz() async {
-    if (_session == null || _book == null) return;
-    setState(() => _finishing = true);
-    try {
-      final durationSeconds = DateTime.now()
-          .difference(_sessionStartedAt ?? DateTime.now())
-          .inSeconds;
-      await _apiService.finishSession(
-        sessionId: _session!.id,
-        durationSeconds: durationSeconds,
-        progress: 1,
-        completed: true,
-      );
-      if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => QuizPage(bookId: widget.bookId, childId: widget.childId),
-        ),
-      );
-    } catch (error) {
-      if (mounted) {
-        setState(() {
-          _finishing = false;
-          _error = error.toString();
-        });
+    if (_book == null) return;
+    if (_session != null) {
+      setState(() => _finishing = true);
+      try {
+        final durationSeconds = DateTime.now()
+            .difference(_sessionStartedAt ?? DateTime.now())
+            .inSeconds;
+        await _apiService.finishSession(
+          sessionId: _session!.id,
+          durationSeconds: durationSeconds,
+          progress: 1,
+          completed: true,
+        );
+      } catch (_) {
+        // Offline finish is best-effort.
       }
     }
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => QuizPage(bookId: widget.bookId, childId: widget.childId),
+      ),
+    );
   }
 
   bool _chapterHasQuestions(int index) =>
@@ -387,37 +424,34 @@ class _ReaderPageState extends State<ReaderPage> {
   }
 
   Future<void> _finishSession(int correct, int total) async {
-    if (_session == null || _book == null) return;
-    setState(() => _finishing = true);
-    try {
-      final durationSeconds = DateTime.now()
-          .difference(_sessionStartedAt ?? DateTime.now())
-          .inSeconds;
-      await _apiService.finishSession(
-        sessionId: _session!.id,
-        durationSeconds: durationSeconds,
-        progress: 1,
-        completed: true,
-      );
-      if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => QuizResultPage(
-            total: total,
-            correct: correct,
-            bookId: widget.bookId,
-            childId: widget.childId,
-          ),
-        ),
-      );
-    } catch (error) {
-      if (mounted) {
-        setState(() {
-          _finishing = false;
-          _error = error.toString();
-        });
+    if (_book == null) return;
+    if (_session != null) {
+      setState(() => _finishing = true);
+      try {
+        final durationSeconds = DateTime.now()
+            .difference(_sessionStartedAt ?? DateTime.now())
+            .inSeconds;
+        await _apiService.finishSession(
+          sessionId: _session!.id,
+          durationSeconds: durationSeconds,
+          progress: 1,
+          completed: true,
+        );
+      } catch (_) {
+        // Offline finish is best-effort.
       }
     }
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => QuizResultPage(
+          total: total,
+          correct: correct,
+          bookId: widget.bookId,
+          childId: widget.childId,
+        ),
+      ),
+    );
   }
 
   Future<void> _loadKeyItems(int chapterIndex) async {

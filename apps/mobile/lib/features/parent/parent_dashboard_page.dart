@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/models.dart';
 import '../../services/api_service.dart';
+import '../../services/parent_pin.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/common.dart';
 
@@ -100,6 +101,95 @@ class _ParentDashboardPageState extends State<ParentDashboardPage> {
     );
   }
 
+  Future<void> _changePin() async {
+    final currentController = TextEditingController();
+    final newController = TextEditingController();
+    final confirmController = TextEditingController();
+    String? dialogError;
+
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          title: const Text('修改家长 PIN'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: currentController,
+                autofocus: true,
+                obscureText: true,
+                keyboardType: TextInputType.number,
+                maxLength: 4,
+                decoration: const InputDecoration(labelText: '当前 PIN'),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: newController,
+                obscureText: true,
+                keyboardType: TextInputType.number,
+                maxLength: 4,
+                decoration: const InputDecoration(labelText: '新 PIN'),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: confirmController,
+                obscureText: true,
+                keyboardType: TextInputType.number,
+                maxLength: 4,
+                decoration: const InputDecoration(labelText: '确认新 PIN'),
+              ),
+              if (dialogError != null) ...[
+                const SizedBox(height: 12),
+                Text(
+                  dialogError!,
+                  style: const TextStyle(color: AppColors.danger, fontSize: 13),
+                ),
+              ],
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('取消'),
+            ),
+            FilledButton(
+              onPressed: () async {
+                final pin = await ParentPin.get();
+                final current = currentController.text.trim();
+                final next = newController.text.trim();
+                if (current != pin) {
+                  setDialogState(() => dialogError = '当前 PIN 不正确');
+                  return;
+                }
+                if (next.length != 4) {
+                  setDialogState(() => dialogError = '新 PIN 需要 4 位数字');
+                  return;
+                }
+                if (next != confirmController.text.trim()) {
+                  setDialogState(() => dialogError = '两次输入的新 PIN 不一致');
+                  return;
+                }
+                await ParentPin.set(next);
+                if (ctx.mounted) Navigator.of(ctx).pop(true);
+              },
+              child: const Text('保存'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    currentController.dispose();
+    newController.dispose();
+    confirmController.dispose();
+    if (saved == true && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('家长 PIN 已更新')),
+      );
+    }
+  }
+
   Widget _header() {
     return Row(
       children: [
@@ -136,6 +226,11 @@ class _ParentDashboardPageState extends State<ParentDashboardPage> {
               ),
             ],
           ),
+        ),
+        IconButton(
+          onPressed: _changePin,
+          tooltip: '修改家长 PIN',
+          icon: const Icon(Icons.lock_outline_rounded, color: AppColors.inkSoft),
         ),
       ],
     );

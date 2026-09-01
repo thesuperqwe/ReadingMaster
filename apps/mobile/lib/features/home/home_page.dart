@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/api_client.dart';
 import '../../models/models.dart';
 import '../../services/api_service.dart';
+import '../../services/parent_pin.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/common.dart';
 import '../auth/login_page.dart';
@@ -34,7 +35,6 @@ class _HomePageState extends State<HomePage> {
   bool _parentUnlocked = false;
 
   static const _parentTabIndex = 3;
-  static const _parentPin = '1234';
 
   static const _levelOptions = [
     ('LEVEL_1', 'Level 1 · 启蒙'),
@@ -138,6 +138,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<bool> _promptParentPin() async {
+    final pin = await ParentPin.get();
+    if (!mounted) return false;
     final controller = TextEditingController();
     final ok = await showDialog<bool>(
       context: context,
@@ -154,7 +156,7 @@ class _HomePageState extends State<HomePage> {
               obscureText: true,
               keyboardType: TextInputType.number,
               maxLength: 4,
-              decoration: const InputDecoration(hintText: '默认 1234'),
+              decoration: const InputDecoration(hintText: '4 位数字'),
             ),
           ],
         ),
@@ -164,8 +166,7 @@ class _HomePageState extends State<HomePage> {
             child: const Text('取消'),
           ),
           FilledButton(
-            onPressed: () =>
-                Navigator.of(ctx).pop(controller.text.trim() == _parentPin),
+            onPressed: () => Navigator.of(ctx).pop(controller.text.trim() == pin),
             child: const Text('进入'),
           ),
         ],

@@ -1,7 +1,27 @@
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../core/api_client.dart';
 import '../models/models.dart';
 
 class ApiService {
+  Future<dynamic> _cachedJson(
+    String key,
+    Future<dynamic> Function() fetch,
+  ) async {
+    try {
+      final data = await fetch();
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(key, jsonEncode(data));
+      return data;
+    } catch (_) {
+      final prefs = await SharedPreferences.getInstance();
+      final cached = prefs.getString(key);
+      if (cached != null) return jsonDecode(cached);
+      rethrow;
+    }
+  }
   Future<AuthSession> login(String email, String password) async {
     final data = await ApiClient.post(
       '/api/v1/auth/login',
@@ -82,12 +102,18 @@ class ApiService {
   }
 
   Future<BookDetail> getBook(String bookId) async {
-    final data = await ApiClient.get('/api/v1/books/$bookId');
+    final data = await _cachedJson(
+      'cache_book_$bookId',
+      () => ApiClient.get('/api/v1/books/$bookId'),
+    );
     return BookDetail.fromJson(data as Map<String, dynamic>);
   }
 
   Future<BookChapterDetail> getChapter(String bookId, int index) async {
-    final data = await ApiClient.get('/api/v1/books/$bookId/chapters/$index');
+    final data = await _cachedJson(
+      'cache_chapter_${bookId}_$index',
+      () => ApiClient.get('/api/v1/books/$bookId/chapters/$index'),
+    );
     return BookChapterDetail.fromJson(data as Map<String, dynamic>);
   }
 

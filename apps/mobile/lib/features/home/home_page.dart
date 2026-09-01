@@ -12,6 +12,7 @@ import '../bookshelf/bookshelf_page.dart';
 import '../parent/parent_dashboard_page.dart';
 import '../vocabulary/vocabulary_page.dart';
 import 'home_tab.dart';
+import 'placement_test.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -111,6 +112,18 @@ class _HomePageState extends State<HomePage> {
       setState(() => _error = error.toString());
     } finally {
       if (mounted) setState(() => _creatingChild = false);
+    }
+  }
+
+  Future<void> _openPlacementTest() async {
+    final level = await Navigator.of(context).push<String>(
+      MaterialPageRoute(builder: (_) => const PlacementTest()),
+    );
+    if (level != null && mounted) {
+      setState(() => _selectedLevel = level);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('已推荐等级：${levelLabel(level)}')),
+      );
     }
   }
 
@@ -438,6 +451,12 @@ class _HomePageState extends State<HomePage> {
                 const Text(
                   '等级说明：Level 1 启蒙，Level 2 基础，Level 3 进阶，Level 4 提高。',
                   style: TextStyle(fontSize: 12, color: AppColors.inkSoft),
+                ),
+                const SizedBox(height: 14),
+                OutlinedButton.icon(
+                  onPressed: _openPlacementTest,
+                  icon: const Icon(Icons.quiz_outlined),
+                  label: const Text('水平测试，自动推荐等级'),
                 ),
                 if (_error != null) ...[
                   const SizedBox(height: 12),

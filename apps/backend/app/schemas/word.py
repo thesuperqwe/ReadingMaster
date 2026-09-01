@@ -26,6 +26,7 @@ class UserWordOut(BaseModel):
     correct_count: int
     wrong_count: int
     favorite: bool
+    mastered: bool
 
 
 class WordFavoriteRequest(BaseModel):

@@ -288,6 +288,16 @@ class ApiService {
     return UserWord.fromJson(data as Map<String, dynamic>);
   }
 
+  Future<UserWord?> getUserWord(String childId, String word) async {
+    try {
+      final data = await ApiClient.get('/api/v1/children/$childId/words/$word');
+      return UserWord.fromJson(data as Map<String, dynamic>);
+    } on ApiException catch (error) {
+      if (error.statusCode == 404) return null;
+      rethrow;
+    }
+  }
+
   Future<List<ReviewWord>> getReviewWords(String childId) async {
     final data = await ApiClient.get('/api/v1/children/$childId/review');
     return (data as List<dynamic>)

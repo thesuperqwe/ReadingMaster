@@ -811,3 +811,29 @@ def test_chapter_key_items_are_cached(client, seed_content, monkeypatch):
     second = client.get(url, headers={"Authorization": f"Bearer {token}"})
     assert second.status_code == 200
     assert second.json()["items"] == items
+
+
+def test_get_word_status(client):
+    registered = _register(client)
+    token = registered["access_token"]
+    child = _create_child(client, token)
+
+    missing = client.get(
+        f"/api/v1/children/{child['id']}/words/cute",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert missing.status_code == 404
+
+    fav = client.post(
+        f"/api/v1/children/{child['id']}/words/cute/favorite",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"favorite": True},
+    )
+    assert fav.status_code == 200
+
+    status_resp = client.get(
+        f"/api/v1/children/{child['id']}/words/cute",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert status_resp.status_code == 200
+    assert status_resp.json()["mastered"] is False

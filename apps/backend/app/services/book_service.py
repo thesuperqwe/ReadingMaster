@@ -238,6 +238,34 @@ async def set_word_favorite(
         correct_count=user_word.correct_count,
         wrong_count=user_word.wrong_count,
         favorite=user_word.favorite,
+        mastered=user_word.mastered,
+    )
+
+
+async def get_user_word(
+    session: AsyncSession, child_id: uuid.UUID, word_text: str
+) -> UserWordOut | None:
+    normalized = word_text.strip().lower()
+    row = await session.execute(
+        select(UserWord, Word)
+        .join(Word, Word.id == UserWord.word_id)
+        .where(UserWord.child_id == child_id, Word.word == normalized)
+    )
+    result = row.first()
+    if result is None:
+        return None
+    user_word, word = result
+    return UserWordOut(
+        id=user_word.id,
+        word=WordOut.model_validate(word),
+        mastery_score=user_word.mastery_score,
+        encounter_count=user_word.encounter_count,
+        click_count=user_word.click_count,
+        audio_count=user_word.audio_count,
+        correct_count=user_word.correct_count,
+        wrong_count=user_word.wrong_count,
+        favorite=user_word.favorite,
+        mastered=user_word.mastered,
     )
 
 
@@ -261,6 +289,7 @@ async def list_user_words(session: AsyncSession, child_id: uuid.UUID) -> list[Us
                 correct_count=user_word.correct_count,
                 wrong_count=user_word.wrong_count,
                 favorite=user_word.favorite,
+                mastered=user_word.mastered,
             )
         )
     return result

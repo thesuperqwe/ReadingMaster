@@ -1,11 +1,11 @@
 import uuid
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 
 from app.api.deps import CurrentUser, SessionDep
 from app.schemas.review import ReviewResultOut, ReviewSubmitRequest, ReviewWordOut
 from app.schemas.word import UserWordOut, WordFavoriteRequest
-from app.services.book_service import list_user_words, set_word_favorite
+from app.services.book_service import get_user_word, list_user_words, set_word_favorite
 from app.services.child_service import get_child_for_parent
 from app.services.review_service import list_due_review_words, submit_review
 
@@ -18,6 +18,20 @@ async def get_vocabulary(
 ) -> list[UserWordOut]:
     await get_child_for_parent(session, child_id, user)
     return await list_user_words(session, child_id)
+
+
+@router.get("/{child_id}/words/{word}", response_model=UserWordOut)
+async def get_word_status(
+    session: SessionDep,
+    user: CurrentUser,
+    child_id: uuid.UUID,
+    word: str,
+) -> UserWordOut:
+    await get_child_for_parent(session, child_id, user)
+    user_word = await get_user_word(session, child_id, word)
+    if user_word is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Word not found")
+    return user_word
 
 
 @router.get("/{child_id}/review", response_model=list[ReviewWordOut])

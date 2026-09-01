@@ -11,6 +11,7 @@ Future<void> showWordPopup(
   Future<Word> Function(String word, {String? context})? aiLookup,
   Future<void> Function()? onSpeak,
   String? contextText,
+  bool isMastered = false,
 }) async {
   await showModalBottomSheet<void>(
     context: context,
@@ -25,6 +26,7 @@ Future<void> showWordPopup(
       aiLookup: aiLookup,
       onSpeak: onSpeak,
       contextText: contextText,
+      isMastered: isMastered,
     ),
   );
 }
@@ -37,6 +39,7 @@ class WordDetailSheet extends StatefulWidget {
     this.aiLookup,
     this.onSpeak,
     this.contextText,
+    this.isMastered = false,
   });
 
   final Word word;
@@ -44,6 +47,7 @@ class WordDetailSheet extends StatefulWidget {
   final Future<Word> Function(String word, {String? context})? aiLookup;
   final Future<void> Function()? onSpeak;
   final String? contextText;
+  final bool isMastered;
 
   @override
   State<WordDetailSheet> createState() => _WordDetailSheetState();
@@ -114,6 +118,82 @@ class _WordDetailSheetState extends State<WordDetailSheet> {
     );
   }
 
+  Widget _masteredSheet(Word word) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 42,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: AppColors.line,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        word.word,
+                        style: const TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.ink,
+                        ),
+                      ),
+                      if (word.phonetic?.isNotEmpty == true) ...[
+                        const SizedBox(height: 6),
+                        Text(
+                          word.phonetic!,
+                          style: const TextStyle(fontSize: 13, color: AppColors.inkSoft),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: AppColors.gold.withValues(alpha: 0.16),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.check_circle_rounded, size: 16, color: AppColors.gold),
+                      SizedBox(width: 4),
+                      Text(
+                        '已掌握',
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.gold),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            if (word.meaningZh?.isNotEmpty == true) ...[
+              const SizedBox(height: 16),
+              Text(
+                word.meaningZh!,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.primaryDark),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _tappableText(String text, TextStyle style) {
     final words = text.split(RegExp(r'\s+')).where((item) => item.isNotEmpty).toList();
     return Wrap(
@@ -134,6 +214,10 @@ class _WordDetailSheetState extends State<WordDetailSheet> {
   Widget build(BuildContext context) {
     final displayWord = _aiResult ?? widget.word;
     final showDictionary = _aiResult == null && _hasDictionary;
+
+    if (widget.isMastered) {
+      return _masteredSheet(displayWord);
+    }
 
     return SafeArea(
       child: Padding(

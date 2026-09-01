@@ -236,6 +236,13 @@ class _ReaderPageState extends State<ReaderPage> {
       );
       final detail = await _lookupWord(word);
       if (!mounted) return;
+      UserWord? userWord;
+      try {
+        userWord = await _apiService.getUserWord(widget.childId, word);
+      } catch (_) {
+        // Ignore status lookup failures.
+      }
+      if (!mounted) return;
       await showWordPopup(
         context,
         detail,
@@ -243,6 +250,7 @@ class _ReaderPageState extends State<ReaderPage> {
         aiLookup: (word, {context}) =>
             _apiService.explainWordAI(word, context: context),
         contextText: _segments[_pageIndex].content,
+        isMastered: userWord?.mastered ?? false,
         onSpeak: () => _apiService.recordEvent(
           sessionId: _session!.id,
           eventType: 'WORD_AUDIO',

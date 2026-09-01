@@ -265,6 +265,7 @@ class UserWord {
     required this.masteryScore,
     required this.clickCount,
     required this.favorite,
+    required this.mastered,
   });
 
   final String id;
@@ -272,6 +273,7 @@ class UserWord {
   final double masteryScore;
   final int clickCount;
   final bool favorite;
+  final bool mastered;
 
   factory UserWord.fromJson(Map<String, dynamic> json) {
     return UserWord(
@@ -280,6 +282,7 @@ class UserWord {
       masteryScore: (json['mastery_score'] as num?)?.toDouble() ?? 0,
       clickCount: (json['click_count'] as num?)?.toInt() ?? 0,
       favorite: json['favorite'] as bool? ?? false,
+      mastered: json['mastered'] as bool? ?? false,
     );
   }
 }

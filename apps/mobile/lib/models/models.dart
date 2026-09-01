@@ -284,6 +284,22 @@ class UserWord {
   }
 }
 
+class KeyItem {
+  const KeyItem({required this.term, this.meaningZh, this.simpleDefinition});
+
+  final String term;
+  final String? meaningZh;
+  final String? simpleDefinition;
+
+  factory KeyItem.fromJson(Map<String, dynamic> json) {
+    return KeyItem(
+      term: json['term'].toString(),
+      meaningZh: json['meaning_zh'] as String?,
+      simpleDefinition: json['simple_definition'] as String?,
+    );
+  }
+}
+
 class ReviewWord {
   const ReviewWord({
     required this.wordId,

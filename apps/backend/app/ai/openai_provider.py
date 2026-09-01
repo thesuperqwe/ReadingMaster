@@ -61,6 +61,19 @@ class OpenAICompatibleProvider(AIProvider):
             raise AIProviderError("Invalid generate_quiz response")
         return questions
 
+    async def extract_key_items(self, text: str) -> list[dict[str, Any]]:
+        system_prompt = (
+            "Identify the most important words and short phrases in the text for a Chinese "
+            "Grade 3 English learner. Return JSON only as "
+            "{\"items\": [{\"term\": \"...\", \"meaning_zh\": \"...\", \"simple_definition\": \"...\"}]}."
+        )
+        user_prompt = f"Text:\n{text}"
+        data = await self._chat_json(system_prompt, user_prompt)
+        items = data.get("items", data) if isinstance(data, dict) else data
+        if not isinstance(items, list):
+            raise AIProviderError("Invalid key-items response")
+        return items
+
 
 class OpenAIProvider(OpenAICompatibleProvider):
     def __init__(self, api_key: str | None, base_url: str, model: str) -> None:

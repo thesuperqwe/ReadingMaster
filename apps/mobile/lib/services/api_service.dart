@@ -143,6 +143,16 @@ class ApiService {
     return Word.fromJson(data as Map<String, dynamic>);
   }
 
+  Future<List<KeyItem>> extractKeyItems(String text) async {
+    final data = await ApiClient.post(
+      '/api/v1/ai/key-items',
+      body: {'text': text},
+    );
+    return (data['items'] as List<dynamic>)
+        .map((item) => KeyItem.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
   Future<ReadingSession> startSession({
     required String childId,
     required String bookId,

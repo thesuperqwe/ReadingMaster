@@ -92,3 +92,21 @@ class MockProvider(AIProvider):
                 ],
             },
         ]
+
+    async def extract_key_items(self, text: str) -> list[dict[str, Any]]:
+        words = []
+        for token in text.split():
+            word = token.strip().strip(".,!?;:\"'").lower()
+            if word and word not in words:
+                words.append(word)
+        if not words:
+            words = ["story"]
+        terms = words[:5]
+        return [
+            {
+                "term": term,
+                "meaning_zh": "（示例释义）",
+                "simple_definition": "an important word in the story",
+            }
+            for term in terms
+        ]

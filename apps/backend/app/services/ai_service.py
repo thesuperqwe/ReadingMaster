@@ -9,6 +9,9 @@ from app.schemas.ai import (
     ExplainWordResponse,
     GenerateQuizRequest,
     GenerateQuizResponse,
+    KeyItem,
+    KeyItemsRequest,
+    KeyItemsResponse,
 )
 from app.services.book_service import get_book_or_404
 from app.services.chapter_service import chapter_title_for, split_chapters
@@ -78,3 +81,19 @@ async def generate_quiz(session: AsyncSession, data: GenerateQuizRequest) -> Gen
             questions.append(_to_ai_question(item))
 
     return GenerateQuizResponse(questions=questions)
+
+
+async def extract_key_items(data: KeyItemsRequest) -> KeyItemsResponse:
+    provider = get_ai_provider()
+    items_data = await provider.extract_key_items(data.text)
+
+    items = [
+        KeyItem(
+            term=(item.get("term") or "").strip(),
+            meaning_zh=item.get("meaning_zh"),
+            simple_definition=item.get("simple_definition"),
+        )
+        for item in items_data
+        if (item.get("term") or "").strip()
+    ]
+    return KeyItemsResponse(items=items)

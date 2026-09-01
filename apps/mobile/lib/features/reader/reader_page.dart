@@ -49,6 +49,8 @@ class _ReaderPageState extends State<ReaderPage> {
   bool _speaking = false;
   DateTime? _sessionStartedAt;
   String? _error;
+  List<KeyItem> _keyItems = const [];
+  bool _keyItemsLoading = false;
 
   @override
   void initState() {
@@ -142,6 +144,7 @@ class _ReaderPageState extends State<ReaderPage> {
       _speaking = false;
       _activeCharIndex = -1;
     });
+    unawaited(_loadKeyItems(chapter.segments.map((s) => s.content).join('\n\n')));
     if (_segments.isNotEmpty) {
       await _apiService.recordEvent(
         sessionId: session.id,
@@ -408,6 +411,137 @@ class _ReaderPageState extends State<ReaderPage> {
     }
   }
 
+  Future<void> _loadKeyItems(String text) async {
+    if (text.trim().isEmpty) {
+      if (mounted) {
+        setState(() {
+          _keyItems = const [];
+          _keyItemsLoading = false;
+        });
+      }
+      return;
+    }
+    setState(() => _keyItemsLoading = true);
+    try {
+      final items = await _apiService.extractKeyItems(text);
+      if (mounted) setState(() => _keyItems = items);
+    } catch (_) {
+      if (mounted) setState(() => _keyItems = const []);
+    } finally {
+      if (mounted) setState(() => _keyItemsLoading = false);
+    }
+  }
+
+  void _showKeyItemsSheet() {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        child: SizedBox(
+          height: MediaQuery.sizeOf(context).height * 0.72,
+          child: _keyItemsPanel(),
+        ),
+      ),
+    );
+  }
+
+  Widget _keyItemsPanel() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.line),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(18, 16, 18, 12),
+            child: Row(
+              children: [
+                const Icon(Icons.lightbulb_outline_rounded, color: AppColors.gold),
+                const SizedBox(width: 8),
+                const Text(
+                  '重点词句',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.ink),
+                ),
+              ],
+            ),
+          ),
+          const Divider(height: 1, color: AppColors.line),
+          Expanded(
+            child: _keyItemsLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _keyItems.isEmpty
+                    ? const Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Text('暂无重点词句', style: TextStyle(color: AppColors.inkSoft)),
+                      )
+                    : ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(14, 12, 14, 20),
+                        itemCount: _keyItems.length,
+                        separatorBuilder: (_, _) => const SizedBox(height: 10),
+                        itemBuilder: (_, index) => _keyItemTile(_keyItems[index]),
+                      ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _keyItemTile(KeyItem item) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.panel,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.line),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(item.term, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.ink)),
+          if (item.meaningZh?.isNotEmpty == true) ...[
+            const SizedBox(height: 4),
+            Text(item.meaningZh!, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.primaryDark)),
+          ],
+          if (item.simpleDefinition?.isNotEmpty == true) ...[
+            const SizedBox(height: 4),
+            Text(item.simpleDefinition!, style: const TextStyle(fontSize: 12, color: AppColors.inkSoft, height: 1.4)),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _readingColumn(BookChapter? chapter) {
+    return Column(
+      children: [
+        _chapterHeader(chapter),
+        Expanded(
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(24, 12, 24, 8),
+            padding: const EdgeInsets.all(28),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: AppColors.line),
+            ),
+            child: SingleChildScrollView(
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: _segmentContent(),
+              ),
+            ),
+          ),
+        ),
+        _pageControls(),
+      ],
+    );
+  }
+
   List<_WordToken> _wordTokens(String text) {
     return RegExp(r'\S+')
         .allMatches(text)
@@ -433,6 +567,7 @@ class _ReaderPageState extends State<ReaderPage> {
     final chapter = _chapters.isEmpty
         ? null
         : _chapters[_chapterIndex.clamp(0, _chapters.length - 1)];
+    final wide = MediaQuery.sizeOf(context).width >= 960;
 
     return Scaffold(
       appBar: AppBar(
@@ -444,6 +579,12 @@ class _ReaderPageState extends State<ReaderPage> {
             onPressed: _chapters.isEmpty ? null : _openChapterSheet,
             icon: const Icon(Icons.menu_book_rounded),
           ),
+          if (!wide)
+            IconButton(
+              tooltip: '重点词句',
+              onPressed: _showKeyItemsSheet,
+              icon: const Icon(Icons.lightbulb_outline_rounded),
+            ),
           IconButton(
             tooltip: '缩小字体',
             onPressed: () => setState(
@@ -468,29 +609,15 @@ class _ReaderPageState extends State<ReaderPage> {
       ),
       body: _segments.isEmpty
           ? const Center(child: Text('本书暂无内容'))
-          : Column(
-              children: [
-                _chapterHeader(chapter),
-                Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.fromLTRB(24, 12, 24, 8),
-                    padding: const EdgeInsets.all(28),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: AppColors.line),
-                    ),
-                    child: SingleChildScrollView(
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: _segmentContent(),
-                      ),
-                    ),
-                  ),
-                ),
-                _pageControls(),
-              ],
-            ),
+          : wide
+              ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(child: _readingColumn(chapter)),
+                    SizedBox(width: 300, child: _keyItemsPanel()),
+                  ],
+                )
+              : _readingColumn(chapter),
     );
   }
 

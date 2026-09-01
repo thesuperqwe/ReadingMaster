@@ -37,3 +37,17 @@ class AIQuizQuestion(BaseModel):
 
 class GenerateQuizResponse(BaseModel):
     questions: list[AIQuizQuestion]
+
+
+class KeyItemsRequest(BaseModel):
+    text: str = Field(min_length=1)
+
+
+class KeyItem(BaseModel):
+    term: str
+    meaning_zh: str | None = None
+    simple_definition: str | None = None
+
+
+class KeyItemsResponse(BaseModel):
+    items: list[KeyItem]

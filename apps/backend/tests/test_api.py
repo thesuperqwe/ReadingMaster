@@ -770,3 +770,23 @@ def test_favorite_word(client):
     )
     assert unfavorite.status_code == 200
     assert unfavorite.json()["favorite"] is False
+
+
+def test_key_items_uses_mock_provider(client, monkeypatch):
+    from app.ai.mock_provider import MockProvider
+
+    monkeypatch.setattr("app.services.ai_service.get_ai_provider", lambda: MockProvider())
+
+    registered = _register(client)
+    token = registered["access_token"]
+
+    response = client.post(
+        "/api/v1/ai/key-items",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"text": "The dog is very cute."},
+    )
+    assert response.status_code == 200, response.text
+    items = response.json()["items"]
+    assert len(items) >= 1
+    assert items[0]["term"] == "the"
+    assert items[0]["meaning_zh"] == "（示例释义）"

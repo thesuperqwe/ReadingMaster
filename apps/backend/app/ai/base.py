@@ -40,3 +40,7 @@ class AIProvider(ABC):
     @abstractmethod
     async def generate_quiz(self, text: str) -> list[dict[str, Any]]:
         raise NotImplementedError
+
+    @abstractmethod
+    async def extract_key_items(self, text: str) -> list[dict[str, Any]]:
+        raise NotImplementedError

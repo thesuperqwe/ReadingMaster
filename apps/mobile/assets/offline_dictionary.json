@@ -1,57 +1,2802 @@
 {
-  "the": {"word":"the","meaning_zh":"这；那","simple_definition":"used to refer to a specific person or thing","example":"The dog is very cute.","example_translation":"这只狗非常可爱。"},
-  "a": {"word":"a","meaning_zh":"一个","simple_definition":"one","example":"Tom has a little dog.","example_translation":"汤姆有一只小狗。"},
-  "an": {"word":"an","meaning_zh":"一个","simple_definition":"one","example":"I see an apple.","example_translation":"我看见一个苹果。"},
-  "is": {"word":"is","meaning_zh":"是","simple_definition":"to be","example":"The dog is very cute.","example_translation":"这只狗非常可爱。"},
-  "has": {"word":"has","meaning_zh":"有","simple_definition":"to own or hold","example":"Tom has a little dog.","example_translation":"汤姆有一只小狗。"},
-  "have": {"word":"have","meaning_zh":"有","simple_definition":"to own or hold","example":"I have a dog.","example_translation":"我有一只狗。"},
-  "little": {"word":"little","meaning_zh":"小的","simple_definition":"small in size","example":"Tom has a little dog.","example_translation":"汤姆有一只小狗。"},
-  "dog": {"word":"dog","meaning_zh":"狗","simple_definition":"a friendly animal people keep as a pet","example":"The dog is very cute.","example_translation":"这只狗非常可爱。"},
-  "cat": {"word":"cat","meaning_zh":"猫","simple_definition":"a small animal people keep as a pet","example":"The cat is small.","example_translation":"这只猫很小。"},
-  "cute": {"word":"cute","meaning_zh":"可爱的","simple_definition":"nice and lovely","example":"The dog is very cute.","example_translation":"这只狗非常可爱。"},
-  "play": {"word":"play","meaning_zh":"玩","simple_definition":"to do things for fun","example":"Tom likes to play with his dog.","example_translation":"汤姆喜欢和他的狗玩。"},
-  "likes": {"word":"likes","meaning_zh":"喜欢","simple_definition":"to enjoy something","example":"Tom likes to play.","example_translation":"汤姆喜欢玩。"},
-  "like": {"word":"like","meaning_zh":"喜欢","simple_definition":"to enjoy something","example":"I like apples.","example_translation":"我喜欢苹果。"},
-  "with": {"word":"with","meaning_zh":"和……一起","simple_definition":"together with","example":"Tom plays with his dog.","example_translation":"汤姆和他的狗玩。"},
-  "his": {"word":"his","meaning_zh":"他的","simple_definition":"belonging to him","example":"Tom likes his dog.","example_translation":"汤姆喜欢他的狗。"},
-  "her": {"word":"her","meaning_zh":"她的","simple_definition":"belonging to her","example":"I like her cat.","example_translation":"我喜欢她的猫。"},
-  "to": {"word":"to","meaning_zh":"去；到","simple_definition":"toward","example":"Tom likes to play.","example_translation":"汤姆喜欢玩。"},
-  "and": {"word":"and","meaning_zh":"和","simple_definition":"also; together with","example":"Tom and his dog.","example_translation":"汤姆和他的狗。"},
-  "in": {"word":"in","meaning_zh":"在……里面","simple_definition":"inside","example":"The dog is in the box.","example_translation":"狗在箱子里。"},
-  "on": {"word":"on","meaning_zh":"在……上面","simple_definition":"on top of","example":"The cat is on the box.","example_translation":"猫在箱子上。"},
-  "under": {"word":"under","meaning_zh":"在……下面","simple_definition":"below","example":"The dog is under the tree.","example_translation":"狗在树下。"},
-  "tree": {"word":"tree","meaning_zh":"树","simple_definition":"a tall plant with leaves","example":"The dog is under the tree.","example_translation":"狗在树下。"},
-  "happy": {"word":"happy","meaning_zh":"开心的","simple_definition":"feeling good","example":"Tom is very happy.","example_translation":"汤姆很开心。"},
-  "day": {"word":"day","meaning_zh":"天；白天","simple_definition":"a period of 24 hours","example":"One day, the dog runs away.","example_translation":"有一天，狗跑走了。"},
-  "run": {"word":"run","meaning_zh":"跑","simple_definition":"to move fast","example":"The dog runs away.","example_translation":"狗跑走了。"},
-  "runs": {"word":"runs","meaning_zh":"跑","simple_definition":"moves fast","example":"The dog runs away.","example_translation":"狗跑走了。"},
-  "away": {"word":"away","meaning_zh":"离开","simple_definition":"not here","example":"The dog runs away.","example_translation":"狗跑走了。"},
-  "look": {"word":"look","meaning_zh":"看","simple_definition":"to use your eyes to see","example":"Tom looks for his dog.","example_translation":"汤姆找他的狗。"},
-  "looks": {"word":"looks","meaning_zh":"看","simple_definition":"uses eyes to see","example":"Tom looks for his dog.","example_translation":"汤姆找他的狗。"},
-  "for": {"word":"for","meaning_zh":"为了；寻找","simple_definition":"in order to get or find","example":"Tom looks for his dog.","example_translation":"汤姆找他的狗。"},
-  "find": {"word":"find","meaning_zh":"找到","simple_definition":"to discover","example":"Tom finds the dog.","example_translation":"汤姆找到了狗。"},
-  "finds": {"word":"finds","meaning_zh":"找到","simple_definition":"discovers","example":"Tom finds the dog.","example_translation":"汤姆找到了狗。"},
-  "home": {"word":"home","meaning_zh":"家","simple_definition":"the place where you live","example":"The dog goes home with Tom.","example_translation":"狗和汤姆一起回家。"},
-  "goes": {"word":"goes","meaning_zh":"去","simple_definition":"moves to a place","example":"The dog goes home.","example_translation":"狗回家了。"},
-  "go": {"word":"go","meaning_zh":"去","simple_definition":"to move to a place","example":"I go home.","example_translation":"我回家。"},
-  "he": {"word":"he","meaning_zh":"他","simple_definition":"a boy or man","example":"He is happy.","example_translation":"他很开心。"},
-  "she": {"word":"she","meaning_zh":"她","simple_definition":"a girl or woman","example":"She is happy.","example_translation":"她很开心。"},
-  "it": {"word":"it","meaning_zh":"它","simple_definition":"a thing or animal","example":"It is cute.","example_translation":"它很可爱。"},
-  "this": {"word":"this","meaning_zh":"这个","simple_definition":"the thing here","example":"This dog is cute.","example_translation":"这只狗很可爱。"},
-  "that": {"word":"that","meaning_zh":"那个","simple_definition":"the thing there","example":"That cat is small.","example_translation":"那只猫很小。"},
-  "very": {"word":"very","meaning_zh":"非常","simple_definition":"a lot","example":"The dog is very cute.","example_translation":"这只狗非常可爱。"},
-  "big": {"word":"big","meaning_zh":"大的","simple_definition":"large","example":"The dog is big.","example_translation":"这只狗很大。"},
-  "small": {"word":"small","meaning_zh":"小的","simple_definition":"little","example":"The cat is small.","example_translation":"这只猫很小。"},
-  "nice": {"word":"nice","meaning_zh":"好的；友善的","simple_definition":"good and kind","example":"The dog is nice.","example_translation":"这只狗很好。"},
-  "lovely": {"word":"lovely","meaning_zh":"可爱的；美好的","simple_definition":"very nice","example":"The dog is lovely.","example_translation":"这只狗很可爱。"},
-  "friend": {"word":"friend","meaning_zh":"朋友","simple_definition":"a person you like","example":"Tom is my friend.","example_translation":"汤姆是我的朋友。"},
-  "friendly": {"word":"friendly","meaning_zh":"友好的","simple_definition":"kind and nice","example":"The dog is friendly.","example_translation":"这只狗很友好。"},
-  "hungry": {"word":"hungry","meaning_zh":"饿的","simple_definition":"wanting food","example":"The dog is hungry.","example_translation":"这只狗饿了。"},
-  "school": {"word":"school","meaning_zh":"学校","simple_definition":"a place to learn","example":"I go to school.","example_translation":"我去学校。"},
-  "family": {"word":"family","meaning_zh":"家庭","simple_definition":"parents and children","example":"I love my family.","example_translation":"我爱我的家。"},
-  "food": {"word":"food","meaning_zh":"食物","simple_definition":"things you eat","example":"The dog likes food.","example_translation":"这只狗喜欢食物。"},
-  "birthday": {"word":"birthday","meaning_zh":"生日","simple_definition":"the day you were born","example":"Today is my birthday.","example_translation":"今天是我的生日。"},
-  "space": {"word":"space","meaning_zh":"太空；空间","simple_definition":"the area outside Earth","example":"We go to space.","example_translation":"我们去太空。"},
-  "trip": {"word":"trip","meaning_zh":"旅行","simple_definition":"a short journey","example":"We have a trip.","example_translation":"我们有一次旅行。"},
-  "park": {"word":"park","meaning_zh":"公园","simple_definition":"a place to play outside","example":"We play in the park.","example_translation":"我们在公园玩。"}
+  "the": {
+    "word": "the",
+    "meaning_zh": "这；那",
+    "simple_definition": "used to refer to a specific person or thing",
+    "example": "The dog is very cute.",
+    "example_translation": "这只狗非常可爱。"
+  },
+  "a": {
+    "word": "a",
+    "meaning_zh": "一个",
+    "simple_definition": "one",
+    "example": "Tom has a little dog.",
+    "example_translation": "汤姆有一只小狗。"
+  },
+  "an": {
+    "word": "an",
+    "meaning_zh": "一个",
+    "simple_definition": "one",
+    "example": "I see an apple.",
+    "example_translation": "我看见一个苹果。"
+  },
+  "is": {
+    "word": "is",
+    "meaning_zh": "是",
+    "simple_definition": "to be",
+    "example": "The dog is very cute.",
+    "example_translation": "这只狗非常可爱。"
+  },
+  "has": {
+    "word": "has",
+    "meaning_zh": "有",
+    "simple_definition": "to own or hold",
+    "example": "Tom has a little dog.",
+    "example_translation": "汤姆有一只小狗。"
+  },
+  "have": {
+    "word": "have",
+    "meaning_zh": "有",
+    "simple_definition": "to own or hold",
+    "example": "I have a dog.",
+    "example_translation": "我有一只狗。"
+  },
+  "little": {
+    "word": "little",
+    "meaning_zh": "小的",
+    "simple_definition": "small in size",
+    "example": "Tom has a little dog.",
+    "example_translation": "汤姆有一只小狗。"
+  },
+  "dog": {
+    "word": "dog",
+    "meaning_zh": "狗",
+    "simple_definition": "a friendly animal people keep as a pet",
+    "example": "The dog is very cute.",
+    "example_translation": "这只狗非常可爱。"
+  },
+  "cat": {
+    "word": "cat",
+    "meaning_zh": "猫",
+    "simple_definition": "a small animal people keep as a pet",
+    "example": "The cat is small.",
+    "example_translation": "这只猫很小。"
+  },
+  "cute": {
+    "word": "cute",
+    "meaning_zh": "可爱的",
+    "simple_definition": "nice and lovely",
+    "example": "The dog is very cute.",
+    "example_translation": "这只狗非常可爱。"
+  },
+  "play": {
+    "word": "play",
+    "meaning_zh": "玩",
+    "simple_definition": "to do things for fun",
+    "example": "Tom likes to play with his dog.",
+    "example_translation": "汤姆喜欢和他的狗玩。"
+  },
+  "likes": {
+    "word": "likes",
+    "meaning_zh": "喜欢",
+    "simple_definition": "to enjoy something",
+    "example": "Tom likes to play.",
+    "example_translation": "汤姆喜欢玩。"
+  },
+  "like": {
+    "word": "like",
+    "meaning_zh": "喜欢",
+    "simple_definition": "to enjoy something",
+    "example": "I like apples.",
+    "example_translation": "我喜欢苹果。"
+  },
+  "with": {
+    "word": "with",
+    "meaning_zh": "和……一起",
+    "simple_definition": "together with",
+    "example": "Tom plays with his dog.",
+    "example_translation": "汤姆和他的狗玩。"
+  },
+  "his": {
+    "word": "his",
+    "meaning_zh": "他的",
+    "simple_definition": "belonging to him",
+    "example": "Tom likes his dog.",
+    "example_translation": "汤姆喜欢他的狗。"
+  },
+  "her": {
+    "word": "her",
+    "meaning_zh": "她的",
+    "simple_definition": "belonging to her",
+    "example": "I like her cat.",
+    "example_translation": "我喜欢她的猫。"
+  },
+  "to": {
+    "word": "to",
+    "meaning_zh": "去；到",
+    "simple_definition": "toward",
+    "example": "Tom likes to play.",
+    "example_translation": "汤姆喜欢玩。"
+  },
+  "and": {
+    "word": "and",
+    "meaning_zh": "和",
+    "simple_definition": "also; together with",
+    "example": "Tom and his dog.",
+    "example_translation": "汤姆和他的狗。"
+  },
+  "in": {
+    "word": "in",
+    "meaning_zh": "在……里面",
+    "simple_definition": "inside",
+    "example": "The dog is in the box.",
+    "example_translation": "狗在箱子里。"
+  },
+  "on": {
+    "word": "on",
+    "meaning_zh": "在……上面",
+    "simple_definition": "on top of",
+    "example": "The cat is on the box.",
+    "example_translation": "猫在箱子上。"
+  },
+  "under": {
+    "word": "under",
+    "meaning_zh": "在……下面",
+    "simple_definition": "below",
+    "example": "The dog is under the tree.",
+    "example_translation": "狗在树下。"
+  },
+  "tree": {
+    "word": "tree",
+    "meaning_zh": "树",
+    "simple_definition": "a tall plant with leaves",
+    "example": "The dog is under the tree.",
+    "example_translation": "狗在树下。"
+  },
+  "happy": {
+    "word": "happy",
+    "meaning_zh": "开心的",
+    "simple_definition": "feeling good",
+    "example": "Tom is very happy.",
+    "example_translation": "汤姆很开心。"
+  },
+  "day": {
+    "word": "day",
+    "meaning_zh": "天；白天",
+    "simple_definition": "a period of 24 hours",
+    "example": "One day, the dog runs away.",
+    "example_translation": "有一天，狗跑走了。"
+  },
+  "run": {
+    "word": "run",
+    "meaning_zh": "跑",
+    "simple_definition": "to move fast",
+    "example": "The dog runs away.",
+    "example_translation": "狗跑走了。"
+  },
+  "runs": {
+    "word": "runs",
+    "meaning_zh": "跑",
+    "simple_definition": "moves fast",
+    "example": "The dog runs away.",
+    "example_translation": "狗跑走了。"
+  },
+  "away": {
+    "word": "away",
+    "meaning_zh": "离开",
+    "simple_definition": "not here",
+    "example": "The dog runs away.",
+    "example_translation": "狗跑走了。"
+  },
+  "look": {
+    "word": "look",
+    "meaning_zh": "看",
+    "simple_definition": "to use your eyes to see",
+    "example": "Tom looks for his dog.",
+    "example_translation": "汤姆找他的狗。"
+  },
+  "looks": {
+    "word": "looks",
+    "meaning_zh": "看",
+    "simple_definition": "uses eyes to see",
+    "example": "Tom looks for his dog.",
+    "example_translation": "汤姆找他的狗。"
+  },
+  "for": {
+    "word": "for",
+    "meaning_zh": "为了；寻找",
+    "simple_definition": "in order to get or find",
+    "example": "Tom looks for his dog.",
+    "example_translation": "汤姆找他的狗。"
+  },
+  "find": {
+    "word": "find",
+    "meaning_zh": "找到",
+    "simple_definition": "to discover",
+    "example": "Tom finds the dog.",
+    "example_translation": "汤姆找到了狗。"
+  },
+  "finds": {
+    "word": "finds",
+    "meaning_zh": "找到",
+    "simple_definition": "discovers",
+    "example": "Tom finds the dog.",
+    "example_translation": "汤姆找到了狗。"
+  },
+  "home": {
+    "word": "home",
+    "meaning_zh": "家",
+    "simple_definition": "the place where you live",
+    "example": "The dog goes home with Tom.",
+    "example_translation": "狗和汤姆一起回家。"
+  },
+  "goes": {
+    "word": "goes",
+    "meaning_zh": "去",
+    "simple_definition": "moves to a place",
+    "example": "The dog goes home.",
+    "example_translation": "狗回家了。"
+  },
+  "go": {
+    "word": "go",
+    "meaning_zh": "去",
+    "simple_definition": "to move to a place",
+    "example": "I go home.",
+    "example_translation": "我回家。"
+  },
+  "he": {
+    "word": "he",
+    "meaning_zh": "他",
+    "simple_definition": "a boy or man",
+    "example": "He is happy.",
+    "example_translation": "他很开心。"
+  },
+  "she": {
+    "word": "she",
+    "meaning_zh": "她",
+    "simple_definition": "a girl or woman",
+    "example": "She is happy.",
+    "example_translation": "她很开心。"
+  },
+  "it": {
+    "word": "it",
+    "meaning_zh": "它",
+    "simple_definition": "a thing or animal",
+    "example": "It is cute.",
+    "example_translation": "它很可爱。"
+  },
+  "this": {
+    "word": "this",
+    "meaning_zh": "这个",
+    "simple_definition": "the thing here",
+    "example": "This dog is cute.",
+    "example_translation": "这只狗很可爱。"
+  },
+  "that": {
+    "word": "that",
+    "meaning_zh": "那个",
+    "simple_definition": "the thing there",
+    "example": "That cat is small.",
+    "example_translation": "那只猫很小。"
+  },
+  "very": {
+    "word": "very",
+    "meaning_zh": "非常",
+    "simple_definition": "a lot",
+    "example": "The dog is very cute.",
+    "example_translation": "这只狗非常可爱。"
+  },
+  "big": {
+    "word": "big",
+    "meaning_zh": "大的",
+    "simple_definition": "large",
+    "example": "The dog is big.",
+    "example_translation": "这只狗很大。"
+  },
+  "small": {
+    "word": "small",
+    "meaning_zh": "小的",
+    "simple_definition": "little",
+    "example": "The cat is small.",
+    "example_translation": "这只猫很小。"
+  },
+  "nice": {
+    "word": "nice",
+    "meaning_zh": "好的；友善的",
+    "simple_definition": "good and kind",
+    "example": "The dog is nice.",
+    "example_translation": "这只狗很好。"
+  },
+  "lovely": {
+    "word": "lovely",
+    "meaning_zh": "可爱的；美好的",
+    "simple_definition": "very nice",
+    "example": "The dog is lovely.",
+    "example_translation": "这只狗很可爱。"
+  },
+  "friend": {
+    "word": "friend",
+    "meaning_zh": "朋友",
+    "simple_definition": "a person you like",
+    "example": "Tom is my friend.",
+    "example_translation": "汤姆是我的朋友。"
+  },
+  "friendly": {
+    "word": "friendly",
+    "meaning_zh": "友好的",
+    "simple_definition": "kind and nice",
+    "example": "The dog is friendly.",
+    "example_translation": "这只狗很友好。"
+  },
+  "hungry": {
+    "word": "hungry",
+    "meaning_zh": "饿的",
+    "simple_definition": "wanting food",
+    "example": "The dog is hungry.",
+    "example_translation": "这只狗饿了。"
+  },
+  "school": {
+    "word": "school",
+    "meaning_zh": "学校",
+    "simple_definition": "a place to learn",
+    "example": "I go to school.",
+    "example_translation": "我去学校。"
+  },
+  "family": {
+    "word": "family",
+    "meaning_zh": "家庭",
+    "simple_definition": "parents and children",
+    "example": "I love my family.",
+    "example_translation": "我爱我的家。"
+  },
+  "food": {
+    "word": "food",
+    "meaning_zh": "食物",
+    "simple_definition": "things you eat",
+    "example": "The dog likes food.",
+    "example_translation": "这只狗喜欢食物。"
+  },
+  "birthday": {
+    "word": "birthday",
+    "meaning_zh": "生日",
+    "simple_definition": "the day you were born",
+    "example": "Today is my birthday.",
+    "example_translation": "今天是我的生日。"
+  },
+  "space": {
+    "word": "space",
+    "meaning_zh": "太空；空间",
+    "simple_definition": "the area outside Earth",
+    "example": "We go to space.",
+    "example_translation": "我们去太空。"
+  },
+  "trip": {
+    "word": "trip",
+    "meaning_zh": "旅行",
+    "simple_definition": "a short journey",
+    "example": "We have a trip.",
+    "example_translation": "我们有一次旅行。"
+  },
+  "park": {
+    "word": "park",
+    "meaning_zh": "公园",
+    "simple_definition": "a place to play outside",
+    "example": "We play in the park.",
+    "example_translation": "我们在公园玩。"
+  },
+  "i": {
+    "word": "i",
+    "meaning_zh": "我",
+    "simple_definition": "the person speaking",
+    "example": "I like my dog.",
+    "example_translation": "我喜欢我的狗。"
+  },
+  "you": {
+    "word": "you",
+    "meaning_zh": "你；你们",
+    "simple_definition": "the person or people being spoken to",
+    "example": "You are my friend.",
+    "example_translation": "你是我的朋友。"
+  },
+  "we": {
+    "word": "we",
+    "meaning_zh": "我们",
+    "simple_definition": "the people speaking together",
+    "example": "We go to school.",
+    "example_translation": "我们去上学。"
+  },
+  "they": {
+    "word": "they",
+    "meaning_zh": "他们",
+    "simple_definition": "the people or things being talked about",
+    "example": "They are happy.",
+    "example_translation": "他们很开心。"
+  },
+  "me": {
+    "word": "me",
+    "meaning_zh": "我（宾格）",
+    "simple_definition": "used when someone does something to you",
+    "example": "He sees me.",
+    "example_translation": "他看见我。"
+  },
+  "him": {
+    "word": "him",
+    "meaning_zh": "他（宾格）",
+    "simple_definition": "used for a boy or man",
+    "example": "I help him.",
+    "example_translation": "我帮助他。"
+  },
+  "us": {
+    "word": "us",
+    "meaning_zh": "我们（宾格）",
+    "simple_definition": "used for the speaker and others",
+    "example": "She calls us.",
+    "example_translation": "她叫我们。"
+  },
+  "them": {
+    "word": "them",
+    "meaning_zh": "他们（宾格）",
+    "simple_definition": "used for other people or things",
+    "example": "I see them.",
+    "example_translation": "我看见他们。"
+  },
+  "my": {
+    "word": "my",
+    "meaning_zh": "我的",
+    "simple_definition": "belonging to me",
+    "example": "This is my book.",
+    "example_translation": "这是我的书。"
+  },
+  "your": {
+    "word": "your",
+    "meaning_zh": "你的",
+    "simple_definition": "belonging to you",
+    "example": "This is your bag.",
+    "example_translation": "这是你的包。"
+  },
+  "our": {
+    "word": "our",
+    "meaning_zh": "我们的",
+    "simple_definition": "belonging to us",
+    "example": "This is our home.",
+    "example_translation": "这是我们的家。"
+  },
+  "their": {
+    "word": "their",
+    "meaning_zh": "他们的",
+    "simple_definition": "belonging to them",
+    "example": "That is their cat.",
+    "example_translation": "那是他们的猫。"
+  },
+  "at": {
+    "word": "at",
+    "meaning_zh": "在",
+    "simple_definition": "in a place or time",
+    "example": "I am at school.",
+    "example_translation": "我在学校。"
+  },
+  "by": {
+    "word": "by",
+    "meaning_zh": "在……旁边；通过",
+    "simple_definition": "near or next to",
+    "example": "The cat is by the door.",
+    "example_translation": "猫在门旁边。"
+  },
+  "from": {
+    "word": "from",
+    "meaning_zh": "从",
+    "simple_definition": "starting at a place or time",
+    "example": "I come from home.",
+    "example_translation": "我从家里来。"
+  },
+  "of": {
+    "word": "of",
+    "meaning_zh": "……的",
+    "simple_definition": "showing belonging or part",
+    "example": "The color of the sky.",
+    "example_translation": "天空的颜色。"
+  },
+  "up": {
+    "word": "up",
+    "meaning_zh": "向上",
+    "simple_definition": "toward a higher place",
+    "example": "The bird flies up.",
+    "example_translation": "鸟向上飞。"
+  },
+  "down": {
+    "word": "down",
+    "meaning_zh": "向下",
+    "simple_definition": "toward a lower place",
+    "example": "The ball rolls down.",
+    "example_translation": "球向下滚。"
+  },
+  "out": {
+    "word": "out",
+    "meaning_zh": "出去",
+    "simple_definition": "away from inside",
+    "example": "The dog runs out.",
+    "example_translation": "狗跑出去。"
+  },
+  "into": {
+    "word": "into",
+    "meaning_zh": "进入",
+    "simple_definition": "to the inside of something",
+    "example": "He goes into the room.",
+    "example_translation": "他走进房间。"
+  },
+  "over": {
+    "word": "over",
+    "meaning_zh": "在……上方；越过",
+    "simple_definition": "above or across",
+    "example": "The plane flies over the city.",
+    "example_translation": "飞机飞过城市。"
+  },
+  "near": {
+    "word": "near",
+    "meaning_zh": "在……附近",
+    "simple_definition": "close to",
+    "example": "The park is near my home.",
+    "example_translation": "公园在我家附近。"
+  },
+  "behind": {
+    "word": "behind",
+    "meaning_zh": "在……后面",
+    "simple_definition": "at the back of",
+    "example": "The cat is behind the box.",
+    "example_translation": "猫在盒子后面。"
+  },
+  "front": {
+    "word": "front",
+    "meaning_zh": "前面",
+    "simple_definition": "the side that faces forward",
+    "example": "He sits in the front.",
+    "example_translation": "他坐在前面。"
+  },
+  "but": {
+    "word": "but",
+    "meaning_zh": "但是",
+    "simple_definition": "used to show a difference",
+    "example": "I am small, but I am fast.",
+    "example_translation": "我小，但我快。"
+  },
+  "or": {
+    "word": "or",
+    "meaning_zh": "或者",
+    "simple_definition": "used to show a choice",
+    "example": "Do you want an apple or a banana?",
+    "example_translation": "你想要苹果还是香蕉？"
+  },
+  "so": {
+    "word": "so",
+    "meaning_zh": "所以",
+    "simple_definition": "for that reason",
+    "example": "It is cold, so I wear a coat.",
+    "example_translation": "天冷，所以我穿外套。"
+  },
+  "because": {
+    "word": "because",
+    "meaning_zh": "因为",
+    "simple_definition": "for the reason that",
+    "example": "I am happy because I see you.",
+    "example_translation": "我开心，因为我见到你。"
+  },
+  "when": {
+    "word": "when",
+    "meaning_zh": "什么时候；当……时",
+    "simple_definition": "at what time",
+    "example": "When do you go to school?",
+    "example_translation": "你什么时候去上学？"
+  },
+  "where": {
+    "word": "where",
+    "meaning_zh": "哪里",
+    "simple_definition": "at what place",
+    "example": "Where is my bag?",
+    "example_translation": "我的包在哪里？"
+  },
+  "what": {
+    "word": "what",
+    "meaning_zh": "什么",
+    "simple_definition": "which thing",
+    "example": "What is this?",
+    "example_translation": "这是什么？"
+  },
+  "who": {
+    "word": "who",
+    "meaning_zh": "谁",
+    "simple_definition": "which person",
+    "example": "Who is your friend?",
+    "example_translation": "谁是你的朋友？"
+  },
+  "why": {
+    "word": "why",
+    "meaning_zh": "为什么",
+    "simple_definition": "for what reason",
+    "example": "Why are you happy?",
+    "example_translation": "你为什么开心？"
+  },
+  "how": {
+    "word": "how",
+    "meaning_zh": "怎样；多么",
+    "simple_definition": "in what way",
+    "example": "How are you?",
+    "example_translation": "你好吗？"
+  },
+  "not": {
+    "word": "not",
+    "meaning_zh": "不",
+    "simple_definition": "used to say no",
+    "example": "I am not tired.",
+    "example_translation": "我不累。"
+  },
+  "no": {
+    "word": "no",
+    "meaning_zh": "不；没有",
+    "simple_definition": "the opposite of yes",
+    "example": "No, thank you.",
+    "example_translation": "不，谢谢。"
+  },
+  "yes": {
+    "word": "yes",
+    "meaning_zh": "是的",
+    "simple_definition": "used to agree",
+    "example": "Yes, I like it.",
+    "example_translation": "是的，我喜欢。"
+  },
+  "too": {
+    "word": "too",
+    "meaning_zh": "也；太",
+    "simple_definition": "also or more than needed",
+    "example": "I like it too.",
+    "example_translation": "我也喜欢。"
+  },
+  "also": {
+    "word": "also",
+    "meaning_zh": "也",
+    "simple_definition": "in addition",
+    "example": "He also likes to read.",
+    "example_translation": "他也喜欢读书。"
+  },
+  "now": {
+    "word": "now",
+    "meaning_zh": "现在",
+    "simple_definition": "at this time",
+    "example": "Let's go now.",
+    "example_translation": "我们现在走吧。"
+  },
+  "then": {
+    "word": "then",
+    "meaning_zh": "然后；那时",
+    "simple_definition": "at that time or next",
+    "example": "We eat, then we play.",
+    "example_translation": "我们吃饭，然后玩。"
+  },
+  "here": {
+    "word": "here",
+    "meaning_zh": "这里",
+    "simple_definition": "in this place",
+    "example": "Come here, please.",
+    "example_translation": "请到这里来。"
+  },
+  "there": {
+    "word": "there",
+    "meaning_zh": "那里",
+    "simple_definition": "in that place",
+    "example": "The dog is over there.",
+    "example_translation": "狗在那边。"
+  },
+  "am": {
+    "word": "am",
+    "meaning_zh": "是",
+    "simple_definition": "used with I to say what I am",
+    "example": "I am a student.",
+    "example_translation": "我是学生。"
+  },
+  "are": {
+    "word": "are",
+    "meaning_zh": "是",
+    "simple_definition": "used with you, we, they",
+    "example": "You are kind.",
+    "example_translation": "你很友善。"
+  },
+  "was": {
+    "word": "was",
+    "meaning_zh": "是（过去式）",
+    "simple_definition": "was is used in the past",
+    "example": "He was at home.",
+    "example_translation": "他之前在家。"
+  },
+  "were": {
+    "word": "were",
+    "meaning_zh": "是（过去式）",
+    "simple_definition": "were is used in the past",
+    "example": "We were happy.",
+    "example_translation": "我们之前很开心。"
+  },
+  "been": {
+    "word": "been",
+    "meaning_zh": "已经；曾经",
+    "simple_definition": "past form of be",
+    "example": "I have been here.",
+    "example_translation": "我曾经在这里。"
+  },
+  "do": {
+    "word": "do",
+    "meaning_zh": "做",
+    "simple_definition": "to perform an action",
+    "example": "I do my homework.",
+    "example_translation": "我做作业。"
+  },
+  "does": {
+    "word": "does",
+    "meaning_zh": "做（第三人称）",
+    "simple_definition": "does is used with he, she, it",
+    "example": "She does her best.",
+    "example_translation": "她尽力而为。"
+  },
+  "did": {
+    "word": "did",
+    "meaning_zh": "做（过去式）",
+    "simple_definition": "did is the past of do",
+    "example": "I did my work.",
+    "example_translation": "我做了我的工作。"
+  },
+  "can": {
+    "word": "can",
+    "meaning_zh": "能；会",
+    "simple_definition": "to be able to",
+    "example": "I can swim.",
+    "example_translation": "我会游泳。"
+  },
+  "could": {
+    "word": "could",
+    "meaning_zh": "能（过去式）",
+    "simple_definition": "was able to",
+    "example": "I could see the bird.",
+    "example_translation": "我能看见那只鸟。"
+  },
+  "will": {
+    "word": "will",
+    "meaning_zh": "将要",
+    "simple_definition": "used for the future",
+    "example": "I will go home.",
+    "example_translation": "我将要回家。"
+  },
+  "would": {
+    "word": "would",
+    "meaning_zh": "将会；愿意",
+    "simple_definition": "used to talk about a wish",
+    "example": "I would like some water.",
+    "example_translation": "我想要一些水。"
+  },
+  "should": {
+    "word": "should",
+    "meaning_zh": "应该",
+    "simple_definition": "used to say the right thing",
+    "example": "You should sleep early.",
+    "example_translation": "你应该早点睡觉。"
+  },
+  "may": {
+    "word": "may",
+    "meaning_zh": "可以；也许",
+    "simple_definition": "used to ask or give permission",
+    "example": "May I come in?",
+    "example_translation": "我可以进来吗？"
+  },
+  "must": {
+    "word": "must",
+    "meaning_zh": "必须",
+    "simple_definition": "used to say something is needed",
+    "example": "You must wear a coat.",
+    "example_translation": "你必须穿外套。"
+  },
+  "see": {
+    "word": "see",
+    "meaning_zh": "看见",
+    "simple_definition": "to use your eyes",
+    "example": "I see a bird.",
+    "example_translation": "我看见一只鸟。"
+  },
+  "saw": {
+    "word": "saw",
+    "meaning_zh": "看见（过去式）",
+    "simple_definition": "past of see",
+    "example": "I saw a cat.",
+    "example_translation": "我看见了一只猫。"
+  },
+  "say": {
+    "word": "say",
+    "meaning_zh": "说",
+    "simple_definition": "to speak words",
+    "example": "Please say hello.",
+    "example_translation": "请说你好。"
+  },
+  "said": {
+    "word": "said",
+    "meaning_zh": "说（过去式）",
+    "simple_definition": "past of say",
+    "example": "He said thank you.",
+    "example_translation": "他说了谢谢。"
+  },
+  "get": {
+    "word": "get",
+    "meaning_zh": "得到；到达",
+    "simple_definition": "to receive or arrive",
+    "example": "I get a gift.",
+    "example_translation": "我得到一份礼物。"
+  },
+  "got": {
+    "word": "got",
+    "meaning_zh": "得到（过去式）",
+    "simple_definition": "past of get",
+    "example": "I got a new book.",
+    "example_translation": "我得到了一本新书。"
+  },
+  "make": {
+    "word": "make",
+    "meaning_zh": "做；制作",
+    "simple_definition": "to create something",
+    "example": "I make a cake.",
+    "example_translation": "我做一个蛋糕。"
+  },
+  "made": {
+    "word": "made",
+    "meaning_zh": "做（过去式）",
+    "simple_definition": "past of make",
+    "example": "She made a card.",
+    "example_translation": "她做了一张卡片。"
+  },
+  "take": {
+    "word": "take",
+    "meaning_zh": "拿；带",
+    "simple_definition": "to hold or carry",
+    "example": "I take my bag.",
+    "example_translation": "我拿我的包。"
+  },
+  "took": {
+    "word": "took",
+    "meaning_zh": "拿（过去式）",
+    "simple_definition": "past of take",
+    "example": "He took the ball.",
+    "example_translation": "他拿了球。"
+  },
+  "come": {
+    "word": "come",
+    "meaning_zh": "来",
+    "simple_definition": "to move toward here",
+    "example": "Come to my home.",
+    "example_translation": "来我家。"
+  },
+  "came": {
+    "word": "came",
+    "meaning_zh": "来（过去式）",
+    "simple_definition": "past of come",
+    "example": "She came to school.",
+    "example_translation": "她来了学校。"
+  },
+  "know": {
+    "word": "know",
+    "meaning_zh": "知道",
+    "simple_definition": "to understand something",
+    "example": "I know the answer.",
+    "example_translation": "我知道答案。"
+  },
+  "knew": {
+    "word": "knew",
+    "meaning_zh": "知道（过去式）",
+    "simple_definition": "past of know",
+    "example": "I knew the story.",
+    "example_translation": "我知道那个故事。"
+  },
+  "think": {
+    "word": "think",
+    "meaning_zh": "想；认为",
+    "simple_definition": "to use your mind",
+    "example": "I think it is good.",
+    "example_translation": "我认为这很好。"
+  },
+  "thought": {
+    "word": "thought",
+    "meaning_zh": "想（过去式）",
+    "simple_definition": "past of think",
+    "example": "I thought about you.",
+    "example_translation": "我想到了你。"
+  },
+  "want": {
+    "word": "want",
+    "meaning_zh": "想要",
+    "simple_definition": "to wish for something",
+    "example": "I want an apple.",
+    "example_translation": "我想要一个苹果。"
+  },
+  "wanted": {
+    "word": "wanted",
+    "meaning_zh": "想要（过去式）",
+    "simple_definition": "past of want",
+    "example": "He wanted to play.",
+    "example_translation": "他想要玩。"
+  },
+  "give": {
+    "word": "give",
+    "meaning_zh": "给",
+    "simple_definition": "to let someone have something",
+    "example": "I give you a gift.",
+    "example_translation": "我给你一份礼物。"
+  },
+  "gave": {
+    "word": "gave",
+    "meaning_zh": "给（过去式）",
+    "simple_definition": "past of give",
+    "example": "She gave me a book.",
+    "example_translation": "她给了我一本书。"
+  },
+  "help": {
+    "word": "help",
+    "meaning_zh": "帮助",
+    "simple_definition": "to do something for someone",
+    "example": "I help my friend.",
+    "example_translation": "我帮助我的朋友。"
+  },
+  "open": {
+    "word": "open",
+    "meaning_zh": "打开",
+    "simple_definition": "to move something so it is not closed",
+    "example": "Open the door.",
+    "example_translation": "打开门。"
+  },
+  "close": {
+    "word": "close",
+    "meaning_zh": "关上",
+    "simple_definition": "to shut something",
+    "example": "Close the window.",
+    "example_translation": "关上窗户。"
+  },
+  "stop": {
+    "word": "stop",
+    "meaning_zh": "停止",
+    "simple_definition": "to not move or continue",
+    "example": "Stop the car.",
+    "example_translation": "停车。"
+  },
+  "walk": {
+    "word": "walk",
+    "meaning_zh": "走路",
+    "simple_definition": "to move on foot",
+    "example": "I walk to school.",
+    "example_translation": "我走路去上学。"
+  },
+  "talk": {
+    "word": "talk",
+    "meaning_zh": "说话",
+    "simple_definition": "to speak with someone",
+    "example": "Let's talk.",
+    "example_translation": "我们说话吧。"
+  },
+  "eat": {
+    "word": "eat",
+    "meaning_zh": "吃",
+    "simple_definition": "to put food in your mouth",
+    "example": "I eat breakfast.",
+    "example_translation": "我吃早餐。"
+  },
+  "ate": {
+    "word": "ate",
+    "meaning_zh": "吃（过去式）",
+    "simple_definition": "past of eat",
+    "example": "I ate an apple.",
+    "example_translation": "我吃了一个苹果。"
+  },
+  "drink": {
+    "word": "drink",
+    "meaning_zh": "喝",
+    "simple_definition": "to take liquid into your mouth",
+    "example": "I drink water.",
+    "example_translation": "我喝水。"
+  },
+  "drank": {
+    "word": "drank",
+    "meaning_zh": "喝（过去式）",
+    "simple_definition": "past of drink",
+    "example": "He drank milk.",
+    "example_translation": "他喝了牛奶。"
+  },
+  "sleep": {
+    "word": "sleep",
+    "meaning_zh": "睡觉",
+    "simple_definition": "to rest with your eyes closed",
+    "example": "I sleep at night.",
+    "example_translation": "我晚上睡觉。"
+  },
+  "slept": {
+    "word": "slept",
+    "meaning_zh": "睡觉（过去式）",
+    "simple_definition": "past of sleep",
+    "example": "I slept well.",
+    "example_translation": "我睡得很好。"
+  },
+  "read": {
+    "word": "read",
+    "meaning_zh": "读",
+    "simple_definition": "to look at words and understand",
+    "example": "I read a book.",
+    "example_translation": "我读一本书。"
+  },
+  "write": {
+    "word": "write",
+    "meaning_zh": "写",
+    "simple_definition": "to put words on paper",
+    "example": "I write my name.",
+    "example_translation": "我写我的名字。"
+  },
+  "wrote": {
+    "word": "wrote",
+    "meaning_zh": "写（过去式）",
+    "simple_definition": "past of write",
+    "example": "She wrote a letter.",
+    "example_translation": "她写了一封信。"
+  },
+  "sit": {
+    "word": "sit",
+    "meaning_zh": "坐",
+    "simple_definition": "to rest on a chair",
+    "example": "Please sit down.",
+    "example_translation": "请坐下。"
+  },
+  "stand": {
+    "word": "stand",
+    "meaning_zh": "站立",
+    "simple_definition": "to be on your feet",
+    "example": "Stand up, please.",
+    "example_translation": "请站起来。"
+  },
+  "buy": {
+    "word": "buy",
+    "meaning_zh": "买",
+    "simple_definition": "to get something with money",
+    "example": "I buy bread.",
+    "example_translation": "我买面包。"
+  },
+  "bring": {
+    "word": "bring",
+    "meaning_zh": "带来",
+    "simple_definition": "to carry something to a place",
+    "example": "Bring your book.",
+    "example_translation": "带上你的书。"
+  },
+  "call": {
+    "word": "call",
+    "meaning_zh": "叫；打电话",
+    "simple_definition": "to say a name loudly or use a phone",
+    "example": "Call me later.",
+    "example_translation": "稍后给我打电话。"
+  },
+  "ask": {
+    "word": "ask",
+    "meaning_zh": "问",
+    "simple_definition": "to say a question",
+    "example": "I ask a question.",
+    "example_translation": "我问一个问题。"
+  },
+  "answer": {
+    "word": "answer",
+    "meaning_zh": "回答",
+    "simple_definition": "to say something back to a question",
+    "example": "Please answer the question.",
+    "example_translation": "请回答这个问题。"
+  },
+  "tell": {
+    "word": "tell",
+    "meaning_zh": "告诉",
+    "simple_definition": "to say something to someone",
+    "example": "Tell me a story.",
+    "example_translation": "给我讲个故事。"
+  },
+  "told": {
+    "word": "told",
+    "meaning_zh": "告诉（过去式）",
+    "simple_definition": "past of tell",
+    "example": "He told me the answer.",
+    "example_translation": "他告诉了我答案。"
+  },
+  "feel": {
+    "word": "feel",
+    "meaning_zh": "感觉",
+    "simple_definition": "to have a feeling",
+    "example": "I feel happy.",
+    "example_translation": "我感觉很开心。"
+  },
+  "hear": {
+    "word": "hear",
+    "meaning_zh": "听见",
+    "simple_definition": "to use your ears",
+    "example": "I hear the music.",
+    "example_translation": "我听见音乐。"
+  },
+  "listen": {
+    "word": "listen",
+    "meaning_zh": "听",
+    "simple_definition": "to pay attention to sound",
+    "example": "Listen to the teacher.",
+    "example_translation": "听老师讲。"
+  },
+  "clean": {
+    "word": "clean",
+    "meaning_zh": "打扫；干净的",
+    "simple_definition": "to make something not dirty",
+    "example": "I clean my room.",
+    "example_translation": "我打扫我的房间。"
+  },
+  "wash": {
+    "word": "wash",
+    "meaning_zh": "洗",
+    "simple_definition": "to use water to make clean",
+    "example": "I wash my hands.",
+    "example_translation": "我洗手。"
+  },
+  "cook": {
+    "word": "cook",
+    "meaning_zh": "做饭",
+    "simple_definition": "to make food with heat",
+    "example": "Mom cooks dinner.",
+    "example_translation": "妈妈做晚饭。"
+  },
+  "jump": {
+    "word": "jump",
+    "meaning_zh": "跳",
+    "simple_definition": "to move up off the ground",
+    "example": "I jump high.",
+    "example_translation": "我跳得很高。"
+  },
+  "swim": {
+    "word": "swim",
+    "meaning_zh": "游泳",
+    "simple_definition": "to move through water",
+    "example": "I swim in the pool.",
+    "example_translation": "我在泳池里游泳。"
+  },
+  "fly": {
+    "word": "fly",
+    "meaning_zh": "飞",
+    "simple_definition": "to move through the air",
+    "example": "Birds fly in the sky.",
+    "example_translation": "鸟在天上飞。"
+  },
+  "sing": {
+    "word": "sing",
+    "meaning_zh": "唱歌",
+    "simple_definition": "to make music with your voice",
+    "example": "I sing a song.",
+    "example_translation": "我唱一首歌。"
+  },
+  "dance": {
+    "word": "dance",
+    "meaning_zh": "跳舞",
+    "simple_definition": "to move your body to music",
+    "example": "We dance together.",
+    "example_translation": "我们一起跳舞。"
+  },
+  "draw": {
+    "word": "draw",
+    "meaning_zh": "画",
+    "simple_definition": "to make a picture with a pencil",
+    "example": "I draw a cat.",
+    "example_translation": "我画一只猫。"
+  },
+  "paint": {
+    "word": "paint",
+    "meaning_zh": "画画；涂色",
+    "simple_definition": "to use color to make a picture",
+    "example": "I paint the wall.",
+    "example_translation": "我刷墙。"
+  },
+  "ride": {
+    "word": "ride",
+    "meaning_zh": "骑",
+    "simple_definition": "to sit on and control a bike or horse",
+    "example": "I ride my bike.",
+    "example_translation": "我骑自行车。"
+  },
+  "live": {
+    "word": "live",
+    "meaning_zh": "住；生活",
+    "simple_definition": "to have your home in a place",
+    "example": "I live in a small town.",
+    "example_translation": "我住在一个小镇。"
+  },
+  "love": {
+    "word": "love",
+    "meaning_zh": "爱；喜欢",
+    "simple_definition": "to like very much",
+    "example": "I love my family.",
+    "example_translation": "我爱我的家人。"
+  },
+  "need": {
+    "word": "need",
+    "meaning_zh": "需要",
+    "simple_definition": "to have to have something",
+    "example": "I need water.",
+    "example_translation": "我需要水。"
+  },
+  "use": {
+    "word": "use",
+    "meaning_zh": "使用",
+    "simple_definition": "to do something with a thing",
+    "example": "I use a pencil.",
+    "example_translation": "我用铅笔。"
+  },
+  "work": {
+    "word": "work",
+    "meaning_zh": "工作",
+    "simple_definition": "to do a job",
+    "example": "My dad works in a shop.",
+    "example_translation": "我爸爸在商店工作。"
+  },
+  "hope": {
+    "word": "hope",
+    "meaning_zh": "希望",
+    "simple_definition": "to want something good to happen",
+    "example": "I hope you are well.",
+    "example_translation": "我希望你很好。"
+  },
+  "try": {
+    "word": "try",
+    "meaning_zh": "尝试",
+    "simple_definition": "to make an effort",
+    "example": "I try my best.",
+    "example_translation": "我尽力而为。"
+  },
+  "learn": {
+    "word": "learn",
+    "meaning_zh": "学习",
+    "simple_definition": "to get new knowledge",
+    "example": "I learn English.",
+    "example_translation": "我学英语。"
+  },
+  "teach": {
+    "word": "teach",
+    "meaning_zh": "教",
+    "simple_definition": "to help someone learn",
+    "example": "She teaches math.",
+    "example_translation": "她教数学。"
+  },
+  "remember": {
+    "word": "remember",
+    "meaning_zh": "记得",
+    "simple_definition": "to keep something in your mind",
+    "example": "I remember your name.",
+    "example_translation": "我记得你的名字。"
+  },
+  "forget": {
+    "word": "forget",
+    "meaning_zh": "忘记",
+    "simple_definition": "to not remember",
+    "example": "Don't forget your bag.",
+    "example_translation": "别忘了你的包。"
+  },
+  "meet": {
+    "word": "meet",
+    "meaning_zh": "遇见；见面",
+    "simple_definition": "to come together with someone",
+    "example": "Nice to meet you.",
+    "example_translation": "很高兴见到你。"
+  },
+  "sad": {
+    "word": "sad",
+    "meaning_zh": "伤心的",
+    "simple_definition": "feeling unhappy",
+    "example": "She is sad.",
+    "example_translation": "她很伤心。"
+  },
+  "angry": {
+    "word": "angry",
+    "meaning_zh": "生气的",
+    "simple_definition": "feeling mad",
+    "example": "He is angry.",
+    "example_translation": "他很生气。"
+  },
+  "tired": {
+    "word": "tired",
+    "meaning_zh": "累的",
+    "simple_definition": "feeling you need rest",
+    "example": "I am tired.",
+    "example_translation": "我很累。"
+  },
+  "scared": {
+    "word": "scared",
+    "meaning_zh": "害怕的",
+    "simple_definition": "feeling afraid",
+    "example": "The cat is scared.",
+    "example_translation": "猫很害怕。"
+  },
+  "brave": {
+    "word": "brave",
+    "meaning_zh": "勇敢的",
+    "simple_definition": "not afraid",
+    "example": "The fireman is brave.",
+    "example_translation": "消防员很勇敢。"
+  },
+  "kind": {
+    "word": "kind",
+    "meaning_zh": "友善的",
+    "simple_definition": "nice to others",
+    "example": "She is kind.",
+    "example_translation": "她很友善。"
+  },
+  "fast": {
+    "word": "fast",
+    "meaning_zh": "快的",
+    "simple_definition": "moving quickly",
+    "example": "The car is fast.",
+    "example_translation": "这辆车很快。"
+  },
+  "slow": {
+    "word": "slow",
+    "meaning_zh": "慢的",
+    "simple_definition": "moving not quickly",
+    "example": "The turtle is slow.",
+    "example_translation": "乌龟很慢。"
+  },
+  "hot": {
+    "word": "hot",
+    "meaning_zh": "热的",
+    "simple_definition": "having high heat",
+    "example": "The soup is hot.",
+    "example_translation": "汤很热。"
+  },
+  "cold": {
+    "word": "cold",
+    "meaning_zh": "冷的",
+    "simple_definition": "having low heat",
+    "example": "The water is cold.",
+    "example_translation": "水很冷。"
+  },
+  "warm": {
+    "word": "warm",
+    "meaning_zh": "温暖的",
+    "simple_definition": "a little hot",
+    "example": "The sun is warm.",
+    "example_translation": "太阳很温暖。"
+  },
+  "cool": {
+    "word": "cool",
+    "meaning_zh": "凉爽的",
+    "simple_definition": "a little cold",
+    "example": "The wind is cool.",
+    "example_translation": "风很凉爽。"
+  },
+  "wet": {
+    "word": "wet",
+    "meaning_zh": "湿的",
+    "simple_definition": "covered with water",
+    "example": "My shoes are wet.",
+    "example_translation": "我的鞋湿了。"
+  },
+  "dry": {
+    "word": "dry",
+    "meaning_zh": "干的",
+    "simple_definition": "not wet",
+    "example": "The towel is dry.",
+    "example_translation": "毛巾是干的。"
+  },
+  "dirty": {
+    "word": "dirty",
+    "meaning_zh": "脏的",
+    "simple_definition": "not clean",
+    "example": "My hands are dirty.",
+    "example_translation": "我的手很脏。"
+  },
+  "new": {
+    "word": "new",
+    "meaning_zh": "新的",
+    "simple_definition": "not old",
+    "example": "I have a new bag.",
+    "example_translation": "我有一个新包。"
+  },
+  "old": {
+    "word": "old",
+    "meaning_zh": "旧的；老的",
+    "simple_definition": "not new or not young",
+    "example": "This is an old book.",
+    "example_translation": "这是一本旧书。"
+  },
+  "young": {
+    "word": "young",
+    "meaning_zh": "年轻的",
+    "simple_definition": "not old",
+    "example": "The baby is young.",
+    "example_translation": "这个婴儿很小。"
+  },
+  "easy": {
+    "word": "easy",
+    "meaning_zh": "容易的",
+    "simple_definition": "not hard",
+    "example": "This question is easy.",
+    "example_translation": "这个问题很简单。"
+  },
+  "hard": {
+    "word": "hard",
+    "meaning_zh": "难的；硬的",
+    "simple_definition": "not easy or not soft",
+    "example": "The test is hard.",
+    "example_translation": "这个测试很难。"
+  },
+  "soft": {
+    "word": "soft",
+    "meaning_zh": "柔软的",
+    "simple_definition": "not hard",
+    "example": "The pillow is soft.",
+    "example_translation": "枕头很软。"
+  },
+  "tall": {
+    "word": "tall",
+    "meaning_zh": "高的",
+    "simple_definition": "having great height",
+    "example": "He is tall.",
+    "example_translation": "他很高。"
+  },
+  "short": {
+    "word": "short",
+    "meaning_zh": "矮的；短的",
+    "simple_definition": "not tall or not long",
+    "example": "She is short.",
+    "example_translation": "她很矮。"
+  },
+  "long": {
+    "word": "long",
+    "meaning_zh": "长的",
+    "simple_definition": "having great length",
+    "example": "The road is long.",
+    "example_translation": "这条路很长。"
+  },
+  "heavy": {
+    "word": "heavy",
+    "meaning_zh": "重的",
+    "simple_definition": "hard to lift",
+    "example": "The box is heavy.",
+    "example_translation": "这个箱子很重。"
+  },
+  "light": {
+    "word": "light",
+    "meaning_zh": "轻的；光",
+    "simple_definition": "not heavy or brightness",
+    "example": "The bag is light.",
+    "example_translation": "这个包很轻。"
+  },
+  "good": {
+    "word": "good",
+    "meaning_zh": "好的",
+    "simple_definition": "pleasant or right",
+    "example": "This is a good book.",
+    "example_translation": "这是一本好书。"
+  },
+  "better": {
+    "word": "better",
+    "meaning_zh": "更好的",
+    "simple_definition": "more good",
+    "example": "This one is better.",
+    "example_translation": "这个更好。"
+  },
+  "best": {
+    "word": "best",
+    "meaning_zh": "最好的",
+    "simple_definition": "the most good",
+    "example": "You are the best.",
+    "example_translation": "你是最好的。"
+  },
+  "bad": {
+    "word": "bad",
+    "meaning_zh": "坏的",
+    "simple_definition": "not good",
+    "example": "That is bad weather.",
+    "example_translation": "那是坏天气。"
+  },
+  "beautiful": {
+    "word": "beautiful",
+    "meaning_zh": "美丽的",
+    "simple_definition": "very nice to look at",
+    "example": "The flower is beautiful.",
+    "example_translation": "这朵花很漂亮。"
+  },
+  "quiet": {
+    "word": "quiet",
+    "meaning_zh": "安静的",
+    "simple_definition": "making little sound",
+    "example": "The room is quiet.",
+    "example_translation": "房间很安静。"
+  },
+  "loud": {
+    "word": "loud",
+    "meaning_zh": "大声的",
+    "simple_definition": "making a lot of sound",
+    "example": "The music is loud.",
+    "example_translation": "音乐声很大。"
+  },
+  "thirsty": {
+    "word": "thirsty",
+    "meaning_zh": "口渴的",
+    "simple_definition": "needing to drink",
+    "example": "I am thirsty.",
+    "example_translation": "我口渴。"
+  },
+  "full": {
+    "word": "full",
+    "meaning_zh": "满的；饱的",
+    "simple_definition": "having no empty space",
+    "example": "The cup is full.",
+    "example_translation": "杯子满了。"
+  },
+  "empty": {
+    "word": "empty",
+    "meaning_zh": "空的",
+    "simple_definition": "having nothing inside",
+    "example": "The box is empty.",
+    "example_translation": "盒子是空的。"
+  },
+  "right": {
+    "word": "right",
+    "meaning_zh": "对的；右边",
+    "simple_definition": "correct or the right side",
+    "example": "Your answer is right.",
+    "example_translation": "你的答案是对的。"
+  },
+  "wrong": {
+    "word": "wrong",
+    "meaning_zh": "错的",
+    "simple_definition": "not correct",
+    "example": "That is wrong.",
+    "example_translation": "那是错的。"
+  },
+  "first": {
+    "word": "first",
+    "meaning_zh": "第一；首先",
+    "simple_definition": "before all others",
+    "example": "I am the first.",
+    "example_translation": "我是第一个。"
+  },
+  "last": {
+    "word": "last",
+    "meaning_zh": "最后",
+    "simple_definition": "after all others",
+    "example": "He is the last.",
+    "example_translation": "他是最后一个。"
+  },
+  "next": {
+    "word": "next",
+    "meaning_zh": "下一个",
+    "simple_definition": "coming after this one",
+    "example": "The next day is Monday.",
+    "example_translation": "下一天是星期一。"
+  },
+  "same": {
+    "word": "same",
+    "meaning_zh": "相同的",
+    "simple_definition": "not different",
+    "example": "We have the same book.",
+    "example_translation": "我们有同样的书。"
+  },
+  "different": {
+    "word": "different",
+    "meaning_zh": "不同的",
+    "simple_definition": "not the same",
+    "example": "These are different colors.",
+    "example_translation": "这些是不同的颜色。"
+  },
+  "many": {
+    "word": "many",
+    "meaning_zh": "许多",
+    "simple_definition": "a large number",
+    "example": "I have many books.",
+    "example_translation": "我有许多书。"
+  },
+  "much": {
+    "word": "much",
+    "meaning_zh": "很多",
+    "simple_definition": "a large amount",
+    "example": "Thank you very much.",
+    "example_translation": "非常感谢你。"
+  },
+  "some": {
+    "word": "some",
+    "meaning_zh": "一些",
+    "simple_definition": "a small number or amount",
+    "example": "I want some water.",
+    "example_translation": "我想要一些水。"
+  },
+  "all": {
+    "word": "all",
+    "meaning_zh": "全部",
+    "simple_definition": "every one",
+    "example": "All the children are here.",
+    "example_translation": "所有孩子都在这。"
+  },
+  "every": {
+    "word": "every",
+    "meaning_zh": "每个",
+    "simple_definition": "each one",
+    "example": "I read every day.",
+    "example_translation": "我每天读书。"
+  },
+  "each": {
+    "word": "each",
+    "meaning_zh": "每一个",
+    "simple_definition": "every one separately",
+    "example": "Each child has a book.",
+    "example_translation": "每个孩子都有一本书。"
+  },
+  "few": {
+    "word": "few",
+    "meaning_zh": "很少几个",
+    "simple_definition": "not many",
+    "example": "There are few people.",
+    "example_translation": "人很少。"
+  },
+  "several": {
+    "word": "several",
+    "meaning_zh": "几个",
+    "simple_definition": "more than two but not many",
+    "example": "I have several apples.",
+    "example_translation": "我有几个苹果。"
+  },
+  "mom": {
+    "word": "mom",
+    "meaning_zh": "妈妈",
+    "simple_definition": "your mother",
+    "example": "My mom is kind.",
+    "example_translation": "我妈妈很友善。"
+  },
+  "mum": {
+    "word": "mum",
+    "meaning_zh": "妈妈",
+    "simple_definition": "your mother",
+    "example": "My mum makes dinner.",
+    "example_translation": "我妈妈做晚饭。"
+  },
+  "mother": {
+    "word": "mother",
+    "meaning_zh": "母亲",
+    "simple_definition": "your mom",
+    "example": "Her mother is a teacher.",
+    "example_translation": "她妈妈是老师。"
+  },
+  "dad": {
+    "word": "dad",
+    "meaning_zh": "爸爸",
+    "simple_definition": "your father",
+    "example": "My dad likes to read.",
+    "example_translation": "我爸爸喜欢读书。"
+  },
+  "father": {
+    "word": "father",
+    "meaning_zh": "父亲",
+    "simple_definition": "your dad",
+    "example": "His father works in a shop.",
+    "example_translation": "他爸爸在商店工作。"
+  },
+  "brother": {
+    "word": "brother",
+    "meaning_zh": "兄弟",
+    "simple_definition": "a boy with the same parents",
+    "example": "My brother is tall.",
+    "example_translation": "我哥哥很高。"
+  },
+  "sister": {
+    "word": "sister",
+    "meaning_zh": "姐妹",
+    "simple_definition": "a girl with the same parents",
+    "example": "My sister is young.",
+    "example_translation": "我妹妹很小。"
+  },
+  "baby": {
+    "word": "baby",
+    "meaning_zh": "婴儿",
+    "simple_definition": "a very young child",
+    "example": "The baby is sleeping.",
+    "example_translation": "婴儿在睡觉。"
+  },
+  "boy": {
+    "word": "boy",
+    "meaning_zh": "男孩",
+    "simple_definition": "a male child",
+    "example": "The boy runs fast.",
+    "example_translation": "这个男孩跑得很快。"
+  },
+  "girl": {
+    "word": "girl",
+    "meaning_zh": "女孩",
+    "simple_definition": "a female child",
+    "example": "The girl sings well.",
+    "example_translation": "这个女孩唱得很好。"
+  },
+  "man": {
+    "word": "man",
+    "meaning_zh": "男人",
+    "simple_definition": "an adult male",
+    "example": "The man is a doctor.",
+    "example_translation": "这个男人是医生。"
+  },
+  "woman": {
+    "word": "woman",
+    "meaning_zh": "女人",
+    "simple_definition": "an adult female",
+    "example": "The woman is a teacher.",
+    "example_translation": "这个女人是老师。"
+  },
+  "child": {
+    "word": "child",
+    "meaning_zh": "孩子",
+    "simple_definition": "a young person",
+    "example": "The child is happy.",
+    "example_translation": "这个孩子很开心。"
+  },
+  "children": {
+    "word": "children",
+    "meaning_zh": "孩子们",
+    "simple_definition": "more than one child",
+    "example": "The children are playing.",
+    "example_translation": "孩子们在玩。"
+  },
+  "teacher": {
+    "word": "teacher",
+    "meaning_zh": "老师",
+    "simple_definition": "a person who teaches",
+    "example": "My teacher is nice.",
+    "example_translation": "我的老师很好。"
+  },
+  "student": {
+    "word": "student",
+    "meaning_zh": "学生",
+    "simple_definition": "a person who learns",
+    "example": "She is a good student.",
+    "example_translation": "她是好学生。"
+  },
+  "doctor": {
+    "word": "doctor",
+    "meaning_zh": "医生",
+    "simple_definition": "a person who helps sick people",
+    "example": "The doctor helps me.",
+    "example_translation": "医生帮助我。"
+  },
+  "nurse": {
+    "word": "nurse",
+    "meaning_zh": "护士",
+    "simple_definition": "a person who helps the doctor",
+    "example": "The nurse is kind.",
+    "example_translation": "护士很友善。"
+  },
+  "farmer": {
+    "word": "farmer",
+    "meaning_zh": "农民",
+    "simple_definition": "a person who works on a farm",
+    "example": "The farmer has cows.",
+    "example_translation": "农民养牛。"
+  },
+  "class": {
+    "word": "class",
+    "meaning_zh": "班级；课",
+    "simple_definition": "a group of students or a lesson",
+    "example": "Our class is fun.",
+    "example_translation": "我们的课很有趣。"
+  },
+  "book": {
+    "word": "book",
+    "meaning_zh": "书",
+    "simple_definition": "pages with words to read",
+    "example": "This is my book.",
+    "example_translation": "这是我的书。"
+  },
+  "pen": {
+    "word": "pen",
+    "meaning_zh": "钢笔",
+    "simple_definition": "a tool for writing with ink",
+    "example": "I write with a pen.",
+    "example_translation": "我用钢笔写字。"
+  },
+  "pencil": {
+    "word": "pencil",
+    "meaning_zh": "铅笔",
+    "simple_definition": "a tool for writing or drawing",
+    "example": "I draw with a pencil.",
+    "example_translation": "我用铅笔画画。"
+  },
+  "paper": {
+    "word": "paper",
+    "meaning_zh": "纸",
+    "simple_definition": "thin material for writing",
+    "example": "Write on the paper.",
+    "example_translation": "在纸上写。"
+  },
+  "bag": {
+    "word": "bag",
+    "meaning_zh": "包",
+    "simple_definition": "something to carry things in",
+    "example": "My bag is heavy.",
+    "example_translation": "我的包很重。"
+  },
+  "desk": {
+    "word": "desk",
+    "meaning_zh": "书桌",
+    "simple_definition": "a table for study",
+    "example": "The book is on the desk.",
+    "example_translation": "书在书桌上。"
+  },
+  "chair": {
+    "word": "chair",
+    "meaning_zh": "椅子",
+    "simple_definition": "something to sit on",
+    "example": "Sit on the chair.",
+    "example_translation": "坐在椅子上。"
+  },
+  "board": {
+    "word": "board",
+    "meaning_zh": "黑板",
+    "simple_definition": "a flat surface to write on",
+    "example": "Look at the board.",
+    "example_translation": "看黑板。"
+  },
+  "homework": {
+    "word": "homework",
+    "meaning_zh": "家庭作业",
+    "simple_definition": "work a teacher gives to do at home",
+    "example": "I do my homework.",
+    "example_translation": "我做家庭作业。"
+  },
+  "lesson": {
+    "word": "lesson",
+    "meaning_zh": "课",
+    "simple_definition": "a time of learning",
+    "example": "The lesson is short.",
+    "example_translation": "这节课很短。"
+  },
+  "test": {
+    "word": "test",
+    "meaning_zh": "测试",
+    "simple_definition": "a set of questions to check learning",
+    "example": "The test is easy.",
+    "example_translation": "测试很容易。"
+  },
+  "question": {
+    "word": "question",
+    "meaning_zh": "问题",
+    "simple_definition": "something you ask",
+    "example": "I have a question.",
+    "example_translation": "我有一个问题。"
+  },
+  "apple": {
+    "word": "apple",
+    "meaning_zh": "苹果",
+    "simple_definition": "a round red or green fruit",
+    "example": "I eat an apple.",
+    "example_translation": "我吃一个苹果。"
+  },
+  "banana": {
+    "word": "banana",
+    "meaning_zh": "香蕉",
+    "simple_definition": "a long yellow fruit",
+    "example": "The monkey eats a banana.",
+    "example_translation": "猴子吃香蕉。"
+  },
+  "orange": {
+    "word": "orange",
+    "meaning_zh": "橙子；橙色",
+    "simple_definition": "a round orange fruit or a color",
+    "example": "I like orange juice.",
+    "example_translation": "我喜欢橙汁。"
+  },
+  "fruit": {
+    "word": "fruit",
+    "meaning_zh": "水果",
+    "simple_definition": "food that grows on trees or plants",
+    "example": "Fruit is good for you.",
+    "example_translation": "水果对你有好处。"
+  },
+  "bread": {
+    "word": "bread",
+    "meaning_zh": "面包",
+    "simple_definition": "food made from flour and baked",
+    "example": "I eat bread.",
+    "example_translation": "我吃面包。"
+  },
+  "rice": {
+    "word": "rice",
+    "meaning_zh": "米饭",
+    "simple_definition": "small white grains of food",
+    "example": "We eat rice.",
+    "example_translation": "我们吃米饭。"
+  },
+  "egg": {
+    "word": "egg",
+    "meaning_zh": "鸡蛋",
+    "simple_definition": "a food from a bird",
+    "example": "I eat an egg.",
+    "example_translation": "我吃一个鸡蛋。"
+  },
+  "milk": {
+    "word": "milk",
+    "meaning_zh": "牛奶",
+    "simple_definition": "a white drink from cows",
+    "example": "I drink milk.",
+    "example_translation": "我喝牛奶。"
+  },
+  "water": {
+    "word": "water",
+    "meaning_zh": "水",
+    "simple_definition": "a clear drink everyone needs",
+    "example": "I drink water.",
+    "example_translation": "我喝水。"
+  },
+  "juice": {
+    "word": "juice",
+    "meaning_zh": "果汁",
+    "simple_definition": "a drink made from fruit",
+    "example": "I like apple juice.",
+    "example_translation": "我喜欢苹果汁。"
+  },
+  "cake": {
+    "word": "cake",
+    "meaning_zh": "蛋糕",
+    "simple_definition": "a sweet food for special days",
+    "example": "The cake is sweet.",
+    "example_translation": "蛋糕很甜。"
+  },
+  "candy": {
+    "word": "candy",
+    "meaning_zh": "糖果",
+    "simple_definition": "a sweet treat",
+    "example": "I eat a candy.",
+    "example_translation": "我吃一颗糖。"
+  },
+  "cookie": {
+    "word": "cookie",
+    "meaning_zh": "饼干",
+    "simple_definition": "a small sweet baked food",
+    "example": "I like cookies.",
+    "example_translation": "我喜欢饼干。"
+  },
+  "meat": {
+    "word": "meat",
+    "meaning_zh": "肉",
+    "simple_definition": "food from animals",
+    "example": "We eat meat.",
+    "example_translation": "我们吃肉。"
+  },
+  "vegetable": {
+    "word": "vegetable",
+    "meaning_zh": "蔬菜",
+    "simple_definition": "a plant food like carrots",
+    "example": "Eat your vegetables.",
+    "example_translation": "吃你的蔬菜。"
+  },
+  "potato": {
+    "word": "potato",
+    "meaning_zh": "土豆",
+    "simple_definition": "a brown vegetable",
+    "example": "I like potatoes.",
+    "example_translation": "我喜欢土豆。"
+  },
+  "tomato": {
+    "word": "tomato",
+    "meaning_zh": "番茄",
+    "simple_definition": "a red round vegetable",
+    "example": "The tomato is red.",
+    "example_translation": "番茄是红的。"
+  },
+  "carrot": {
+    "word": "carrot",
+    "meaning_zh": "胡萝卜",
+    "simple_definition": "an orange vegetable",
+    "example": "The rabbit eats a carrot.",
+    "example_translation": "兔子吃胡萝卜。"
+  },
+  "soup": {
+    "word": "soup",
+    "meaning_zh": "汤",
+    "simple_definition": "a warm liquid food",
+    "example": "The soup is hot.",
+    "example_translation": "汤很热。"
+  },
+  "flower": {
+    "word": "flower",
+    "meaning_zh": "花",
+    "simple_definition": "the colorful part of a plant",
+    "example": "The flower is red.",
+    "example_translation": "这朵花是红的。"
+  },
+  "grass": {
+    "word": "grass",
+    "meaning_zh": "草",
+    "simple_definition": "a short green plant",
+    "example": "The grass is green.",
+    "example_translation": "草是绿色的。"
+  },
+  "leaf": {
+    "word": "leaf",
+    "meaning_zh": "叶子",
+    "simple_definition": "a flat green part of a plant",
+    "example": "A leaf falls down.",
+    "example_translation": "一片叶子落下来。"
+  },
+  "sun": {
+    "word": "sun",
+    "meaning_zh": "太阳",
+    "simple_definition": "the bright star in the sky",
+    "example": "The sun is bright.",
+    "example_translation": "太阳很亮。"
+  },
+  "moon": {
+    "word": "moon",
+    "meaning_zh": "月亮",
+    "simple_definition": "the round light in the night sky",
+    "example": "The moon is white.",
+    "example_translation": "月亮是白色的。"
+  },
+  "star": {
+    "word": "star",
+    "meaning_zh": "星星",
+    "simple_definition": "a small light in the night sky",
+    "example": "I see a star.",
+    "example_translation": "我看见一颗星星。"
+  },
+  "sky": {
+    "word": "sky",
+    "meaning_zh": "天空",
+    "simple_definition": "the space above the earth",
+    "example": "The sky is blue.",
+    "example_translation": "天空是蓝色的。"
+  },
+  "cloud": {
+    "word": "cloud",
+    "meaning_zh": "云",
+    "simple_definition": "a white or gray shape in the sky",
+    "example": "The cloud is white.",
+    "example_translation": "云是白色的。"
+  },
+  "rain": {
+    "word": "rain",
+    "meaning_zh": "雨",
+    "simple_definition": "water that falls from clouds",
+    "example": "The rain falls down.",
+    "example_translation": "雨落下来。"
+  },
+  "snow": {
+    "word": "snow",
+    "meaning_zh": "雪",
+    "simple_definition": "soft white frozen water",
+    "example": "The snow is white.",
+    "example_translation": "雪是白色的。"
+  },
+  "wind": {
+    "word": "wind",
+    "meaning_zh": "风",
+    "simple_definition": "moving air",
+    "example": "The wind is strong.",
+    "example_translation": "风很大。"
+  },
+  "sea": {
+    "word": "sea",
+    "meaning_zh": "大海",
+    "simple_definition": "a very large area of salt water",
+    "example": "The sea is blue.",
+    "example_translation": "大海是蓝色的。"
+  },
+  "river": {
+    "word": "river",
+    "meaning_zh": "河",
+    "simple_definition": "a long flow of water",
+    "example": "The river is long.",
+    "example_translation": "这条河很长。"
+  },
+  "lake": {
+    "word": "lake",
+    "meaning_zh": "湖",
+    "simple_definition": "a large area of water on land",
+    "example": "The lake is quiet.",
+    "example_translation": "湖很安静。"
+  },
+  "mountain": {
+    "word": "mountain",
+    "meaning_zh": "山",
+    "simple_definition": "a very high land",
+    "example": "The mountain is high.",
+    "example_translation": "这座山很高。"
+  },
+  "rock": {
+    "word": "rock",
+    "meaning_zh": "石头",
+    "simple_definition": "a hard piece of earth",
+    "example": "The rock is heavy.",
+    "example_translation": "这块石头很重。"
+  },
+  "sand": {
+    "word": "sand",
+    "meaning_zh": "沙子",
+    "simple_definition": "tiny pieces of rock",
+    "example": "The sand is soft.",
+    "example_translation": "沙子很软。"
+  },
+  "earth": {
+    "word": "earth",
+    "meaning_zh": "地球；泥土",
+    "simple_definition": "our planet or soil",
+    "example": "We live on Earth.",
+    "example_translation": "我们住在地球上。"
+  },
+  "world": {
+    "word": "world",
+    "meaning_zh": "世界",
+    "simple_definition": "the earth and everything on it",
+    "example": "The world is big.",
+    "example_translation": "世界很大。"
+  },
+  "head": {
+    "word": "head",
+    "meaning_zh": "头",
+    "simple_definition": "the top part of your body",
+    "example": "My head is big.",
+    "example_translation": "我的头很大。"
+  },
+  "face": {
+    "word": "face",
+    "meaning_zh": "脸",
+    "simple_definition": "the front of your head",
+    "example": "Wash your face.",
+    "example_translation": "洗脸。"
+  },
+  "eye": {
+    "word": "eye",
+    "meaning_zh": "眼睛",
+    "simple_definition": "the part you see with",
+    "example": "My eyes are brown.",
+    "example_translation": "我的眼睛是棕色的。"
+  },
+  "ear": {
+    "word": "ear",
+    "meaning_zh": "耳朵",
+    "simple_definition": "the part you hear with",
+    "example": "I hear with my ears.",
+    "example_translation": "我用耳朵听。"
+  },
+  "nose": {
+    "word": "nose",
+    "meaning_zh": "鼻子",
+    "simple_definition": "the part you smell with",
+    "example": "My nose is small.",
+    "example_translation": "我的鼻子很小。"
+  },
+  "mouth": {
+    "word": "mouth",
+    "meaning_zh": "嘴",
+    "simple_definition": "the part you eat and speak with",
+    "example": "Open your mouth.",
+    "example_translation": "张开嘴。"
+  },
+  "hand": {
+    "word": "hand",
+    "meaning_zh": "手",
+    "simple_definition": "the part you hold things with",
+    "example": "My hands are clean.",
+    "example_translation": "我的手很干净。"
+  },
+  "arm": {
+    "word": "arm",
+    "meaning_zh": "手臂",
+    "simple_definition": "the part from shoulder to hand",
+    "example": "I raise my arm.",
+    "example_translation": "我举起手臂。"
+  },
+  "leg": {
+    "word": "leg",
+    "meaning_zh": "腿",
+    "simple_definition": "the part you walk with",
+    "example": "My legs are long.",
+    "example_translation": "我的腿很长。"
+  },
+  "foot": {
+    "word": "foot",
+    "meaning_zh": "脚",
+    "simple_definition": "the part you stand on",
+    "example": "My foot is small.",
+    "example_translation": "我的脚很小。"
+  },
+  "feet": {
+    "word": "feet",
+    "meaning_zh": "脚（复数）",
+    "simple_definition": "more than one foot",
+    "example": "My feet are cold.",
+    "example_translation": "我的脚很冷。"
+  },
+  "hair": {
+    "word": "hair",
+    "meaning_zh": "头发",
+    "simple_definition": "the thin threads on your head",
+    "example": "Her hair is long.",
+    "example_translation": "她的头发很长。"
+  },
+  "tooth": {
+    "word": "tooth",
+    "meaning_zh": "牙齿",
+    "simple_definition": "a hard white part in your mouth",
+    "example": "Brush your teeth.",
+    "example_translation": "刷牙。"
+  },
+  "teeth": {
+    "word": "teeth",
+    "meaning_zh": "牙齿（复数）",
+    "simple_definition": "more than one tooth",
+    "example": "My teeth are white.",
+    "example_translation": "我的牙齿很白。"
+  },
+  "night": {
+    "word": "night",
+    "meaning_zh": "夜晚",
+    "simple_definition": "the time when it is dark",
+    "example": "I sleep at night.",
+    "example_translation": "我晚上睡觉。"
+  },
+  "morning": {
+    "word": "morning",
+    "meaning_zh": "早上",
+    "simple_definition": "the early part of the day",
+    "example": "Good morning.",
+    "example_translation": "早上好。"
+  },
+  "afternoon": {
+    "word": "afternoon",
+    "meaning_zh": "下午",
+    "simple_definition": "the middle part of the day",
+    "example": "We play in the afternoon.",
+    "example_translation": "我们下午玩。"
+  },
+  "evening": {
+    "word": "evening",
+    "meaning_zh": "傍晚",
+    "simple_definition": "the end of the day",
+    "example": "We eat in the evening.",
+    "example_translation": "我们傍晚吃饭。"
+  },
+  "today": {
+    "word": "today",
+    "meaning_zh": "今天",
+    "simple_definition": "this day",
+    "example": "Today is sunny.",
+    "example_translation": "今天天气晴朗。"
+  },
+  "tomorrow": {
+    "word": "tomorrow",
+    "meaning_zh": "明天",
+    "simple_definition": "the day after today",
+    "example": "See you tomorrow.",
+    "example_translation": "明天见。"
+  },
+  "yesterday": {
+    "word": "yesterday",
+    "meaning_zh": "昨天",
+    "simple_definition": "the day before today",
+    "example": "I was at home yesterday.",
+    "example_translation": "我昨天在家。"
+  },
+  "week": {
+    "word": "week",
+    "meaning_zh": "周；星期",
+    "simple_definition": "seven days",
+    "example": "I read every week.",
+    "example_translation": "我每周读书。"
+  },
+  "month": {
+    "word": "month",
+    "meaning_zh": "月",
+    "simple_definition": "about thirty days",
+    "example": "Next month is May.",
+    "example_translation": "下个月是五月。"
+  },
+  "year": {
+    "word": "year",
+    "meaning_zh": "年",
+    "simple_definition": "twelve months",
+    "example": "I am eight years old.",
+    "example_translation": "我八岁了。"
+  },
+  "time": {
+    "word": "time",
+    "meaning_zh": "时间",
+    "simple_definition": "what a clock shows",
+    "example": "What time is it?",
+    "example_translation": "现在几点了？"
+  },
+  "hour": {
+    "word": "hour",
+    "meaning_zh": "小时",
+    "simple_definition": "sixty minutes",
+    "example": "I read for one hour.",
+    "example_translation": "我读了一个小时。"
+  },
+  "minute": {
+    "word": "minute",
+    "meaning_zh": "分钟",
+    "simple_definition": "sixty seconds",
+    "example": "Wait a minute.",
+    "example_translation": "等一下。"
+  },
+  "house": {
+    "word": "house",
+    "meaning_zh": "房子",
+    "simple_definition": "a building where people live",
+    "example": "My house is white.",
+    "example_translation": "我的房子是白色的。"
+  },
+  "room": {
+    "word": "room",
+    "meaning_zh": "房间",
+    "simple_definition": "a part of a house",
+    "example": "My room is clean.",
+    "example_translation": "我的房间很干净。"
+  },
+  "door": {
+    "word": "door",
+    "meaning_zh": "门",
+    "simple_definition": "the thing you open to enter",
+    "example": "Open the door.",
+    "example_translation": "开门。"
+  },
+  "window": {
+    "word": "window",
+    "meaning_zh": "窗户",
+    "simple_definition": "glass you see through",
+    "example": "The window is open.",
+    "example_translation": "窗户开着。"
+  },
+  "bed": {
+    "word": "bed",
+    "meaning_zh": "床",
+    "simple_definition": "what you sleep on",
+    "example": "I sleep in my bed.",
+    "example_translation": "我睡在我的床上。"
+  },
+  "table": {
+    "word": "table",
+    "meaning_zh": "桌子",
+    "simple_definition": "a flat surface for eating or work",
+    "example": "The food is on the table.",
+    "example_translation": "食物在桌子上。"
+  },
+  "kitchen": {
+    "word": "kitchen",
+    "meaning_zh": "厨房",
+    "simple_definition": "the room where you cook",
+    "example": "Mom is in the kitchen.",
+    "example_translation": "妈妈在厨房。"
+  },
+  "bathroom": {
+    "word": "bathroom",
+    "meaning_zh": "浴室",
+    "simple_definition": "the room for washing",
+    "example": "The bathroom is clean.",
+    "example_translation": "浴室很干净。"
+  },
+  "garden": {
+    "word": "garden",
+    "meaning_zh": "花园",
+    "simple_definition": "a place with flowers and plants",
+    "example": "The flowers are in the garden.",
+    "example_translation": "花在花园里。"
+  },
+  "key": {
+    "word": "key",
+    "meaning_zh": "钥匙",
+    "simple_definition": "a small metal thing that opens a lock",
+    "example": "I have the key.",
+    "example_translation": "我有钥匙。"
+  },
+  "wall": {
+    "word": "wall",
+    "meaning_zh": "墙",
+    "simple_definition": "the side of a room or building",
+    "example": "The wall is white.",
+    "example_translation": "墙是白色的。"
+  },
+  "floor": {
+    "word": "floor",
+    "meaning_zh": "地板",
+    "simple_definition": "the surface you walk on indoors",
+    "example": "The floor is clean.",
+    "example_translation": "地板很干净。"
+  },
+  "roof": {
+    "word": "roof",
+    "meaning_zh": "屋顶",
+    "simple_definition": "the top of a building",
+    "example": "The roof is red.",
+    "example_translation": "屋顶是红色的。"
+  },
+  "car": {
+    "word": "car",
+    "meaning_zh": "汽车",
+    "simple_definition": "a vehicle with four wheels",
+    "example": "My dad has a car.",
+    "example_translation": "我爸爸有一辆车。"
+  },
+  "bus": {
+    "word": "bus",
+    "meaning_zh": "公交车",
+    "simple_definition": "a big vehicle for many people",
+    "example": "I go to school by bus.",
+    "example_translation": "我坐公交车上学。"
+  },
+  "train": {
+    "word": "train",
+    "meaning_zh": "火车",
+    "simple_definition": "a long vehicle on rails",
+    "example": "The train is fast.",
+    "example_translation": "火车很快。"
+  },
+  "plane": {
+    "word": "plane",
+    "meaning_zh": "飞机",
+    "simple_definition": "a vehicle that flies",
+    "example": "The plane flies high.",
+    "example_translation": "飞机飞得很高。"
+  },
+  "boat": {
+    "word": "boat",
+    "meaning_zh": "小船",
+    "simple_definition": "a small vehicle on water",
+    "example": "The boat is on the lake.",
+    "example_translation": "船在湖上。"
+  },
+  "bike": {
+    "word": "bike",
+    "meaning_zh": "自行车",
+    "simple_definition": "a vehicle with two wheels",
+    "example": "I ride my bike.",
+    "example_translation": "我骑自行车。"
+  },
+  "ship": {
+    "word": "ship",
+    "meaning_zh": "轮船",
+    "simple_definition": "a large boat",
+    "example": "The ship is big.",
+    "example_translation": "轮船很大。"
+  },
+  "truck": {
+    "word": "truck",
+    "meaning_zh": "卡车",
+    "simple_definition": "a large vehicle that carries things",
+    "example": "The truck is heavy.",
+    "example_translation": "卡车很重。"
+  },
+  "road": {
+    "word": "road",
+    "meaning_zh": "路",
+    "simple_definition": "a hard surface for vehicles",
+    "example": "The road is long.",
+    "example_translation": "这条路很长。"
+  },
+  "street": {
+    "word": "street",
+    "meaning_zh": "街道",
+    "simple_definition": "a road in a town or city",
+    "example": "The street is busy.",
+    "example_translation": "这条街很热闹。"
+  },
+  "shop": {
+    "word": "shop",
+    "meaning_zh": "商店",
+    "simple_definition": "a place where you buy things",
+    "example": "I go to the shop.",
+    "example_translation": "我去商店。"
+  },
+  "store": {
+    "word": "store",
+    "meaning_zh": "商店",
+    "simple_definition": "a place that sells things",
+    "example": "The store is open.",
+    "example_translation": "商店开门了。"
+  },
+  "hospital": {
+    "word": "hospital",
+    "meaning_zh": "医院",
+    "simple_definition": "a place for sick people",
+    "example": "The hospital is big.",
+    "example_translation": "医院很大。"
+  },
+  "zoo": {
+    "word": "zoo",
+    "meaning_zh": "动物园",
+    "simple_definition": "a place with many animals",
+    "example": "We see lions at the zoo.",
+    "example_translation": "我们在动物园看狮子。"
+  },
+  "farm": {
+    "word": "farm",
+    "meaning_zh": "农场",
+    "simple_definition": "a place where animals and plants grow",
+    "example": "The farm has cows.",
+    "example_translation": "农场里有牛。"
+  },
+  "city": {
+    "word": "city",
+    "meaning_zh": "城市",
+    "simple_definition": "a large town",
+    "example": "The city is big.",
+    "example_translation": "城市很大。"
+  },
+  "town": {
+    "word": "town",
+    "meaning_zh": "小镇",
+    "simple_definition": "a small city",
+    "example": "I live in a small town.",
+    "example_translation": "我住在一个小镇。"
+  },
+  "village": {
+    "word": "village",
+    "meaning_zh": "村庄",
+    "simple_definition": "a very small town",
+    "example": "The village is quiet.",
+    "example_translation": "村庄很安静。"
+  },
+  "red": {
+    "word": "red",
+    "meaning_zh": "红色的",
+    "simple_definition": "the color of an apple",
+    "example": "The apple is red.",
+    "example_translation": "苹果是红色的。"
+  },
+  "blue": {
+    "word": "blue",
+    "meaning_zh": "蓝色的",
+    "simple_definition": "the color of the sky",
+    "example": "The sky is blue.",
+    "example_translation": "天空是蓝色的。"
+  },
+  "green": {
+    "word": "green",
+    "meaning_zh": "绿色的",
+    "simple_definition": "the color of grass",
+    "example": "The grass is green.",
+    "example_translation": "草是绿色的。"
+  },
+  "yellow": {
+    "word": "yellow",
+    "meaning_zh": "黄色的",
+    "simple_definition": "the color of a banana",
+    "example": "The banana is yellow.",
+    "example_translation": "香蕉是黄色的。"
+  },
+  "black": {
+    "word": "black",
+    "meaning_zh": "黑色的",
+    "simple_definition": "the darkest color",
+    "example": "The cat is black.",
+    "example_translation": "猫是黑色的。"
+  },
+  "white": {
+    "word": "white",
+    "meaning_zh": "白色的",
+    "simple_definition": "the color of snow",
+    "example": "The snow is white.",
+    "example_translation": "雪是白色的。"
+  },
+  "pink": {
+    "word": "pink",
+    "meaning_zh": "粉色的",
+    "simple_definition": "a light red color",
+    "example": "The flower is pink.",
+    "example_translation": "花是粉色的。"
+  },
+  "purple": {
+    "word": "purple",
+    "meaning_zh": "紫色的",
+    "simple_definition": "a color between red and blue",
+    "example": "I like purple.",
+    "example_translation": "我喜欢紫色。"
+  },
+  "brown": {
+    "word": "brown",
+    "meaning_zh": "棕色的",
+    "simple_definition": "the color of wood",
+    "example": "The bear is brown.",
+    "example_translation": "熊是棕色的。"
+  },
+  "gray": {
+    "word": "gray",
+    "meaning_zh": "灰色的",
+    "simple_definition": "a color between black and white",
+    "example": "The cloud is gray.",
+    "example_translation": "云是灰色的。"
+  },
+  "one": {
+    "word": "one",
+    "meaning_zh": "一",
+    "simple_definition": "the number 1",
+    "example": "I have one cat.",
+    "example_translation": "我有一只猫。"
+  },
+  "two": {
+    "word": "two",
+    "meaning_zh": "二",
+    "simple_definition": "the number 2",
+    "example": "I have two hands.",
+    "example_translation": "我有两只手。"
+  },
+  "three": {
+    "word": "three",
+    "meaning_zh": "三",
+    "simple_definition": "the number 3",
+    "example": "I see three birds.",
+    "example_translation": "我看见三只鸟。"
+  },
+  "four": {
+    "word": "four",
+    "meaning_zh": "四",
+    "simple_definition": "the number 4",
+    "example": "The dog has four legs.",
+    "example_translation": "狗有四条腿。"
+  },
+  "five": {
+    "word": "five",
+    "meaning_zh": "五",
+    "simple_definition": "the number 5",
+    "example": "I have five fingers.",
+    "example_translation": "我有五根手指。"
+  },
+  "six": {
+    "word": "six",
+    "meaning_zh": "六",
+    "simple_definition": "the number 6",
+    "example": "There are six eggs.",
+    "example_translation": "有六个鸡蛋。"
+  },
+  "seven": {
+    "word": "seven",
+    "meaning_zh": "七",
+    "simple_definition": "the number 7",
+    "example": "There are seven days.",
+    "example_translation": "有七天。"
+  },
+  "eight": {
+    "word": "eight",
+    "meaning_zh": "八",
+    "simple_definition": "the number 8",
+    "example": "The cat has eight lives.",
+    "example_translation": "猫有九条命。"
+  },
+  "nine": {
+    "word": "nine",
+    "meaning_zh": "九",
+    "simple_definition": "the number 9",
+    "example": "I am nine years old.",
+    "example_translation": "我九岁了。"
+  },
+  "ten": {
+    "word": "ten",
+    "meaning_zh": "十",
+    "simple_definition": "the number 10",
+    "example": "I can count to ten.",
+    "example_translation": "我能数到十。"
+  },
+  "thing": {
+    "word": "thing",
+    "meaning_zh": "东西",
+    "simple_definition": "an object you cannot name",
+    "example": "What is that thing?",
+    "example_translation": "那个东西是什么？"
+  },
+  "things": {
+    "word": "things",
+    "meaning_zh": "东西（复数）",
+    "simple_definition": "more than one thing",
+    "example": "I have many things.",
+    "example_translation": "我有许多东西。"
+  },
+  "something": {
+    "word": "something",
+    "meaning_zh": "某物；某事",
+    "simple_definition": "a thing you do not name",
+    "example": "I want something to eat.",
+    "example_translation": "我想吃点东西。"
+  },
+  "nothing": {
+    "word": "nothing",
+    "meaning_zh": "没有东西",
+    "simple_definition": "not anything",
+    "example": "There is nothing here.",
+    "example_translation": "这里什么都没有。"
+  },
+  "name": {
+    "word": "name",
+    "meaning_zh": "名字",
+    "simple_definition": "what you are called",
+    "example": "My name is Tom.",
+    "example_translation": "我的名字是汤姆。"
+  },
+  "word": {
+    "word": "word",
+    "meaning_zh": "单词",
+    "simple_definition": "a group of letters with meaning",
+    "example": "This is a new word.",
+    "example_translation": "这是一个新单词。"
+  },
+  "story": {
+    "word": "story",
+    "meaning_zh": "故事",
+    "simple_definition": "something you read or tell",
+    "example": "Tell me a story.",
+    "example_translation": "给我讲个故事。"
+  },
+  "picture": {
+    "word": "picture",
+    "meaning_zh": "图片",
+    "simple_definition": "a drawing or photo",
+    "example": "Look at the picture.",
+    "example_translation": "看这张图片。"
+  },
+  "game": {
+    "word": "game",
+    "meaning_zh": "游戏",
+    "simple_definition": "something fun to play",
+    "example": "Let's play a game.",
+    "example_translation": "我们玩个游戏吧。"
+  },
+  "toy": {
+    "word": "toy",
+    "meaning_zh": "玩具",
+    "simple_definition": "something a child plays with",
+    "example": "This is my toy.",
+    "example_translation": "这是我的玩具。"
+  },
+  "ball": {
+    "word": "ball",
+    "meaning_zh": "球",
+    "simple_definition": "a round thing to play with",
+    "example": "I throw the ball.",
+    "example_translation": "我扔球。"
+  },
+  "song": {
+    "word": "song",
+    "meaning_zh": "歌曲",
+    "simple_definition": "music with words",
+    "example": "I sing a song.",
+    "example_translation": "我唱一首歌。"
+  },
+  "music": {
+    "word": "music",
+    "meaning_zh": "音乐",
+    "simple_definition": "sounds that are nice to hear",
+    "example": "I like music.",
+    "example_translation": "我喜欢音乐。"
+  },
+  "sport": {
+    "word": "sport",
+    "meaning_zh": "运动",
+    "simple_definition": "a game with the body",
+    "example": "Football is a sport.",
+    "example_translation": "足球是一项运动。"
+  },
+  "football": {
+    "word": "football",
+    "meaning_zh": "足球",
+    "simple_definition": "a game played with a ball and feet",
+    "example": "We play football.",
+    "example_translation": "我们踢足球。"
+  },
+  "gift": {
+    "word": "gift",
+    "meaning_zh": "礼物",
+    "simple_definition": "something you give someone",
+    "example": "This is a gift for you.",
+    "example_translation": "这是给你的礼物。"
+  },
+  "present": {
+    "word": "present",
+    "meaning_zh": "礼物；现在",
+    "simple_definition": "a gift or the current time",
+    "example": "I like this present.",
+    "example_translation": "我喜欢这个礼物。"
+  },
+  "party": {
+    "word": "party",
+    "meaning_zh": "聚会",
+    "simple_definition": "a fun event with people",
+    "example": "Come to my party.",
+    "example_translation": "来参加我的聚会。"
+  }
 }

@@ -790,3 +790,24 @@ def test_key_items_uses_mock_provider(client, monkeypatch):
     assert len(items) >= 1
     assert items[0]["term"] == "the"
     assert items[0]["meaning_zh"] == "（示例释义）"
+
+
+def test_chapter_key_items_are_cached(client, seed_content, monkeypatch):
+    from app.ai.mock_provider import MockProvider
+
+    monkeypatch.setattr("app.services.ai_service.get_ai_provider", lambda: MockProvider())
+
+    registered = _register(client)
+    token = registered["access_token"]
+    content = asyncio.run(seed_content())
+
+    url = f"/api/v1/books/{content['book_id']}/chapters/0/key-items"
+    first = client.get(url, headers={"Authorization": f"Bearer {token}"})
+    assert first.status_code == 200, first.text
+    items = first.json()["items"]
+    assert len(items) >= 1
+    assert "phonetic" in items[0]
+
+    second = client.get(url, headers={"Authorization": f"Bearer {token}"})
+    assert second.status_code == 200
+    assert second.json()["items"] == items

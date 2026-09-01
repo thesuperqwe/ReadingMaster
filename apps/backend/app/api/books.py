@@ -3,6 +3,7 @@ import uuid
 from fastapi import APIRouter, File, UploadFile, status
 
 from app.api.deps import CurrentUser, SessionDep
+from app.schemas.ai import KeyItemsResponse
 from app.schemas.book import BookCreate, BookDetailOut, BookImportCreate, BookOut, BookPageOut, BookPreviewRequest, ChapterDetailOut, ParsedBookOut
 from app.schemas.quiz import QuizQuestionOut
 from app.services.book_service import (
@@ -13,6 +14,7 @@ from app.services.book_service import (
     list_book_segments,
     list_books,
 )
+from app.services.ai_service import get_or_generate_chapter_key_items
 from app.services.import_service import create_book_from_chapters, parse_ebook, parse_text
 from app.services.quiz_service import list_quiz
 
@@ -92,6 +94,16 @@ async def get_book_chapter(
         title=chapter.title,
         segments=[BookPageOut.model_validate(page) for page in pages],
     )
+
+
+@router.get("/{book_id}/chapters/{chapter_index}/key-items", response_model=KeyItemsResponse)
+async def get_chapter_key_items(
+    session: SessionDep,
+    user: CurrentUser,
+    book_id: uuid.UUID,
+    chapter_index: int,
+) -> KeyItemsResponse:
+    return await get_or_generate_chapter_key_items(session, book_id, chapter_index)
 
 
 @router.get("/{book_id}/content", response_model=list[BookPageOut])

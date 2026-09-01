@@ -144,7 +144,7 @@ class _ReaderPageState extends State<ReaderPage> {
       _speaking = false;
       _activeCharIndex = -1;
     });
-    unawaited(_loadKeyItems(chapter.segments.map((s) => s.content).join('\n\n')));
+    unawaited(_loadKeyItems(index));
     if (_segments.isNotEmpty) {
       await _apiService.recordEvent(
         sessionId: session.id,
@@ -411,19 +411,10 @@ class _ReaderPageState extends State<ReaderPage> {
     }
   }
 
-  Future<void> _loadKeyItems(String text) async {
-    if (text.trim().isEmpty) {
-      if (mounted) {
-        setState(() {
-          _keyItems = const [];
-          _keyItemsLoading = false;
-        });
-      }
-      return;
-    }
+  Future<void> _loadKeyItems(int chapterIndex) async {
     setState(() => _keyItemsLoading = true);
     try {
-      final items = await _apiService.extractKeyItems(text);
+      final items = await _apiService.getChapterKeyItems(widget.bookId, chapterIndex);
       if (mounted) setState(() => _keyItems = items);
     } catch (_) {
       if (mounted) setState(() => _keyItems = const []);
@@ -493,24 +484,69 @@ class _ReaderPageState extends State<ReaderPage> {
 
   Widget _keyItemTile(KeyItem item) {
     return Container(
-      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.panel,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppColors.line),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      clipBehavior: Clip.antiAlias,
+      child: ExpansionTile(
+        tilePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+        childrenPadding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+        shape: const Border(),
+        collapsedShape: const Border(),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(
+                item.term,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.ink),
+              ),
+            ),
+            if (item.phonetic?.isNotEmpty == true) ...[
+              const SizedBox(width: 6),
+              Text(
+                item.phonetic!,
+                style: const TextStyle(fontSize: 12, color: AppColors.inkSoft),
+              ),
+            ],
+          ],
+        ),
+        subtitle: item.meaningZh?.isNotEmpty == true
+            ? Text(
+                item.meaningZh!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.primaryDark),
+              )
+            : null,
         children: [
-          Text(item.term, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.ink)),
-          if (item.meaningZh?.isNotEmpty == true) ...[
-            const SizedBox(height: 4),
-            Text(item.meaningZh!, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.primaryDark)),
-          ],
-          if (item.simpleDefinition?.isNotEmpty == true) ...[
-            const SizedBox(height: 4),
-            Text(item.simpleDefinition!, style: const TextStyle(fontSize: 12, color: AppColors.inkSoft, height: 1.4)),
-          ],
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              item.simpleDefinition?.isNotEmpty == true
+                  ? item.simpleDefinition!
+                  : '暂无详细解释',
+              style: const TextStyle(fontSize: 13, color: AppColors.inkSoft, height: 1.4),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: OutlinedButton.icon(
+              onPressed: () async {
+                try {
+                  await _tts.speak(item.term);
+                } catch (_) {
+                  // Best-effort pronunciation.
+                }
+              },
+              icon: const Icon(Icons.volume_up_rounded, size: 18),
+              label: const Text('发音'),
+            ),
+          ),
         ],
       ),
     );

@@ -105,6 +105,7 @@ class MockProvider(AIProvider):
         return [
             {
                 "term": term,
+                "phonetic": f"/{term}/",
                 "meaning_zh": "（示例释义）",
                 "simple_definition": "an important word in the story",
             }

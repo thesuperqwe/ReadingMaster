@@ -1,3 +1,5 @@
+import uuid
+
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,7 +15,7 @@ from app.schemas.ai import (
     KeyItemsRequest,
     KeyItemsResponse,
 )
-from app.services.book_service import get_book_or_404
+from app.services.book_service import get_book_or_404, get_chapter_or_404
 from app.services.chapter_service import chapter_title_for, split_chapters
 
 
@@ -90,10 +92,44 @@ async def extract_key_items(data: KeyItemsRequest) -> KeyItemsResponse:
     items = [
         KeyItem(
             term=(item.get("term") or "").strip(),
+            phonetic=item.get("phonetic"),
             meaning_zh=item.get("meaning_zh"),
             simple_definition=item.get("simple_definition"),
         )
         for item in items_data
         if (item.get("term") or "").strip()
     ]
+    return KeyItemsResponse(items=items)
+
+
+async def get_or_generate_chapter_key_items(
+    session: AsyncSession, book_id: uuid.UUID, chapter_index: int
+) -> KeyItemsResponse:
+    chapter, pages = await get_chapter_or_404(session, book_id, chapter_index)
+
+    if chapter.key_items:
+        return KeyItemsResponse(
+            items=[KeyItem(**item) for item in chapter.key_items]
+        )
+
+    chapter_text = "\n\n".join(page.content for page in pages if page.content)
+    if not chapter_text.strip():
+        return KeyItemsResponse(items=[])
+
+    provider = get_ai_provider()
+    items_data = await provider.extract_key_items(chapter_text)
+    items = [
+        KeyItem(
+            term=(item.get("term") or "").strip(),
+            phonetic=item.get("phonetic"),
+            meaning_zh=item.get("meaning_zh"),
+            simple_definition=item.get("simple_definition"),
+        )
+        for item in items_data
+        if (item.get("term") or "").strip()
+    ]
+
+    chapter.key_items = [item.model_dump() for item in items]
+    await session.commit()
+
     return KeyItemsResponse(items=items)

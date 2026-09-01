@@ -45,6 +45,7 @@ class KeyItemsRequest(BaseModel):
 
 class KeyItem(BaseModel):
     term: str
+    phonetic: str | None = None
     meaning_zh: str | None = None
     simple_definition: str | None = None
 

@@ -65,7 +65,7 @@ class OpenAICompatibleProvider(AIProvider):
         system_prompt = (
             "Identify the most important words and short phrases in the text for a Chinese "
             "Grade 3 English learner. Return JSON only as "
-            "{\"items\": [{\"term\": \"...\", \"meaning_zh\": \"...\", \"simple_definition\": \"...\"}]}."
+            "{\"items\": [{\"term\": \"...\", \"phonetic\": \"...\", \"meaning_zh\": \"...\", \"simple_definition\": \"...\"}]}."
         )
         user_prompt = f"Text:\n{text}"
         data = await self._chat_json(system_prompt, user_prompt)

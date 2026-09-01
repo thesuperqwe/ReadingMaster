@@ -153,6 +153,15 @@ class ApiService {
         .toList();
   }
 
+  Future<List<KeyItem>> getChapterKeyItems(String bookId, int chapterIndex) async {
+    final data = await ApiClient.get(
+      '/api/v1/books/$bookId/chapters/$chapterIndex/key-items',
+    );
+    return (data['items'] as List<dynamic>)
+        .map((item) => KeyItem.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
   Future<ReadingSession> startSession({
     required String childId,
     required String bookId,

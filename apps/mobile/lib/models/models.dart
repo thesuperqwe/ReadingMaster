@@ -285,15 +285,17 @@ class UserWord {
 }
 
 class KeyItem {
-  const KeyItem({required this.term, this.meaningZh, this.simpleDefinition});
+  const KeyItem({required this.term, this.phonetic, this.meaningZh, this.simpleDefinition});
 
   final String term;
+  final String? phonetic;
   final String? meaningZh;
   final String? simpleDefinition;
 
   factory KeyItem.fromJson(Map<String, dynamic> json) {
     return KeyItem(
       term: json['term'].toString(),
+      phonetic: json['phonetic'] as String?,
       meaningZh: json['meaning_zh'] as String?,
       simpleDefinition: json['simple_definition'] as String?,
     );

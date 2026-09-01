@@ -250,11 +250,12 @@ class _ReaderPageState extends State<ReaderPage> {
     if (word.isEmpty) return;
 
     try {
+      final eventWord = OfflineDictionary.lookup(word)?.word ?? word;
       await _tryRecordEvent(
         sessionId: _session!.id,
         eventType: 'WORD_CLICK',
         pageNo: _segments[_pageIndex].pageNo,
-        word: word,
+        word: eventWord,
       );
       final detail = await _lookupWord(word);
       if (!mounted) return;

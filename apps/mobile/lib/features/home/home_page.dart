@@ -31,6 +31,10 @@ class _HomePageState extends State<HomePage> {
   bool _creatingChild = false;
   String? _error;
   int _tabIndex = 0;
+  bool _parentUnlocked = false;
+
+  static const _parentTabIndex = 3;
+  static const _parentPin = '1234';
 
   static const _levelOptions = [
     ('LEVEL_1', 'Level 1 · 启蒙'),
@@ -120,6 +124,57 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Future<void> _selectTab(int index) async {
+    if (index == _parentTabIndex && !_parentUnlocked) {
+      final ok = await _promptParentPin();
+      if (!ok) return;
+      _parentUnlocked = true;
+    }
+    if (!mounted) return;
+    setState(() {
+      _tabIndex = index;
+      if (index != _parentTabIndex) _parentUnlocked = false;
+    });
+  }
+
+  Future<bool> _promptParentPin() async {
+    final controller = TextEditingController();
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('家长模式'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('请输入家长 PIN 码'),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controller,
+              autofocus: true,
+              obscureText: true,
+              keyboardType: TextInputType.number,
+              maxLength: 4,
+              decoration: const InputDecoration(hintText: '默认 1234'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('取消'),
+          ),
+          FilledButton(
+            onPressed: () =>
+                Navigator.of(ctx).pop(controller.text.trim() == _parentPin),
+            child: const Text('进入'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+    return ok == true;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) {
@@ -182,7 +237,7 @@ class _HomePageState extends State<HomePage> {
                   icon: _navItems[index].icon,
                   label: _navItems[index].label,
                   active: _tabIndex == index,
-                  onTap: () => setState(() => _tabIndex = index),
+                  onTap: () => _selectTab(index),
                 ),
               ),
               const Spacer(),
@@ -263,7 +318,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildBottomNav() {
     return NavigationBar(
       selectedIndex: _tabIndex,
-      onDestinationSelected: (index) => setState(() => _tabIndex = index),
+      onDestinationSelected: (index) => _selectTab(index),
       destinations: _navItems
           .map(
             (item) => NavigationDestination(icon: Icon(item.icon), label: item.label),

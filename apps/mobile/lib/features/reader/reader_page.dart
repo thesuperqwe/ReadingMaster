@@ -1,14 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
 import '../../models/models.dart';
 import '../../services/api_service.dart';
 import '../../services/offline_dictionary.dart';
+import '../../services/tts_service.dart';
 import '../../theme/app_theme.dart';
 import '../quiz/quiz_page.dart';
 import '../quiz/quiz_result_page.dart';
+import 'read_aloud_page.dart';
 import 'word_popup.dart';
 
 class ReaderPage extends StatefulWidget {
@@ -31,7 +32,7 @@ class _WordToken {
 
 class _ReaderPageState extends State<ReaderPage> {
   final _apiService = ApiService();
-  final _tts = FlutterTts();
+  final _tts = createTtsService();
   BookDetail? _book;
   ReadingSession? _session;
   List<BookChapter> _chapters = const [];
@@ -52,6 +53,9 @@ class _ReaderPageState extends State<ReaderPage> {
   List<KeyItem> _keyItems = const [];
   bool _keyItemsLoading = false;
   bool _highlightUnknown = false;
+  bool _highlightKeyItems = false;
+  Set<String> _keyTermWords = const {};
+  bool _wordPopupBusy = false;
 
   @override
   void initState() {
@@ -62,41 +66,13 @@ class _ReaderPageState extends State<ReaderPage> {
 
   @override
   void dispose() {
-    _tts.stop();
+    _tts.dispose();
     unawaited(_reportProgress());
     super.dispose();
   }
 
   Future<void> _initTts() async {
-    await _tts.setLanguage('en-US');
-    await _tts.setSpeechRate(0.45);
-    _tts.setProgressHandler((text, start, end, word) {
-      if (mounted) setState(() => _activeCharIndex = start);
-    });
-    _tts.setCompletionHandler(() {
-      if (mounted) {
-        setState(() {
-          _speaking = false;
-          _activeCharIndex = -1;
-        });
-      }
-    });
-    _tts.setCancelHandler(() {
-      if (mounted) {
-        setState(() {
-          _speaking = false;
-          _activeCharIndex = -1;
-        });
-      }
-    });
-    _tts.setErrorHandler((_) {
-      if (mounted) {
-        setState(() {
-          _speaking = false;
-          _activeCharIndex = -1;
-        });
-      }
-    });
+    await _tts.initialize();
   }
 
   Future<void> _load() async {
@@ -245,10 +221,12 @@ class _ReaderPageState extends State<ReaderPage> {
   }
 
   Future<void> _openWord(String rawWord) async {
+    if (_wordPopupBusy) return;
     if (_session == null || _segments.isEmpty) return;
     final word = rawWord.replaceAll(RegExp(r"[^a-zA-Z']"), '').toLowerCase();
     if (word.isEmpty) return;
 
+    _wordPopupBusy = true;
     try {
       final eventWord = OfflineDictionary.lookup(word)?.word ?? word;
       await _tryRecordEvent(
@@ -286,7 +264,29 @@ class _ReaderPageState extends State<ReaderPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('暂时无法查询这个单词')),
       );
+    } finally {
+      _wordPopupBusy = false;
     }
+  }
+
+  void _openReadAloud() {
+    if (_segments.isEmpty) return;
+    final sentences = _segments
+        .expand((segment) => segment.content.split(RegExp(r'(?<=[.!?])\s+')))
+        .map((sentence) => sentence.trim())
+        .where((sentence) => sentence.isNotEmpty)
+        .toList();
+    if (sentences.isEmpty) return;
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ReadAloudPage(
+          childId: widget.childId,
+          sentences: sentences,
+          bookTitle: _book?.title,
+        ),
+      ),
+    );
   }
 
   Future<void> _toggleReadAlong() async {
@@ -312,10 +312,11 @@ class _ReaderPageState extends State<ReaderPage> {
       await _tts.speak(_segments[_pageIndex].content);
     } catch (_) {
       if (!mounted) return;
-      setState(() => _speaking = false);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('暂时无法播放语音')),
       );
+    } finally {
+      if (mounted) setState(() => _speaking = false);
     }
   }
 
@@ -459,12 +460,37 @@ class _ReaderPageState extends State<ReaderPage> {
     setState(() => _keyItemsLoading = true);
     try {
       final items = await _apiService.getChapterKeyItems(widget.bookId, chapterIndex);
-      if (mounted) setState(() => _keyItems = items);
+      if (mounted) {
+        setState(() {
+          _keyItems = items;
+          _keyTermWords = _buildKeyTermWords(items);
+        });
+      }
     } catch (_) {
-      if (mounted) setState(() => _keyItems = const []);
+      if (mounted) {
+        setState(() {
+          _keyItems = const [];
+          _keyTermWords = const {};
+        });
+      }
     } finally {
       if (mounted) setState(() => _keyItemsLoading = false);
     }
+  }
+
+  Set<String> _buildKeyTermWords(List<KeyItem> items) {
+    final words = <String>{};
+    for (final item in items) {
+      for (final match in RegExp(r"[a-zA-Z']+").allMatches(item.term.toLowerCase())) {
+        words.add(match.group(0)!);
+      }
+    }
+    return words;
+  }
+
+  bool _isKeyWord(String text) {
+    final normalized = text.replaceAll(RegExp(r"[^a-zA-Z']"), '').toLowerCase();
+    return normalized.isNotEmpty && _keyTermWords.contains(normalized);
   }
 
   void _showKeyItemsSheet() {
@@ -498,14 +524,27 @@ class _ReaderPageState extends State<ReaderPage> {
               children: [
                 const Icon(Icons.lightbulb_outline_rounded, color: AppColors.gold),
                 const SizedBox(width: 8),
-                const Text(
-                  '重点词句',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.ink),
+                Text(
+                  '重点词句 · ${_keyItems.length}',
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.ink),
                 ),
               ],
             ),
           ),
           const Divider(height: 1, color: AppColors.line),
+          SwitchListTile(
+            dense: true,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+            title: const Text(
+              '在原文中高亮',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.ink),
+            ),
+            value: _highlightKeyItems,
+            activeThumbColor: AppColors.primaryDark,
+            onChanged: _keyItemsLoading || _keyItems.isEmpty
+                ? null
+                : (value) => setState(() => _highlightKeyItems = value),
+          ),
           Expanded(
             child: _keyItemsLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -698,6 +737,11 @@ class _ReaderPageState extends State<ReaderPage> {
             onPressed: _toggleReadAlong,
             icon: Icon(_speaking ? Icons.stop_rounded : Icons.volume_up_rounded),
           ),
+          IconButton(
+            tooltip: '跟读练习',
+            onPressed: _openReadAloud,
+            icon: const Icon(Icons.record_voice_over_rounded),
+          ),
           const SizedBox(width: 8),
         ],
       ),
@@ -754,6 +798,7 @@ class _ReaderPageState extends State<ReaderPage> {
       runSpacing: 14,
       children: tokens.map((token) {
         final active = _activeCharIndex >= token.start && _activeCharIndex < token.end;
+        final key = _highlightKeyItems && _isKeyWord(token.text);
         final unknown = _highlightUnknown && !_isKnown(token.text);
         return GestureDetector(
           onTap: () => _openWord(token.text),
@@ -766,9 +811,11 @@ class _ReaderPageState extends State<ReaderPage> {
               fontWeight: active ? FontWeight.w800 : FontWeight.w400,
               backgroundColor: active
                   ? AppColors.primarySoft
-                  : unknown
-                      ? AppColors.gold.withValues(alpha: 0.22)
-                      : null,
+                  : key
+                      ? AppColors.leaf.withValues(alpha: 0.30)
+                      : unknown
+                          ? AppColors.gold.withValues(alpha: 0.22)
+                          : null,
             ),
           ),
         );

@@ -44,3 +44,13 @@ class AIProvider(ABC):
     @abstractmethod
     async def extract_key_items(self, text: str) -> list[dict[str, Any]]:
         raise NotImplementedError
+
+    @abstractmethod
+    async def judge_answer(
+        self,
+        question: str,
+        student_answer: str,
+        reference_answer: str | None = None,
+        context: str | None = None,
+    ) -> dict[str, Any]:
+        raise NotImplementedError

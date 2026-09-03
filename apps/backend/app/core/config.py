@@ -22,7 +22,27 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
     ai_provider: str = "mock"
-    tts_provider: str = "system"
+    tts_provider: str = "google"
+
+    google_tts_api_key: str | None = None
+    google_tts_access_token: str | None = None
+    google_tts_voice: str = "en-US-Journey-O"
+    google_tts_speaking_rate: float = 0.85
+    google_tts_pitch: float = 0.0
+    google_ocr_api_key: str | None = None
+
+    asr_provider: str = "siliconflow"
+    asr_api_key: str | None = None
+    asr_base_url: str = "https://api.siliconflow.cn/v1"
+    asr_model: str = "FunAudioLLM/SenseVoiceSmall"
+
+    ocr_provider: str = "siliconflow"
+    ocr_api_key: str | None = None
+    ocr_base_url: str = "https://api.siliconflow.cn/v1"
+    ocr_model: str = "deepseek-ai/DeepSeek-OCR"
+    ocr_prompt: str | None = None
+    ocr_max_side: int = 1600
+    ocr_retries: int = 3
 
     openai_api_key: str | None = None
     openai_base_url: str = "https://api.openai.com/v1"

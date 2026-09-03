@@ -94,10 +94,25 @@ class MockProvider(AIProvider):
         ]
 
     async def extract_key_items(self, text: str) -> list[dict[str, Any]]:
+        stopwords = {
+            "a", "an", "the", "and", "but", "or", "so", "if", "then", "than",
+            "that", "this", "these", "those", "he", "she", "it", "they", "we",
+            "i", "you", "me", "him", "her", "us", "them", "my", "your", "his",
+            "its", "our", "their", "is", "am", "are", "was", "were", "be",
+            "been", "being", "have", "has", "had", "do", "does", "did", "will",
+            "would", "can", "could", "shall", "should", "may", "might", "must",
+            "to", "of", "in", "on", "at", "for", "with", "by", "from", "up",
+            "down", "out", "into", "over", "under", "again", "there", "here",
+            "not", "no", "yes", "very", "too", "just", "also", "all", "some",
+            "any", "many", "much", "more", "most", "one", "two", "three",
+            "four", "five", "six", "seven", "eight", "nine", "ten", "about",
+            "after", "before", "between", "through", "during", "without",
+            "because", "while",
+        }
         words = []
         for token in text.split():
             word = token.strip().strip(".,!?;:\"'").lower()
-            if word and word not in words:
+            if word and word not in stopwords and word not in words:
                 words.append(word)
         if not words:
             words = ["story"]
@@ -111,3 +126,52 @@ class MockProvider(AIProvider):
             }
             for term in terms
         ]
+
+    async def judge_answer(
+        self,
+        question: str,
+        student_answer: str,
+        reference_answer: str | None = None,
+        context: str | None = None,
+    ) -> dict[str, Any]:
+        student = " ".join(student_answer.strip().lower().split())
+        if not student:
+            return {
+                "correct": False,
+                "feedback": "我还没有听到答案，再试一次吧。",
+                "model_answer": reference_answer or "",
+            }
+
+        if not reference_answer:
+            return {
+                "correct": True,
+                "feedback": "已收到你的回答。",
+                "model_answer": "",
+            }
+
+        def words(value: str) -> set[str]:
+            return {
+                token.strip().strip(".,!?;:\"'")
+                for token in value.lower().split()
+                if token.strip()
+            }
+
+        reference_words = words(reference_answer)
+        if not reference_words:
+            return {
+                "correct": True,
+                "feedback": "已收到你的回答。",
+                "model_answer": reference_answer,
+            }
+
+        overlap = len(reference_words & words(student)) / len(reference_words)
+        correct = overlap >= 0.5
+        return {
+            "correct": correct,
+            "feedback": (
+                "答对了！关键意思说到了。"
+                if correct
+                else "还差一点，再看看原文，试着把关键意思说出来。"
+            ),
+            "model_answer": reference_answer,
+        }

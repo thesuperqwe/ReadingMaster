@@ -1,7 +1,12 @@
+import difflib
+import re
 import uuid
 
 from fastapi import HTTPException, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.models import BookPage, Chapter
 
 from app.ai.factory import get_ai_provider
 from app.schemas.ai import (
@@ -11,12 +16,34 @@ from app.schemas.ai import (
     ExplainWordResponse,
     GenerateQuizRequest,
     GenerateQuizResponse,
+    JudgeAnswerRequest,
+    JudgeAnswerResponse,
+    JudgeReadAloudRequest,
+    JudgeReadAloudResponse,
     KeyItem,
     KeyItemsRequest,
     KeyItemsResponse,
 )
 from app.services.book_service import get_book_or_404, get_chapter_or_404
 from app.services.chapter_service import chapter_title_for, split_chapters
+
+
+
+KEY_ITEM_STOPWORDS = {
+    "a", "an", "the", "and", "but", "or", "so", "if", "then", "than",
+    "that", "this", "these", "those", "he", "she", "it", "they", "we",
+    "i", "you", "me", "him", "her", "us", "them", "my", "your", "his",
+    "its", "our", "their", "is", "am", "are", "was", "were", "be",
+    "been", "being", "have", "has", "had", "do", "does", "did", "will",
+    "would", "can", "could", "shall", "should", "may", "might", "must",
+    "to", "of", "in", "on", "at", "for", "with", "by", "from", "up",
+    "down", "out", "into", "over", "under", "again", "there", "here",
+    "not", "no", "yes", "very", "too", "just", "also", "all", "some",
+    "any", "many", "much", "more", "most", "one", "two", "three",
+    "four", "five", "six", "seven", "eight", "nine", "ten", "about",
+    "after", "before", "between", "through", "during", "without",
+    "because", "while",
+}
 
 
 async def explain_word(data: ExplainWordRequest) -> ExplainWordResponse:
@@ -55,8 +82,46 @@ def _to_ai_question(
 
 
 async def generate_quiz(session: AsyncSession, data: GenerateQuizRequest) -> GenerateQuizResponse:
+    provider = get_ai_provider()
+    questions: list[AIQuizQuestion] = []
+
     if data.book_id is not None:
         book = await get_book_or_404(session, data.book_id)
+        chapters = list(
+            await session.scalars(
+                select(Chapter)
+                .where(Chapter.book_id == book.id)
+                .order_by(Chapter.index)
+            )
+        )
+
+        if chapters:
+            for chapter in chapters:
+                pages = await session.scalars(
+                    select(BookPage)
+                    .where(
+                        BookPage.book_id == book.id,
+                        BookPage.chapter_index == chapter.index,
+                    )
+                    .order_by(BookPage.page_no)
+                )
+                chapter_text = "\n\n".join(
+                    page.content for page in pages if page.content
+                )
+                if not chapter_text.strip():
+                    continue
+
+                title = chapter.title or f"第 {chapter.index + 1} 部分"
+                for item in await provider.generate_quiz(chapter_text):
+                    questions.append(
+                        _to_ai_question(
+                            item,
+                            chapter_index=chapter.index,
+                            chapter_title=title,
+                        )
+                    )
+            return GenerateQuizResponse(questions=questions)
+
         text = "\n\n".join(page.content for page in book.pages)
     elif data.text:
         text = data.text.strip()
@@ -66,11 +131,9 @@ async def generate_quiz(session: AsyncSession, data: GenerateQuizRequest) -> Gen
             detail="book_id or text is required",
         )
 
-    provider = get_ai_provider()
     parts = split_chapters(text)
     has_chapters = any(part.title is not None for part in parts)
 
-    questions: list[AIQuizQuestion] = []
     if has_chapters:
         for index, part in enumerate(parts):
             if not part.body:
@@ -85,21 +148,113 @@ async def generate_quiz(session: AsyncSession, data: GenerateQuizRequest) -> Gen
     return GenerateQuizResponse(questions=questions)
 
 
+def _word_set(text: str) -> set[str]:
+    return {
+        token.lower()
+        for token in re.findall(r"[A-Za-z']+", text)
+        if token
+    }
+
+
+def _term_words(term: str) -> set[str]:
+    return {token for token in re.findall(r"[A-Za-z']+", term.lower()) if token}
+
+
+def _is_stopword_term(term: str) -> bool:
+    words = _term_words(term)
+    return len(words) == 1 and next(iter(words)) in KEY_ITEM_STOPWORDS
+
+
+def _key_item_limit(text: str) -> int:
+    word_count = len(_word_set(text))
+    if word_count <= 80:
+        return 8
+    if word_count <= 220:
+        return 15
+    return 20
+
+
+def _normalize_key_items(
+    items_data: list[dict],
+    text: str,
+    limit: int,
+) -> list[KeyItem]:
+    text_words = _word_set(text)
+    seen: set[str] = set()
+    items: list[KeyItem] = []
+
+    for item in items_data:
+        term = " ".join((item.get("term") or "").split())
+        if not term:
+            continue
+        if _term_words(term) - text_words:
+            continue
+        if _is_stopword_term(term):
+            continue
+        normalized = term.lower()
+        if normalized in seen:
+            continue
+
+        seen.add(normalized)
+        items.append(
+            KeyItem(
+                term=term,
+                phonetic=item.get("phonetic"),
+                meaning_zh=item.get("meaning_zh"),
+                simple_definition=item.get("simple_definition"),
+            )
+        )
+        if len(items) >= limit:
+            break
+
+    return items
+
+
 async def extract_key_items(data: KeyItemsRequest) -> KeyItemsResponse:
     provider = get_ai_provider()
     items_data = await provider.extract_key_items(data.text)
-
-    items = [
-        KeyItem(
-            term=(item.get("term") or "").strip(),
-            phonetic=item.get("phonetic"),
-            meaning_zh=item.get("meaning_zh"),
-            simple_definition=item.get("simple_definition"),
-        )
-        for item in items_data
-        if (item.get("term") or "").strip()
-    ]
+    items = _normalize_key_items(items_data, data.text, _key_item_limit(data.text))
     return KeyItemsResponse(items=items)
+
+
+def _normalize_spoken_text(text: str) -> str:
+    return re.sub(r"[^a-z0-9\s']", " ", text.lower())
+
+
+async def judge_answer(data: JudgeAnswerRequest) -> JudgeAnswerResponse:
+    provider = get_ai_provider()
+    result = await provider.judge_answer(
+        question=data.question,
+        student_answer=data.student_answer,
+        reference_answer=data.reference_answer,
+        context=data.context,
+    )
+    return JudgeAnswerResponse(
+        correct=bool(result.get("correct")),
+        feedback=str(result.get("feedback") or ""),
+        model_answer=str(result.get("model_answer") or ""),
+    )
+
+
+def judge_read_aloud(data: JudgeReadAloudRequest) -> JudgeReadAloudResponse:
+    target = _normalize_spoken_text(data.target_sentence).split()
+    student = _normalize_spoken_text(data.student_transcript).split()
+    if not target or not student:
+        return JudgeReadAloudResponse(
+            correct=False,
+            feedback="没有听清，请再试一次。",
+        )
+
+    ratio = difflib.SequenceMatcher(None, target, student).ratio()
+    correct = ratio >= 0.78
+    return JudgeReadAloudResponse(
+        correct=correct,
+        feedback=(
+            "读对了，很清楚，真棒！"
+            if correct
+            else "还差一点，再听一遍，注意句子的节奏和单词。"
+        ),
+    )
 
 
 async def get_or_generate_chapter_key_items(
@@ -118,16 +273,11 @@ async def get_or_generate_chapter_key_items(
 
     provider = get_ai_provider()
     items_data = await provider.extract_key_items(chapter_text)
-    items = [
-        KeyItem(
-            term=(item.get("term") or "").strip(),
-            phonetic=item.get("phonetic"),
-            meaning_zh=item.get("meaning_zh"),
-            simple_definition=item.get("simple_definition"),
-        )
-        for item in items_data
-        if (item.get("term") or "").strip()
-    ]
+    items = _normalize_key_items(
+        items_data,
+        chapter_text,
+        _key_item_limit(chapter_text),
+    )
 
     chapter.key_items = [item.model_dump() for item in items]
     await session.commit()

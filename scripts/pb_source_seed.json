@@ -1,0 +1,391 @@
+{
+  "schema_version": 1,
+  "source_repo": "https://github.com/global-asp/pb-source.git",
+  "generated_at": "2026-09-01T10:17:52.320893+00:00",
+  "books": [
+    {
+      "source_id": "0104",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0104_i-lost-my-bat-i-found-my-bat.md",
+      "title": "I lost my bat! I found my bat!",
+      "level": "LEVEL_1",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Meera Tendolkar.",
+      "category": "story",
+      "estimated_minutes": 1,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "I can't find my bat, it's lost!\n\nIt's not behind the door.\n\nIt's not on the shelf.\n\nIt's not under the bed either.\n\nIt's not in the box.\n\nIt's not in the loft.\n\nI can't find it anywhere!"
+        }
+      ]
+    },
+    {
+      "source_id": "0141",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0141_who-made-this-world.md",
+      "title": "Who Made This World?",
+      "level": "LEVEL_1",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Chandra R.",
+      "category": "story",
+      "estimated_minutes": 1,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "I Am Going To Explore The World.\n\nAcross the Rivers\n\nPast the Cities\n\nThrough The Forests\n\nOver The Hills\n\nIt Is A Beautiful World!\n\nWho Made It?\n\nGod Knows!\n\nOr... Maybe Not."
+        }
+      ]
+    },
+    {
+      "source_id": "0144",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0144_the-cat-and-the-monkey.md",
+      "title": "The cat and the monkey",
+      "level": "LEVEL_1",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Vivaan M.",
+      "category": "story",
+      "estimated_minutes": 1,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "Once there lived a granny, mamma, a kid. Then a monkey sneaked through the window and ate up the fruits. The cat ate up the fruits in the garden. That's all."
+        }
+      ]
+    },
+    {
+      "source_id": "0221",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0221_money-at-home.md",
+      "title": "Monkey at home",
+      "level": "LEVEL_1",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Diwakar S.",
+      "category": "story",
+      "estimated_minutes": 1,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "One day monkey came to my home, disturbed the things and ate all the eatables, I am not there in home at that time, once I reached I sent out the monkey back."
+        }
+      ]
+    },
+    {
+      "source_id": "0349",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0349_chulli-and-the-cows.md",
+      "title": "Chulli and the cows",
+      "level": "LEVEL_1",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Arvind Eyunni.",
+      "category": "story",
+      "estimated_minutes": 1,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "Once upon a time, there was a very shy train named Chulli.\n\nChulli was fascinated with cows.\n\nBut one day, Chulli got scared when he saw a cow right on his tracks."
+        }
+      ]
+    },
+    {
+      "source_id": "0399",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0399_cat-dreams.md",
+      "title": "Cat Dreams",
+      "level": "LEVEL_1",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Aasma Pratap.",
+      "category": "story",
+      "estimated_minutes": 1,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "The dreamy cat saw fishes falling from the sky like a rain.\n\nThe cat thought if she eats enough fishes, she will grow up and become a tiger."
+        }
+      ]
+    },
+    {
+      "source_id": "0155",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0155_when-percy-said-sorry.md",
+      "title": "When Percy Said Sorry",
+      "level": "LEVEL_2",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Yuman Hussain.",
+      "category": "story",
+      "estimated_minutes": 1,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "Once upon a time there was a little elephant called Percy, who used to walk carelessly.\n\nHe used to step on the ants that lived nearby and injure them endlessly. One-day ants decided to teach him a lesson. They all tickled Percy when he was taking a bath. They tickled Percy when he was eating food. They tickled Percy when he was taking a nap. They tickled and tickled Percy till he said sorry. Percy learned his lesson and never stepped on ants ever again."
+        }
+      ]
+    },
+    {
+      "source_id": "0162",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0162_climb-and-hop.md",
+      "title": "Climb and Hop",
+      "level": "LEVEL_2",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Baani Pahwa.",
+      "category": "story",
+      "estimated_minutes": 1,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "Near my house is a really big tree, I climb on it when I am free.\n\nI just go up and up to the top, When I reach I just hop.\n\nAs soon as I climb, my mother says stop, Its time for lunch, now you hop.\n\nNo mom no! it is time to shop!Then again in the market I shall climb and hop!!!!\n\nNo No No!! No one is going to shop,\n\nCome on here, or I will pop!!!!"
+        }
+      ]
+    },
+    {
+      "source_id": "0205",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0205_golu-detective.md",
+      "title": "Golu Detective",
+      "level": "LEVEL_2",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Swetapadma Satpathy.",
+      "category": "story",
+      "estimated_minutes": 1,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "Little Golu was roaming in a jungle with a magic torch in his hand. Golu always wanted to become a detective.\n\nSuddenly he saw red colored umbrellas in the jungle. They were very big in size.\n\nGolu went near the red umbrellas. And look what he found with his magic torch?\n\nA cute little girl.\n\nShe was lost in the jungle while playing. So she was very sad.\n\nGolu promised her to take her back home. And they became good friends"
+        }
+      ]
+    },
+    {
+      "source_id": "0223",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0223_mischievous-monkey.md",
+      "title": "Mischievous Monkey",
+      "level": "LEVEL_2",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Avinash Kumar.",
+      "category": "story",
+      "estimated_minutes": 1,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "There was a small monkey in a village. He was very mischievous and used to trouble the villagers. One day he was very hungry and had nothing to eat. So he decided to enter a house and get food from there. He saw a window open in a kitchen and went inside. The women in the house got scared seeing the monkey and ran away. He broke all the food boxes and ate it all. After eating the food he ran away."
+        }
+      ]
+    },
+    {
+      "source_id": "0226",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0226_diwali.md",
+      "title": "Diwali",
+      "level": "LEVEL_2",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Swathi Mandava.",
+      "category": "story",
+      "estimated_minutes": 1,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "What I do on the day of Diwali:\n\nHurrraayy its holiday...\n\nI'll wake up early in the morning to take head bath and wear new clothes.\n\nI do Lakshmi Pooja along with my mother and have sweets and savouries.\n\nEvening I'll help my family members in lightning diyas and decorate around my house.\n\nNext I'll fire all my crackers along with my siblings.\n\nOnce I am done with my crackers I'll go to my friend's/neighbor's house and again have fun there too."
+        }
+      ]
+    },
+    {
+      "source_id": "0301",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0301_and-this-is-how-the-earth-got-colour.md",
+      "title": "And this is how the earth got colour.",
+      "level": "LEVEL_2",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Krutarth Shah.",
+      "category": "story",
+      "estimated_minutes": 1,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "There was a artist and his destiny was to paint.\n\nThe world was colourless.\n\nSo he painted the trees brown and green.\n\nAnd then he painted the earth brown.\n\nHe painted the elephants grey with white tusks.\n\nHe painted the Praying Mantis green.\n\nHe painted the starfish red and white.\n\nAnd the seahorse was painted pale orange with green eyes.\n\nThen the artist sat on the beach and looked at the sky.\n\nIt was a beautiful sight of blue and white. He wondered who painted the sky?"
+        }
+      ]
+    },
+    {
+      "source_id": "0085",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0085_when-amma-went-to-school.md",
+      "title": "When Amma Went to School",
+      "level": "LEVEL_3",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Nandini Nayar.",
+      "category": "story",
+      "estimated_minutes": 3,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "“Meera, I went to your school today!” Amma said one day.\n\n“Really?” Meera said.\n\n“And the gate was wide open, and the watchman was missing!”\n\n“Oh! He was in our classroom, to see why our teacher had screamed!”\n\n“And why did your teacher scream?” Amma asked. “Because Rohan began crying!”\n\n“And why did Rohan cry?” Amma wanted to know.\n\n“Because the snake he had brought back from the zoo had eaten his mouse! And then the teacher screamed and the watchman came running!”\n\n“But I went to your classroom, and there was nobody there!” said Amma.\n\n“We were all hiding in the Staff Room,” Meera said.“Because Rohan's snake was in our classroom!”\n\n“But Meera, when I went to the Staff Room, I didn't see anyone there!”\n\n“That is because we had all run away to the Principal's Room,” Meera said.\n\n“Because Rohan said the snake was following us!”\n\n“But when I went to the Principal's Room, it was empty!” Amma said.\n\n“We couldn't stay there,” Meera said, “because Rohan's snake was looking for him. We climbed up to the terrace and stayed there till the bell rang!”\n\n“And I waited and waited in your school, all alone!” Amma said.\n\n“Not all alone, Amma, you had the snake for company!”\n\n“The snake!” Amma said, sitting down with a thump on a chair."
+        }
+      ]
+    },
+    {
+      "source_id": "0102",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0102_rumniya.md",
+      "title": "Rumniya",
+      "level": "LEVEL_3",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Rukmini Banerji.",
+      "category": "story",
+      "estimated_minutes": 3,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "Many years ago when Rumniya was a baby, Nana, Nani and Rumniya went to a wedding.\n\nThere were hundreds of people at the party, most of whom were near the food. After some time, Nani lost Rumniya.\n\nWhen things get lost, Nani does not worry; she feels that everything will turn up, and turn out right very soon. So Nani did not feel worried.\n\nOn the other hand, Rumniya was only one and a half years old, so she was quite worried and not as hopeful.\n\nBut rather than doing any silly baby-like things like crying, Rumniya thought of doing something else.\n\nIn that vast crowd, it was impossible for a small girl to search for people's faces.\n\nIn fact, it was much easier to search for the right person by looking at people's feet, their shoes and sandals.\n\nSo that is what Rumniya did. She started from one end of the room.\n\nShe lifted up the sari of each and every woman. Then she came to a sari that was familiar, and slippers that she knew. Sure enough, when Rumniya matched the face with the sari and slippers, it was Nani!\n\nAnd as Nani bent down to pick Rumniya up, Nani said to her friend, “See, I told you. There was nothing to worry about. Whenever you lose something, you will always find it.”"
+        }
+      ]
+    },
+    {
+      "source_id": "0108",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0108_the-royal-toothache.md",
+      "title": "The Royal Toothache",
+      "level": "LEVEL_3",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Sanjiv Jaiswal 'Sanjay'.",
+      "category": "story",
+      "estimated_minutes": 3,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "The lion was the king of the jungle.\n\nEveryone shivered and shook when he roared.\n\nHe had a terrible toothache since two days.\n\n“Maharaj, get this tooth extracted,” suggested the monkey, the jungle physician.\n\n“Alright,” agreed the lion.\n\nWho would extract the lion's tooth? They were all terrified of him!\n\n“Maharaj, I will give you a kick with my hind legs. The tooth will pop out,” said the foolish donkey.\n\n“You will dare to kick the king?” roared the lion peevishly.\n\nThe donkey tucked his tail between his legs and ran off.\n\nThe elephant, cheetah, bear and deer were all worried.\n\nWho would stick their hand into the lion's mouth?\n\nTwo days passed. The toothache was getting unbearable.\n\n“Should I take a look?” asked the mouse one night when the lion and he were alone.\n\n“Alright,” said the lion and opened his mouth wide.\n\n“Oh! There is a lot of dirt trapped between your teeth!” said the mouse taking a peek inside. Using his sharp teeth, he cleaned out the lion's teeth. The lion felt much better.\n\n“Maharaj, please clean your teeth everyday, or else your teeth will rot,” said the wise little mouse.\n\n“Yes, you are right. But please don't tell anybody or they will say their king doesn't keep clean...” pleaded the lion.\n\n\"Alright,\" laughed the mouse.\n\nThe lion also laughed."
+        }
+      ]
+    },
+    {
+      "source_id": "0147",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0147_mili-s-birthday-celebration.md",
+      "title": "Mili's birthday celebration",
+      "level": "LEVEL_3",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Reshma Krishnamurthy Sharma.",
+      "category": "story",
+      "estimated_minutes": 3,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "\" Amma, I want a new kind of celebration said Mili to her mother.\n\nAmma looked at her older brother and they smiled as they had decided that this time it will not be the cakes, balloons, or the usual decorations.\n\nThis time Mili will have her home decorated like it is done for Deepavali, just as Mili finds it the happiest festival in the year.\n\nSoon Anna (older brother) got ready with the decorations of putting a new toran at the door, flowers strung on the walls, windows and Amma started keeping the diya's ready for the evening.\n\nAs the clock struck 6'o clock in the evening her home was looking beautiful as though it was Deepavali on her birthday. Suddenly she saw the entire neighborhood were lighting diyas and children were getting ready to come to Mili's house.\n\n\" Oh wow,\" Mili thought to herself. It was really beautiful. The entire street was looking glittering with traditional decorations. Everyone was happy to celebrate Mili's birthday. Her friends came with mithai's, dressed in traditional Indian attire and everyone had a great time.\n\nThere was antakshari competition, laddoo eating competition, best Indian dressed child. Amma had made small packets of beautiful diyas to be given as gifts to the children who won. Everyone had fun. Mili felt this was her most special birthday."
+        }
+      ]
+    },
+    {
+      "source_id": "0268",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0268_the-girl-and-the-bear.md",
+      "title": "The Girl and the Bear",
+      "level": "LEVEL_3",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Lakshmi Stitha.",
+      "category": "story",
+      "estimated_minutes": 3,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "A girl went to a place, that was a forest. When she went there flood came because of rain. There was a bear, that was watching that girl thinking that what she is doing there.\n\nAll of a sudden fishes have started raining from the sky and bear started catching the fishes. The girl saw the bear and was frightened and fell down.\n\nAfter some time she woke up because of the rain drops. Bear was good. It didn't do any harm to the girl.\n\nThe girl was hungry, she didn't had anything to eat. Bear gave so many fishes to her & they became friends. Next day the rain was coming and coming, they didn't had any shelter for hiding. Bear was telling that tomorrow is my birthday and i think tomorrow will also rain. She forgot that she had a birthday cake with her.\n\nShe remembered that she had a cake. Next day, rain stopped and the girl asked bear to close the eyes, after some time (after arranging the birthday cake) asked bear to open the eyes and showed the table with cake. Bear never saw anything like this before, so it was very happy.\n\nBear blew the candles, as the girl sang happy birthday song.\n\nThe girl never left the bear, she lived along with the bear, lifelong. They lived happily."
+        }
+      ]
+    },
+    {
+      "source_id": "0337",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0337_jack-and-anny-go-to-space.md",
+      "title": "Jack and Anny go to space",
+      "level": "LEVEL_3",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Kalyani Radhakrishnan.",
+      "category": "story",
+      "estimated_minutes": 3,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "Bounce.. Bounce!\n\nAnny and Jack went on the trampoline. Suddenly, Jack got an idea! He said to Anny that why don't we go to space!\n\nThey both went to their house and asked their mother if they can go to space. But their mother said you are too young to go to space. They thought that was not fair.\n\nSo they made their own toy rocket and played.\n\nAs they grew up, they became smarter and smarter.\n\nThen they again asked their mother if we could go to space. But still their mother said no. Grades passed and they went to college.\n\nAnd at last, they went to office and they got a job.... which made them go to space!!\n\nWhen they were going in space, they saw the full earth and took pictures.\n\nWhen they reached Mars, they saw a satellite vehicle and drove it, They went all around Mars and took one full week to go around Mars fully. They took many pictures.\n\nAnd then they came on news and everybody was surprised to see that.. even their parents.\n\nWhen they returned back to earth everybody praised them and they got 2 crore for doing all this!\n\nAll the pictures they took was attached in the museum. And everybody liked it.\n\nAnd of course they would quarrel about being a scientist back again!"
+        }
+      ]
+    },
+    {
+      "source_id": "0035",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0035_the-scarecrows-on-parade.md",
+      "title": "The Scarecrows on Parade",
+      "level": "LEVEL_4",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Shamim Padamsee.",
+      "category": "story",
+      "estimated_minutes": 6,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "\"Please Ma, may I help you make scarecrows?\" asked Gauri.\n\nMa was tying some sticks together to make a scarecrow. She put an old shirt over the sticks, and then stuffed it with hay.\n\nGauri walked to the clothesline where the washed clothes were drying. She picked up a dress.\n\n\"I will dress her up in my new red frock and tie her hair with red ribbons too! She will look so lovely!\"\n\n“You silly girl. You can't have a pretty scarecrow. Scarecrows have to scare the birds away, and so they must look scary! Like this!” said Mother, making a face and waving her arms.\n\nGauri giggled. “You look so funny Ma!”\n\nMother took the scarecrows into the fields and fixed them amidst the tall stalks of grain. \"There now, be good scarecrows and chase the birds away,\" said Gauri, patting them.\n\nGauri and her mother returned to their hut.\n\nGauri went inside and lay on her cot.\n\nA big yellow moon was rising, bathing the field in a soft, white glow.\n\nGauri saw a scarecrow look down at its clothes.\n\n“Why do we always have to wear these tattered old clothes?” said a scarecrow with a sigh. “I wish we had something pretty to wear!”\n\n“Yes, me too!” said another. The scarecrows looked around the field. Suddenly, one of them called out, “Hey, look at those lovely clothes flapping in the breeze. Why don't we wear those?”\n\n“Oo-oo! These clothes are so pretty. Let us try them on!” said another.\n\nOne scarecrow tried on a lovely red dress with sequins on them. It sparkled in the moonlight. She tied the pretty red ribbons that were flapping in the breeze on her straw hair. Thrilled with her new clothes she began to show them off.\n\nSoon, all the scarecrows were busy dressing up! They began to parade. They walked! They turned! They twisted! They twirled!\n\nThey tossed their empty mud-pot heads, and smiled their crooked mud-pot smiles. They were having a wonderful time!\n\nAt the same time, hundreds of birds flew down to the fields. Birds here, birds there, birds everywhere. Beaks smacking! Beaks munching! Beaks chomping!\n\n\"Mmm! This is delicious!\" said one, as she wiped her beak with her wing.\n\n“It is not everyday that we can eat in the fields, without being shooed away by the scarecrows.” The scarecrows heard this and looked around. They were horrified!\n\n“Shoo! Be gone!” they shouted at the birds, waving their straw hands wildly, to and fro.\n\nGauri screamed. Her mother came running.“Gauri, Gauri, what is the matter? Wake up!”\n\n“Oh Ma, the birds! They are eating up all the grain.”\n\nHer mother held her tight, and said, “Shh, my child! Look at the fields. They are safe! It must be a bad dream.”\n\nGauri looked out.\n\nShe saw the scarecrows, standing just where they were placed.\n\nOh, wait a minute, were they waving to her? She looked closer.\n\nShe saw a red ribbon fluttering on a scarecrow's hair. She blinked and looked again. Did the scarecrow just wink at her?"
+        }
+      ]
+    },
+    {
+      "source_id": "0097",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0097_sniffles-the-crocodile-and-punch-the-butterfly.md",
+      "title": "Sniffles, the Crocodile and Punch, the Butterfly",
+      "level": "LEVEL_4",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Herminder Ohri.",
+      "category": "story",
+      "estimated_minutes": 7,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "In the swamp on the far side of the Far Forest, lived Sniffles, the Crocodile. Sniffles was always crying big crocodile tears or going sniff... sniff... Even his mom was quite tired of him and would say, “Stop snivelling and crying, start behaving like a crocodile. Go hunt for your food.”\n\nBut Sniffles would burst into tears at the thought of eating another animal. So mom and dad had to feed Sniffles every day.\n\nSniffles did not want to be a crocodile. 'I am so ugly,' he thought, bursting into tears. He did not even want to live like crocodiles do. His best friend was Punch, a golden yellow butterfly. And Punch wanted to be big and strong. So Punch always had her feeler curled into a fist saying, “Look out! I will punch you in the mouth.”\n\nThey made a very funny pair. Sniffles swimming with Punch perched on his head. The other crocodiles would laugh and make fun of them. That did not bother Sniffles. He continued crying, sniffling and being friends with Punch.\n\nOne sunny afternoon, Punch settled herself near Sniffles' ear and told him, “I have seen two men come this way with guns, they want to kill crocodiles for their skins.”\n\n“Don't these men have skins of their own?” asked a puzzled Sniffles.\n\n“I don't know Sniffles,” replied Punch. “Tell the other crocodiles and hide.”\n\n“But Punch, they might shoot you. Oh! What will I do,” cried Sniffles sobbing loudly.\n\n“People catch butterflies with nets and pin them on a board, my grandaunt told me,” said Punch and flew away.\n\nThe other crocodiles heard Sniffles crying and shouting, “Men coming to kill us. Hide ... Hurry ... Hide.” At first the crocodiles did not believe Sniffles, but then they heard the men's footsteps.\n\nThe crocodiles went deep into the river and left some rotten logs floating on the water. The men shot at the logs which looked like crocodiles from afar. The men could not see any crocodiles, only hundreds of butterflies that flew into their faces and hair.\n\nShaking their heads and trying to brush off the butterflies they said, “There are no crocodiles here, we will bring nets and catch the butterflies.” And off they went. All the crocodiles got together and said, “Thank you, Punch.”\n\n“Thank you, butterflies.”\n\nThe next day Sniffles saw men with nets. He remembered Punch telling him about nets. “Punch, the nets! Come here quick! The men with the nets have come.” All the crocodiles came on the river bank. The butterflies settled on the backs and heads of the crocodiles.\n\nA few of the crocodiles made a circle around the men as they came close. The crocodiles snapped their jaws. Sniffles was in front, gnashing his teeth and whipping his tail around most menacingly.\n\nThe men were so frightened that they took to their heels and ran right out of the swamp. The other crocodiles were very proud of Sniffles, as he had acted like a real crocodile. Now Sniffles was also proud to be one.\n\nAll the butterflies flew around the crocodiles, fluttering their wings.\n\n“Thank you, Sniffles, Thank you, crocodiles.”\n\n“It is all right,” said Sniffles shyly. “That is what friends are for, to take care of each other.”"
+        }
+      ]
+    },
+    {
+      "source_id": "0201",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0201_the-brave-girl.md",
+      "title": "The Brave Girl",
+      "level": "LEVEL_4",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Dhriti Nut.",
+      "category": "story",
+      "estimated_minutes": 6,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "There was once a girl named Olivia. She lived in the US. She was on obedient girl who loved going to school. She was a scaredy cat.\n\nHer mother was a beautiful woman with curly blonde hair and blue eyes. He father was a handsome man with brown hair and brown eyes. She loved them more than anything in the world.\n\nBut then the war came and her parents had to go to the war. One day she got the news that her parents disappeared in the war. She thought her parents died.\n\nShe was 15 years old and she did not know what to do. Luckily she had caring grandparents and they came and lived with her.\n\nOne night, she had a horrible dream which ended good.\n\nIn the morning Olivia told her grandparents her dream.\n\n\"One night we went on a trip to India. When we were traveling a storm broke out and the aeroplane broke into many pieces and burnt in the icy ocean. Luckily the piece I was on did not burn and I was left in the icy region. I called for help. I saw an aeroplane above and waved a burning piece in the air. The people in the aeroplane saw me and picked me up. Since I looked shabby they gave me clothes to wear and food to eat. I was taken India!\"\n\nDream over.\n\nSoon after this a letter arrived with a book. She started to read the letter.\n\nRead and solve the three riddles in the Book.\n\nLove X0X0X0\n\nShe opened the book and started to read\n\nRiddle 1:\n\nCome out of the maze without touching the walls.\n\nRiddle 2:\n\nGet out of fairy land without being seen.\n\nRiddle 3:\n\nGet out of the magic patch and you will find your parents in India.\n\nShe closed the book and thought the riddles were true and told her grandparents about it. They told her that she had to go and find her parents. She went in search of the maze. Finally she found it as mentioned in the book.\n\nShe tried getting in, but the walls kept on moving. But she did not give up. She used her ballet skills to dance through and cross the maze without touching the walls.\n\nShe reached the fairy land, she put on some wings and disguised herself as a fairy and\n\ncrossed without being seen. She reached the magic patch. Now she used her western dance skills to make it past the magic patch.\n\nShe finally saw her parents at a distance and could not believe her eyes. She ran to them and they hugged each other. They finally made it past everything and reached home.\n\nOlivia asked her parents how they were lost and who had sent her the letter. Her parents did not know anything about it. In any case everything ended happily.\n\nUp above unknown to Olivia, a fairy Godmother smiled down on the family. She knew Olivia loved her parents very much and would do anything for them. Thats why she had sent the letter."
+        }
+      ]
+    },
+    {
+      "source_id": "0204",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0204_the-story-of-stories.md",
+      "title": "The Story of Stories",
+      "level": "LEVEL_4",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Roopa Pai.",
+      "category": "story",
+      "estimated_minutes": 7,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "It was a beautiful summer day in the Forest-By-The-Sea in the glorious land of Somewheristan. Whales danced in the waves, singing to each other. Sea lions, their smooth brown bodies glistening in the sun, played peek-a-boo with the noisy seagulls, barking and scolding.\n\nEvery creature in the Forest was happy, happy, happy.\n\nExcuse me! you say. That can't be true. There's NEVER a time when EVERY creature ANYwhere is happy, happy, happy.\n\nHmmm. Maybe you're right. Maybe not EVERY creature was happy. This journalist bear, for instance.\n\nIn this picture, Bear is trying to smile, but he has a great sorrow. He simply cannot find a ‘BREAKING NEWS' story. He even sent Bird to look - because Bird moves faster and sees better - but Bird came back with nothing.\n\n‘BREAKING NEWS' stories are about anger and fear and hate and greed, and there was none of that in the Forest. Everything was happy, happy, happy.\n\nA journalist bear without a ‘BREAKING NEWS' story doesn't deserve to be a journalist bear, thought Bear sadly to himself. He should be a Waiter Bear, or a Sweeper Bear, or a Telephone Voice Bear, saying, ‘Please check the number you have dialled', or ‘Kindly wait - you are in a queue'.\n\nHe packed his things and started walking to the bus-stop, when Singing Sardarji popped out from behind a tree.\n\n“Arrey oh Journalist Bear!” said Sardarji. “Going somewhere?”\n\n“Don't call me that or I will cry,” said Bear, and told Sardarji he was leaving to become a Telephone Voice Bear.\n\n“Don't be such a silly bear, Bear!” scolded Sardarji. He pulled out a guitar and began to sing.\n\n“If Tweety birds stop tweeting,\n\nand Hooty Owls stop hooting,\n\nthe world would be a sad playyyy-ce,\n\ndon't you see?”\n\n“Don't you seeeeeeee?” sang the Tweety Birds and the Hooty Owls.\n\n“If Singing Sardarjis don't,\n\nand Journalist Bears won't,\n\nthe world would be a bad playyyyy-ce, don't you see?” sang Sardarji.\n\n“I do enjoy being a Journalist Bear,” Bear said sadly. “I do love finding out things, and talking to people, and writing their stories, but I also do NOT have a ‘BREAKING NEWS' story, which means...”\n\n‘A-HA!' said Singing Sardarji.\n\n“What?” said Bear, puzzled.\n\n“You like finding out things! And talking to people! And writing their stories! You are a Journalist Bear, Bear, but you have the soul of a... drumroll please... Writer Bear!”\n\nBear beamed. Sardarji was right! He really WAS a Writer Bear.\n\n“Tell you what, Bear,” Sardarji went on, “let's travel the world, you and I. I will sing, and you, Bear, will write. Not 'BREAKING NEWS' stories - no one remembers those after three days, anyway - but real stories of real people, stories that will never grow old.”\n\n“Hurray!” said Bear.\n\nAnd that was how Writer Bear and Singing Sardarji set out to explore the world.\n\nEverywhere they went, Sardarji sang to the people, and Bear listened to them. Over time, Bear wrote many, many stories. Happy stories that made people cry, funny stories that made them think, sad stories that made them hope, and scary stories that made them laugh.\n\nAnd Storyweavers all over the world picked up the long, strong, shining threads of Bear's stories, and wove them into new and wonderful stories for all of us to enjoy."
+        }
+      ]
+    },
+    {
+      "source_id": "0331",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0331_everyone-needs-a-friend.md",
+      "title": "Everyone needs a friend",
+      "level": "LEVEL_4",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Rupa Prakash.",
+      "category": "story",
+      "estimated_minutes": 6,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "It was a beautiful day, Gagan the Giraffe was strolling across the forest, when he passed a herd of Zebras. Gagan looked at their stripes and then at the patchwork of color on his body. He thought to himself, that he was a handsome giraffe, much better looking than the zebras.\n\nThe bushes were full of lush green leaves and bees were going purposefully about their tasks. Gagan stopped near a delicious looking plant and started to taste its leaves. As he was munching away he sensed something behind him. \"Who's there?\" he asked, turning toward the bushes. Aakar, are you and the other ants trying to frighten me?\" There was no answer. Thinking it must have been his imagination, Gagan continued eating the leaves.\n\nLaabh, a lion, was watching the giraffe from behind the bushes. He was feeling hungry and his mouth drooled over thoughts of eating the giraffe. \"He is rather big,\" Laabh whispered. \"I don't think I can bring him down all by myself.\" Laabh ran off to the pride and asked his friend Lali to help him get the Giraffe and they can share the kill.\n\nLali followed Laabh through the grass. They stopped and peeked out from behind the bushes. \"He is huge. I don't think just two of us can bring that giraffe down. Why don't you go and get someone else. I'll stay here and keep an eye on him,\" Lali said. Laabh ran back to the pride.\n\n\"Who's there? I know someone is in those bushes. Are you sure it's not you, Aakar?\" the giraffe gulped. He was starting to get nervous.\n\nLali had always liked giraffes. Giraffes had captured her heart with their grace, and beauty.\n\nShe stepped out from behind the bushes. \"Don't be afraid. I won't hurt you,\" she said. Gagan was terrified. \"You're a lion. Lions eat giraffes. Why shouldn't I be afraid?\"\n\n\"Laabh's gone back to the pride to get another lion. They want you for lunch,\" Lali said. \"What? They want to eat me? Do you want to eat me too?\" Gagan asked.\n\n\"No. I'm full from breakfast. We've got to get you out of here before they come back. Follow me, I'll take you to a safe place\" Lali said. Gagan was surprised when she ran into a cave. \"We're going into a cave?\" he asked.\" It's the only safe place for you right now. The ceiling is tall enough for you to stand comfortably. Stay here. I'm going back to the pride to tell them you're gone,\" Lali said and ran off, leaving the frightened giraffe alone. An hour later Lali came back. \"You are safe now. They weren't happy that you had disappeared but cheered up when a deer walked by.\" Gagan left the cave and walked beside his new friend. \"Thank you, Lali. You saved my life.\"\" Everyone needs a friend,\" she said and darted across the savanna to where the other lions were. The greatest gift of life is friendship, and I have received it, thought Gagan to himself."
+        }
+      ]
+    },
+    {
+      "source_id": "0407",
+      "source_url": "https://raw.githubusercontent.com/global-asp/pb-source/master/en/0407_jamun-has-her-wish.md",
+      "title": "Jamun Has Her Wish",
+      "level": "LEVEL_4",
+      "description": "A Pratham Books story. License: [CC-BY]. Text by Vibhy Batra.",
+      "category": "story",
+      "estimated_minutes": 7,
+      "license": "[CC-BY]",
+      "chapters": [
+        {
+          "title": "正文",
+          "content": "Jamun lived in a pretty little house perched on top of a cliff.\n\nOne fine morning, she looked out of the window and felt unbearably sad. The day had dawned nice and bright, and here she was, stuck at home. You see, Jamun was recovering from a recent illness, a particularly nasty bout of fever.\n\nHer doctor, a stern man with an unruly mop of curly hair had given her strict instructions: no mischief, plenty of rest.\n\nSo what if she couldn't go outside. Her thoughts certainly could. She closed her eyes and imagined herself out in the open, surrounded by lovely pink flowers, birds chirping away merrily. Just thinking about them made her smile.\n\nOh, how she wished she could be out, too!\n\nWell, one thing Jamun didn't miss was school.\n\nWhat use did she have for books and lessons when she had grandpa? Her patient, loving, knowledgeable grandpa. He knew all that there was to know and Jamun simply loved listening to him.\n\nWhen she couldn't make head or tail of something at school, she turned to Grandpa.\n\nWhen her teacher scolded her for not paying attention, she ran to Grandpa.\n\nWith his kind words and encouraging smile, Grandpa always made her tears disappear in a flash.\n\nSo, when she expressed a desire to go outside, he had an idea!\n\nHe got her a sturdy little wheelchair. Firmly secured in it, she could go out without so much as straining herself.\n\nJamun wasn't too sure about it.\n\nWhat would her friends say, she wondered.\n\nWould they find it strange? Or worse, make fun of her?\n\nGrandpa being Grandpa had idea ready.\n\nHe wheeled Jamun out and headed straight to school.\n\nOn the way, they met Chinkoo.\n\nHe was rather taken aback at the sight.\n\nWhat was Jamun doing in that strange looking thing.\n\nReading his thoughts, Grandpa sounded the prayer wheel. Clinggggggg!\n\nChinkoo looked at it with great interest.\n\n\"Lucky me, I got this prayer wheel for one whole day. And all I had to do was ferry Jamun around, said Grandpa with glee.\n\nA gleam came into Chinkoo's eyes. The prayer wheel could be his. All he had to do was wheel Jamun around. That wouldn't be so hard, he thought excitedly.\n\nHe happily took over the prayer wheel and the wheelchair and away they went.\n\nDown the glistening meadows, up the narrow trails.\n\nJamun had never had so much fun.\n\nEveryone wanted to take Jamun out!\n\nafter much discussion, it was finally decided: they would draw lots every day and one lucky boy or girl would wheel Jamun around.\n\nThanks to Grandpa and his prayer wheel, Jamun had her wish.\n\nSoon, word spread of the prayer wheel that came free with the wheelchair.\n\nHer friends could barely conceal their excitement.\n\nThe moment school was over, they flocked to her house. There was Bhola and Monkoo and Pia and Gehnaa and many more friends from school.\n\nEveryone wanted to wheel Jamun around.\n\nAfter much discussion, it was finally decided:\n\nthere would be a lucky draw every day and one lucky boy or girl would wheel Jamun around!\n\nThanks to Grandpa and his prayer wheel, Jamun had her wish!"
+        }
+      ]
+    }
+  ]
+}

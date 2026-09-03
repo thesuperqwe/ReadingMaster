@@ -143,6 +143,14 @@ class ApiService {
     return ParsedBook.fromJson(data as Map<String, dynamic>);
   }
 
+  Future<ParsedBook> parseOcr(List<Map<String, String>> images) async {
+    final data = await ApiClient.post(
+      '/api/v1/books/import/ocr',
+      body: {'images': images},
+    );
+    return ParsedBook.fromJson(data as Map<String, dynamic>);
+  }
+
   Future<Book> createBookFromChapters({
     required String title,
     required String level,
@@ -279,6 +287,17 @@ class ApiService {
         .toList();
   }
 
+  Future<QuizQuestion> addQuestion(
+    String bookId,
+    Map<String, dynamic> question,
+  ) async {
+    final data = await ApiClient.post(
+      '/api/v1/books/$bookId/quiz',
+      body: question,
+    );
+    return QuizQuestion.fromJson(data as Map<String, dynamic>);
+  }
+
   Future<QuizAttempt> submitQuiz({
     required String childId,
     required String questionId,
@@ -293,6 +312,36 @@ class ApiService {
       },
     );
     return QuizAttempt.fromJson(data as Map<String, dynamic>);
+  }
+
+  Future<VoiceQuizResult> submitVoiceQuiz({
+    required String childId,
+    required String questionId,
+    required String studentAnswer,
+  }) async {
+    final data = await ApiClient.post(
+      '/api/v1/quiz/voice-attempt',
+      body: {
+        'child_id': childId,
+        'question_id': questionId,
+        'student_answer': studentAnswer,
+      },
+    );
+    return VoiceQuizResult.fromJson(data as Map<String, dynamic>);
+  }
+
+  Future<ReadAloudResult> judgeReadAloud({
+    required String targetSentence,
+    required String studentTranscript,
+  }) async {
+    final data = await ApiClient.post(
+      '/api/v1/ai/judge-read-aloud',
+      body: {
+        'target_sentence': targetSentence,
+        'student_transcript': studentTranscript,
+      },
+    );
+    return ReadAloudResult.fromJson(data as Map<String, dynamic>);
   }
 
   Future<List<UserWord>> getVocabulary(String childId) async {

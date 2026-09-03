@@ -63,8 +63,10 @@ class OpenAICompatibleProvider(AIProvider):
 
     async def extract_key_items(self, text: str) -> list[dict[str, Any]]:
         system_prompt = (
-            "Identify the most important words and short phrases in the text for a Chinese "
-            "Grade 3 English learner. Return JSON only as "
+            "Identify 3 to 6 important words or short phrases in the text for a Chinese "
+            "Grade 3 English learner. Exclude common function words and sight words such as "
+            "a, an, the, is, are, and, to, of, he, she, it. Prefer content words and meaningful "
+            "collocations. Each term must appear in the text. Return JSON only as "
             "{\"items\": [{\"term\": \"...\", \"phonetic\": \"...\", \"meaning_zh\": \"...\", \"simple_definition\": \"...\"}]}."
         )
         user_prompt = f"Text:\n{text}"
@@ -73,6 +75,33 @@ class OpenAICompatibleProvider(AIProvider):
         if not isinstance(items, list):
             raise AIProviderError("Invalid key-items response")
         return items
+
+    async def judge_answer(
+        self,
+        question: str,
+        student_answer: str,
+        reference_answer: str | None = None,
+        context: str | None = None,
+    ) -> dict[str, Any]:
+        system_prompt = (
+            "You are an English reading teacher for a Chinese Grade 3 student. "
+            "Judge whether the child's spoken answer matches the question. "
+            "Accept small grammar mistakes as long as the key meaning is correct. "
+            "Return JSON only with fields: correct (boolean), feedback (short Chinese feedback), "
+            "model_answer (a child-friendly English model answer)."
+        )
+        user_prompt = (
+            f"Question: {question}\n"
+            f"Reference answer: {reference_answer or 'None'}\n"
+            f"Student answer: {student_answer}\n"
+            f"Context: {context or 'None'}"
+        )
+        data = await self._chat_json(system_prompt, user_prompt)
+        return {
+            "correct": bool(data.get("correct")),
+            "feedback": str(data.get("feedback") or ""),
+            "model_answer": str(data.get("model_answer") or ""),
+        }
 
 
 class OpenAIProvider(OpenAICompatibleProvider):

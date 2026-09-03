@@ -1,4 +1,6 @@
-import 'package:file_picker/file_picker.dart';
+import 'dart:convert';
+
+import '../../services/web_file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/models.dart';
@@ -6,7 +8,7 @@ import '../../services/api_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/common.dart';
 
-enum _Source { text, file }
+enum _Source { text, file, photo }
 
 class AddBookPage extends StatefulWidget {
   const AddBookPage({super.key});
@@ -68,7 +70,9 @@ class _AddBookPageState extends State<AddBookPage> {
   bool _generatingAI = false;
   bool _parsing = false;
   String? _fileName;
+  int _photoCount = 0;
   String? _error;
+  String _parsedPreview = '';
 
   static const _levels = [
     ('LEVEL_1', 'Level 1 · 启蒙'),
@@ -118,7 +122,18 @@ class _AddBookPageState extends State<AddBookPage> {
     setState(() {
       _chapters.addAll(chapterDrafts);
       _questions.addAll(questionDrafts);
+      _parsedPreview = _buildParsedPreview(chapters);
     });
+  }
+
+  String _buildParsedPreview(List<ParsedChapter> chapters) {
+    final buffer = StringBuffer();
+    for (var i = 0; i < chapters.length; i++) {
+      buffer.writeln('${i + 1}. ${chapters[i].title}');
+      buffer.writeln(chapters[i].content);
+      if (i != chapters.length - 1) buffer.writeln();
+    }
+    return buffer.toString().trim();
   }
 
   Future<void> _parseText() async {
@@ -145,11 +160,8 @@ class _AddBookPageState extends State<AddBookPage> {
   }
 
   Future<void> _pickAndParseFile() async {
-    final file = await FilePicker.pickFile(
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'txt', 'md'],
-    );
-    if (file == null) return;
+    final files = await pickWebFiles(multiple: false);
+    if (files.isEmpty) return;
 
     setState(() {
       _parsing = true;
@@ -157,10 +169,10 @@ class _AddBookPageState extends State<AddBookPage> {
     });
 
     try {
-      final bytes = await file.readAsBytes();
+      final file = files.first;
       final parsed = await _apiService.parseEbook(
         filename: file.name,
-        bytes: bytes,
+        bytes: file.bytes,
       );
 
       if (!mounted) return;
@@ -179,6 +191,53 @@ class _AddBookPageState extends State<AddBookPage> {
     } finally {
       if (mounted) setState(() => _parsing = false);
     }
+  }
+
+  Future<void> _pickAndParsePhotos() async {
+    final files = await pickWebFiles(accept: 'image/*', multiple: true);
+    if (files.isEmpty) return;
+
+    setState(() {
+      _parsing = true;
+      _error = null;
+    });
+
+    try {
+      final images = <Map<String, String>>[];
+      for (final file in files) {
+        images.add({
+          'data': base64Encode(file.bytes),
+          'mime_type': _mimeTypeForName(file.name),
+        });
+      }
+      if (images.isEmpty) {
+        throw Exception('没有读取到图片数据');
+      }
+
+      final parsed = await _apiService.parseOcr(images);
+
+      if (!mounted) return;
+      setState(() {
+        _photoCount = files.length;
+        if (_titleController.text.trim().isEmpty && files.isNotEmpty) {
+          _titleController.text = '拍照导入图书';
+        }
+      });
+      _applyParsed(parsed.chapters);
+    } catch (error) {
+      if (mounted) setState(() => _error = error.toString());
+    } finally {
+      if (mounted) setState(() => _parsing = false);
+    }
+  }
+
+  String _mimeTypeForName(String name) {
+    final lower = name.toLowerCase();
+    if (lower.endsWith('.png')) return 'image/png';
+    if (lower.endsWith('.webp')) return 'image/webp';
+    if (lower.endsWith('.heic')) return 'image/heic';
+    if (lower.endsWith('.heif')) return 'image/heif';
+    return 'image/jpeg';
   }
 
   void _addQuestionForChapter(int index) {
@@ -293,61 +352,132 @@ class _AddBookPageState extends State<AddBookPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('添加图书')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 720),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SegmentedButton<_Source>(
-                segments: const [
-                  ButtonSegment(
-                    value: _Source.text,
-                    label: Text('粘贴正文'),
-                    icon: Icon(Icons.edit_note_rounded),
-                  ),
-                  ButtonSegment(
-                    value: _Source.file,
-                    label: Text('导入文件'),
-                    icon: Icon(Icons.upload_file_rounded),
-                  ),
-                ],
-                selected: {_source},
-                onSelectionChanged: (selection) =>
-                    setState(() => _source = selection.first),
-              ),
-              const SizedBox(height: 16),
-              _buildInfoCard(),
-              const SizedBox(height: 16),
-              if (_source == _Source.text)
-                _buildTextContentCard()
-              else
-                _buildFileContentCard(),
-              const SizedBox(height: 22),
-              ..._buildQuestionSection(),
-              if (_error != null) ...[
-                const SizedBox(height: 16),
-                Text(
-                  _error!,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
-                    fontWeight: FontWeight.w600,
-                  ),
+    final editor = SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 720),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SegmentedButton<_Source>(
+              segments: const [
+                ButtonSegment(
+                  value: _Source.text,
+                  label: Text('粘贴正文'),
+                  icon: Icon(Icons.edit_note_rounded),
+                ),
+                ButtonSegment(
+                  value: _Source.file,
+                  label: Text('导入文件'),
+                  icon: Icon(Icons.upload_file_rounded),
+                ),
+                ButtonSegment(
+                  value: _Source.photo,
+                  label: Text('拍照导入'),
+                  icon: Icon(Icons.photo_camera_rounded),
                 ),
               ],
-              const SizedBox(height: 20),
-              FilledButton(
-                onPressed: _saving ? null : _save,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Text(_saving ? '保存中…' : '保存图书'),
+              selected: {_source},
+              onSelectionChanged: (selection) =>
+                  setState(() => _source = selection.first),
+            ),
+            const SizedBox(height: 16),
+            _buildInfoCard(),
+            const SizedBox(height: 16),
+            if (_source == _Source.text)
+              _buildTextContentCard()
+            else if (_source == _Source.file)
+              _buildFileContentCard()
+            else
+              _buildPhotoContentCard(),
+            const SizedBox(height: 22),
+            ..._buildQuestionSection(),
+            if (_error != null) ...[
+              const SizedBox(height: 16),
+              Text(
+                _error!,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.error,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
-          ),
+            const SizedBox(height: 20),
+            FilledButton(
+              onPressed: _saving ? null : _save,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Text(_saving ? '保存中…' : '保存图书'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('添加图书')),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final sideBySide = constraints.maxWidth >= 980 && _parsedPreview.isNotEmpty;
+          if (sideBySide) {
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: editor),
+                SizedBox(
+                  width: 420,
+                  height: double.infinity,
+                  child: _parsedPreviewPanel(),
+                ),
+              ],
+            );
+          }
+
+          return Column(
+            children: [
+              Expanded(child: editor),
+              if (_parsedPreview.isNotEmpty)
+                SizedBox(height: 360, child: _parsedPreviewPanel()),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _parsedPreviewPanel() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 24, 24, 24),
+      child: Container(
+        height: double.infinity,
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.line),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              '解析文本预览',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.ink),
+            ),
+            const Divider(height: 20, color: AppColors.line),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Text(
+                  _parsedPreview,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    height: 1.55,
+                    color: AppColors.ink,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -445,7 +575,38 @@ class _AddBookPageState extends State<AddBookPage> {
           ],
           const SizedBox(height: 6),
           const Text(
-            '支持 PDF、TXT、Markdown。',
+            '支持 PDF、EPUB、TXT、Markdown、HTML、DOCX、FB2。',
+            style: TextStyle(fontSize: 13, color: AppColors.inkSoft),
+          ),
+          if (_parsing) ...[
+            const SizedBox(height: 12),
+            const LinearProgressIndicator(),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPhotoContentCard() {
+    return SurfaceCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          FilledButton.icon(
+            onPressed: _parsing ? null : _pickAndParsePhotos,
+            icon: const Icon(Icons.photo_camera_rounded),
+            label: Text(_parsing ? '识别中…' : '拍照 / 选择照片'),
+          ),
+          if (_photoCount > 0) ...[
+            const SizedBox(height: 10),
+            Text(
+              '已选择 $_photoCount 张图片',
+              style: const TextStyle(fontSize: 13, color: AppColors.inkSoft),
+            ),
+          ],
+          const SizedBox(height: 6),
+          const Text(
+            '拍下实体书的正文页面，系统会自动识别文字并拆分成章节。可一次选择多张照片。',
             style: TextStyle(fontSize: 13, color: AppColors.inkSoft),
           ),
           if (_parsing) ...[

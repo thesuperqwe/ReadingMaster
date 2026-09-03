@@ -1,11 +1,15 @@
+import base64
 import uuid
 
-from fastapi import APIRouter, File, UploadFile, status
+from fastapi import APIRouter, File, HTTPException, UploadFile, status
 
 from app.api.deps import CurrentUser, SessionDep
 from app.schemas.ai import KeyItemsResponse
-from app.schemas.book import BookCreate, BookDetailOut, BookImportCreate, BookOut, BookPageOut, BookPreviewRequest, ChapterDetailOut, ParsedBookOut
+from app.schemas.book import BookCreate, BookDetailOut, BookImportCreate, BookOut, BookPageOut, BookPreviewRequest, BookQuestionCreate, ChapterDetailOut, ParsedBookOut
 from app.schemas.quiz import QuizQuestionOut
+from app.ocr.base import OcrProviderError
+from app.ocr.factory import get_ocr_provider
+from app.schemas.ocr import OcrRequest
 from app.services.book_service import (
     create_book,
     delete_book,
@@ -16,7 +20,7 @@ from app.services.book_service import (
 )
 from app.services.ai_service import get_or_generate_chapter_key_items
 from app.services.import_service import create_book_from_chapters, parse_ebook, parse_text
-from app.services.quiz_service import list_quiz
+from app.services.quiz_service import add_question, list_quiz
 
 router = APIRouter(prefix="/books", tags=["books"])
 
@@ -66,6 +70,30 @@ async def parse_book_file(
 ) -> ParsedBookOut:
     data = await file.read()
     return parse_ebook(file.filename or "book.pdf", data)
+
+
+@router.post("/import/ocr", response_model=ParsedBookOut)
+async def ocr_book_images(user: CurrentUser, data: OcrRequest) -> ParsedBookOut:
+    images: list[tuple[bytes, str]] = []
+    for item in data.images:
+        try:
+            raw = base64.b64decode(item.data)
+        except Exception as exc:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid image base64",
+            ) from exc
+        images.append((raw, item.mime_type))
+
+    try:
+        text = await get_ocr_provider().recognize(images)
+    except OcrProviderError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=str(exc),
+        ) from exc
+
+    return parse_text(text)
 
 
 @router.post("/import", response_model=BookOut, status_code=status.HTTP_201_CREATED)
@@ -123,3 +151,13 @@ async def get_book_quiz(
     session: SessionDep, user: CurrentUser, book_id: uuid.UUID
 ) -> list[QuizQuestionOut]:
     return await list_quiz(session, book_id)
+
+@router.post("/{book_id}/quiz", response_model=QuizQuestionOut, status_code=status.HTTP_201_CREATED)
+async def add_book_quiz(
+    session: SessionDep,
+    user: CurrentUser,
+    book_id: uuid.UUID,
+    data: BookQuestionCreate,
+) -> QuizQuestionOut:
+    return await add_question(session, book_id, data)
+

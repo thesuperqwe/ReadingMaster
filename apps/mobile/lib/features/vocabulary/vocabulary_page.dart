@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
 import '../../models/models.dart';
 import '../../services/api_service.dart';
+import '../../services/tts_service.dart';
 import '../../services/offline_dictionary.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/common.dart';
@@ -20,7 +20,7 @@ class VocabularyPage extends StatefulWidget {
 
 class _VocabularyPageState extends State<VocabularyPage> {
   final _apiService = ApiService();
-  final _tts = FlutterTts();
+  final _tts = createTtsService();
   List<UserWord> _words = [];
   bool _loading = true;
   String? _error;
@@ -35,8 +35,13 @@ class _VocabularyPageState extends State<VocabularyPage> {
   }
 
   Future<void> _initTts() async {
-    await _tts.setLanguage('en-US');
-    await _tts.setSpeechRate(0.45);
+    await _tts.initialize();
+  }
+
+  @override
+  void dispose() {
+    _tts.dispose();
+    super.dispose();
   }
 
   Future<void> _load() async {
@@ -183,10 +188,11 @@ class _VocabularyPageState extends State<VocabularyPage> {
 
   Widget _wordCard(UserWord item) {
     final word = item.word;
+    final displayWord = OfflineDictionary.lookup(word.word) ?? word;
     return SurfaceCard(
       onTap: () => showWordPopup(
         context,
-        word,
+        displayWord,
         lookup: _lookupWord,
         aiLookup: (value, {context}) =>
             _apiService.explainWordAI(value, context: context),
@@ -202,7 +208,7 @@ class _VocabularyPageState extends State<VocabularyPage> {
                   children: [
                     Flexible(
                       child: Text(
-                        word.word,
+                        displayWord.word,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
@@ -212,7 +218,7 @@ class _VocabularyPageState extends State<VocabularyPage> {
                         ),
                       ),
                     ),
-                    if (word.phonetic != null && word.phonetic!.isNotEmpty) ...[
+                    if (displayWord.phonetic != null && displayWord.phonetic!.isNotEmpty) ...[
                       const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -221,7 +227,7 @@ class _VocabularyPageState extends State<VocabularyPage> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          word.phonetic!,
+                          displayWord.phonetic!,
                           style: const TextStyle(
                             fontSize: 12,
                             color: AppColors.primaryDark,
@@ -234,7 +240,7 @@ class _VocabularyPageState extends State<VocabularyPage> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  word.meaningZh?.isNotEmpty == true ? word.meaningZh! : '暂无释义',
+                  displayWord.meaningZh?.isNotEmpty == true ? displayWord.meaningZh! : '点击卡片查看解释',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontSize: 13, color: AppColors.inkSoft),
@@ -253,7 +259,7 @@ class _VocabularyPageState extends State<VocabularyPage> {
           IconButton(
             onPressed: () async {
               try {
-                await _tts.speak(word.word);
+                await _tts.speak(displayWord.word);
               } catch (_) {
                 // Speech is best-effort on web.
               }

@@ -36,3 +36,20 @@ class QuizAttemptOut(BaseModel):
     selected_option: str | None
     is_correct: bool | None
     correct_option: str | None
+
+
+class VoiceAttemptCreate(BaseModel):
+    child_id: uuid.UUID
+    question_id: uuid.UUID
+    student_answer: str
+
+
+class VoiceAttemptOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    child_id: uuid.UUID
+    question_id: uuid.UUID
+    student_answer: str
+    is_correct: bool
+    correct_option: str | None

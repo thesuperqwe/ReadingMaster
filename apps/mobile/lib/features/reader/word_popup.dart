@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
 import '../../models/models.dart';
+import '../../services/tts_service.dart';
 import '../../theme/app_theme.dart';
 
 Future<void> showWordPopup(
@@ -54,7 +54,7 @@ class WordDetailSheet extends StatefulWidget {
 }
 
 class _WordDetailSheetState extends State<WordDetailSheet> {
-  final _tts = FlutterTts();
+  final _tts = createTtsService();
   Word? _aiResult;
   bool _loadingAI = false;
   String? _aiError;
@@ -73,8 +73,13 @@ class _WordDetailSheetState extends State<WordDetailSheet> {
   }
 
   Future<void> _initTts() async {
-    await _tts.setLanguage('en-US');
-    await _tts.setSpeechRate(0.45);
+    await _tts.initialize();
+  }
+
+  @override
+  void dispose() {
+    _tts.dispose();
+    super.dispose();
   }
 
   Future<void> _loadAI() async {

@@ -31,3 +31,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Local test fixtures (large media and audio)
+testBook/

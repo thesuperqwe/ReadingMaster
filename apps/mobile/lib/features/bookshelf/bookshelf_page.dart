@@ -6,6 +6,7 @@ import '../../theme/app_theme.dart';
 import '../../widgets/common.dart';
 import '../reader/reader_page.dart';
 import 'add_book_page.dart';
+import 'edit_book_questions_page.dart';
 
 class BookshelfPage extends StatefulWidget {
   const BookshelfPage({super.key, required this.childId});
@@ -57,6 +58,15 @@ class _BookshelfPageState extends State<BookshelfPage> {
       MaterialPageRoute(builder: (_) => const AddBookPage()),
     );
     if (created == true) await _load();
+  }
+
+  Future<void> _openEditQuestions(Book book) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => EditBookQuestionsPage(bookId: book.id),
+      ),
+    );
+    await _load();
   }
 
   Future<void> _deleteBook(Book book) async {
@@ -234,11 +244,23 @@ class _BookshelfPageState extends State<BookshelfPage> {
                 right: 4,
                 child: Material(
                   color: Colors.white.withValues(alpha: 0.9),
-                  shape: const CircleBorder(),
-                  child: IconButton(
-                    tooltip: '删除',
-                    onPressed: () => _deleteBook(book),
-                    icon: const Icon(Icons.delete_outline_rounded, size: 19, color: AppColors.danger),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        tooltip: '添加题目',
+                        onPressed: () => _openEditQuestions(book),
+                        icon: const Icon(Icons.quiz_outlined, size: 19, color: AppColors.primaryDark),
+                      ),
+                      IconButton(
+                        tooltip: '删除',
+                        onPressed: () => _deleteBook(book),
+                        icon: const Icon(Icons.delete_outline_rounded, size: 19, color: AppColors.danger),
+                      ),
+                    ],
                   ),
                 ),
               ),

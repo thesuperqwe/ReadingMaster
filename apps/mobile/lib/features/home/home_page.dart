@@ -154,35 +154,56 @@ class _HomePageState extends State<HomePage> {
     final pin = await ParentPin.get();
     if (!mounted) return false;
     final controller = TextEditingController();
+    String? error;
     final ok = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('家长模式'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('请输入家长 PIN 码'),
-            const SizedBox(height: 12),
-            TextField(
-              controller: controller,
-              autofocus: true,
-              obscureText: true,
-              keyboardType: TextInputType.number,
-              maxLength: 4,
-              decoration: const InputDecoration(hintText: '4 位数字'),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) {
+          void submit() {
+            if (controller.text.trim() != pin) {
+              setDialogState(() => error = 'PIN 码不正确');
+              return;
+            }
+            Navigator.of(ctx).pop(true);
+          }
+
+          return AlertDialog(
+            title: const Text('家长模式'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('请输入家长 PIN 码'),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: controller,
+                  autofocus: true,
+                  obscureText: true,
+                  keyboardType: TextInputType.number,
+                  maxLength: 4,
+                  onSubmitted: (_) => submit(),
+                  decoration: const InputDecoration(hintText: '4 位数字'),
+                ),
+                if (error != null) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    error!,
+                    style: const TextStyle(color: AppColors.danger, fontSize: 13),
+                  ),
+                ],
+              ],
             ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('取消'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(controller.text.trim() == pin),
-            child: const Text('进入'),
-          ),
-        ],
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: const Text('取消'),
+              ),
+              FilledButton(
+                onPressed: submit,
+                child: const Text('进入'),
+              ),
+            ],
+          );
+        },
       ),
     );
     controller.dispose();
@@ -469,6 +490,11 @@ class _HomePageState extends State<HomePage> {
                 FilledButton(
                   onPressed: _creatingChild ? null : _createChild,
                   child: const Text('创建孩子'),
+                ),
+                const SizedBox(height: 4),
+                TextButton(
+                  onPressed: _logout,
+                  child: const Text('已经有了孩子资料？返回登录'),
                 ),
               ],
             ),

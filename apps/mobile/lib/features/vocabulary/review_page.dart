@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
 import '../../models/models.dart';
 import '../../services/api_service.dart';
+import '../../services/tts_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/common.dart';
 
@@ -17,7 +17,7 @@ class ReviewPage extends StatefulWidget {
 
 class _ReviewPageState extends State<ReviewPage> {
   final _apiService = ApiService();
-  final _tts = FlutterTts();
+  final _tts = createTtsService();
   List<ReviewWord> _words = [];
   int _index = 0;
   int _correctCount = 0;
@@ -36,8 +36,13 @@ class _ReviewPageState extends State<ReviewPage> {
   }
 
   Future<void> _initTts() async {
-    await _tts.setLanguage('en-US');
-    await _tts.setSpeechRate(0.45);
+    await _tts.initialize();
+  }
+
+  @override
+  void dispose() {
+    _tts.dispose();
+    super.dispose();
   }
 
   Future<void> _load() async {

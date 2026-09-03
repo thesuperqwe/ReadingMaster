@@ -586,3 +586,37 @@ class HomeData {
     );
   }
 }
+
+class VoiceQuizResult {
+  const VoiceQuizResult({
+    required this.isCorrect,
+    required this.studentAnswer,
+    this.correctOption,
+  });
+
+  final bool isCorrect;
+  final String studentAnswer;
+  final String? correctOption;
+
+  factory VoiceQuizResult.fromJson(Map<String, dynamic> json) {
+    return VoiceQuizResult(
+      isCorrect: json['is_correct'] as bool? ?? false,
+      studentAnswer: json['student_answer']?.toString() ?? '',
+      correctOption: json['correct_option'] as String?,
+    );
+  }
+}
+
+class ReadAloudResult {
+  const ReadAloudResult({required this.correct, required this.feedback});
+
+  final bool correct;
+  final String feedback;
+
+  factory ReadAloudResult.fromJson(Map<String, dynamic> json) {
+    return ReadAloudResult(
+      correct: json['correct'] as bool? ?? false,
+      feedback: json['feedback']?.toString() ?? '',
+    );
+  }
+}

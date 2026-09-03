@@ -52,3 +52,26 @@ class KeyItem(BaseModel):
 
 class KeyItemsResponse(BaseModel):
     items: list[KeyItem]
+
+
+class JudgeAnswerRequest(BaseModel):
+    question: str = Field(min_length=1)
+    student_answer: str = Field(min_length=1)
+    reference_answer: str | None = None
+    context: str | None = None
+
+
+class JudgeAnswerResponse(BaseModel):
+    correct: bool
+    feedback: str
+    model_answer: str
+
+
+class JudgeReadAloudRequest(BaseModel):
+    target_sentence: str = Field(min_length=1)
+    student_transcript: str = Field(min_length=1)
+
+
+class JudgeReadAloudResponse(BaseModel):
+    correct: bool
+    feedback: str
